@@ -1,4 +1,4 @@
-package ru.medev.bubleshooter;
+package RubiksCube;
 
 import java.awt.*;
 
@@ -17,7 +17,7 @@ public class Player {
 		x = GamePanel.WIDTH / 2;		
 		y = GamePanel.HEIGHT / 2;
 		
-		r = 5;
+		r = 7;
 		
 		color1 = Color.WHITE;
 	}
@@ -28,8 +28,22 @@ public class Player {
 	}
 	
 	public void draw(Graphics2D g){
+		
+		double x0 = x - r;
+		double y0 = y - r;
+		int strokeThickness = 3;
+		int r1 = r - strokeThickness;
+		double x1 = x - r1;
+		double y1 = y - r1;
+		
+		g.setColor(color1.darker());
+		//g.fillOval((int) (x - r), (int) (y - r), 2 * r, 2 * r);
+		g.fillOval((int)x0, (int)y0, 2 * r, 2 * r);
+		//g.setStroke(new BasicStroke(1));
 		g.setColor(color1);
-		g.fillOval((int) (x - r), (int) (y - r), 2 * r, 2 * r);
+		//g.fillOval((int) (x - r), (int) (y - r), 2 * r, 2 * r);
+		g.fillOval((int)x1, (int)y1, 2 * r1, 2 * r1);
+		//g.setStroke(new BasicStroke(strokeThickness));
 	}
 
 

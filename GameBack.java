@@ -1,4 +1,4 @@
-package ru.medev.bubleshooter;
+package RubiksCube;
 
 import java.awt.*;
 

@@ -1,4 +1,4 @@
-package ru.medev.bubleshooter;
+package RubiksCube;
 
 import javax.swing.JFrame;
 
@@ -6,7 +6,7 @@ public class GameStart {
 
 	public static void main(String[] args){
 		GamePanel panel = new GamePanel();
-		JFrame startFrame = new JFrame("BubleShooter2D");
+		JFrame startFrame = new JFrame("Rubic's Cube");
 		startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		startFrame.setContentPane(panel);
