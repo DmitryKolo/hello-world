@@ -15,7 +15,8 @@ public class GamePanel extends JPanel implements Runnable{
 	private BufferedImage image;
 	private Graphics2D g;
 	
-	private GameBack background;
+	public static GameBack background;
+	public static Player player;
 	
 	// Constructor
 	public GamePanel(){
@@ -38,6 +39,7 @@ public class GamePanel extends JPanel implements Runnable{
 		g = (Graphics2D) image.getGraphics();
 		
 		background = new GameBack();
+		player = new Player();
 		
 		while(true){
 			
@@ -64,6 +66,8 @@ public class GamePanel extends JPanel implements Runnable{
 		// Background draw
 		background.draw(g);
 		
+		// Player draw
+		player.draw(g);
 	}
 	
 	private void gameDraw(){
