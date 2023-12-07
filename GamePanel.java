@@ -1,4 +1,4 @@
-package ru.medev.bubleshooter;
+package RubiksCube;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -36,7 +36,9 @@ public class GamePanel extends JPanel implements Runnable{
 	public void run() {
 		
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		
 		g = (Graphics2D) image.getGraphics();
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		background = new GameBack();
 		player = new Player();
@@ -60,6 +62,9 @@ public class GamePanel extends JPanel implements Runnable{
 	public void gameUpdate(){
 		// Background update
 		background.update();
+		
+		// Player update
+		player.update();
 	}
 	
 	public void gameRender(){
