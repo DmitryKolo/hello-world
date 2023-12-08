@@ -1,5 +1,3 @@
-package RubiksCube;
-
 import java.awt.*;
 
 public class GameBack {
@@ -15,6 +13,7 @@ public class GameBack {
 	}
 	
 	// Functions
+	
 	public void update(){
 		
 	}

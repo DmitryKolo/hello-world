@@ -1,4 +1,3 @@
-package RubiksCube;
 
 import javax.swing.JFrame;
 

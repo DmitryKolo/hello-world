@@ -1,5 +1,3 @@
-package RubiksCube;
-
 import java.awt.*;
 
 public class Player {
@@ -25,6 +23,7 @@ public class Player {
 	public static boolean isFiring;
 	
 	// Constructor
+	
 	public Player(){
 		x = GamePanel.WIDTH / 2;		
 		y = GamePanel.HEIGHT / 2;
@@ -47,6 +46,7 @@ public class Player {
 	}
 	
 	// Functions
+	
 	public double getX(){
 		return x;
 	}
@@ -80,9 +80,9 @@ public class Player {
 		dx = 0;
 		dy = 0;
 		
-		if(isFiring){
-			GamePanel.bullets.add(new Bullet());
-		}
+		//if(isFiring){
+		//	GamePanel.bullets.add(new Bullet());
+		//}
 	}
 	
 	public void draw(Graphics2D g){
@@ -95,13 +95,9 @@ public class Player {
 		double y1 = y - r1;
 		
 		g.setColor(color1.darker());
-		//g.fillOval((int) (x - r), (int) (y - r), 2 * r, 2 * r);
 		g.fillOval((int)x0, (int)y0, 2 * r, 2 * r);
-		//g.setStroke(new BasicStroke(1));
 		g.setColor(color1);
-		//g.fillOval((int) (x - r), (int) (y - r), 2 * r, 2 * r);
 		g.fillOval((int)x1, (int)y1, 2 * r1, 2 * r1);
-		//g.setStroke(new BasicStroke(strokeThickness));
 		
 	}
 
