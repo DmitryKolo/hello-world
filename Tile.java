@@ -57,26 +57,47 @@ public class Tile{
 		return y;
 	}
 	
-	public void update(){
+	public void update(double x, double y, double dxA, double dyA, double dxC, double dyC, Color color){
 		
-		x += 0;
-		y += 0;
+		//if(x!=0){
+		//	this.x += x;
+		//}
+		this.x = x; // GamePanel.WIDTH / 2;
+		this.y = y; // GamePanel.HEIGHT / 2;
 		
+		this.dxA = dxA;
+		this.dyA = dyA;
+		dzA = 0;
+		this.dxC = dxC;
+		this.dyC = dyC;
+		dzC = 0;
+		
+		this.color = color;
+		
+		up = false;
+		down = false;
+		left = false;
+		right = false;
+		
+		isFiring = false;
+	
 	}
 	
 	public void draw(Graphics2D g){
 		
-		double xA = x + dxA;
-		double yA = y + dyA;
-		double xB = x + dxA + dxC;
-		double yB = y + dyA + dyC;
-		double xC = x + dxC;
-		double yC = y + dyC;
+		double x0 = x - dxA/2.5 - dxC/2.5;
+		double y0 = y - dyA/2.5 - dyC/2.5;
+		double xA = x + dxA/2.5 - dxC/2.5;
+		double yA = y + dyA/2.5 - dyC/2.5;
+		double xB = x + dxA/2.5 + dxC/2.5;
+		double yB = y + dyA/2.5 + dyC/2.5;
+		double xC = x - dxA/2.5 + dxC/2.5;
+		double yC = y - dyA/2.5 + dyC/2.5;
 		
 		g.setColor(color);
 
-		int argX[] = {(int)x, (int)xA, (int)xB, (int)xC};
-		int argY[] = {(int)y, (int)yA, (int)yB, (int)yC};
+		int argX[] = {(int)x0, (int)xA, (int)xB, (int)xC};
+		int argY[] = {(int)y0, (int)yA, (int)yB, (int)yC};
 		int num = 4;
 		g.fillPolygon(argX, argY, num);
 		
