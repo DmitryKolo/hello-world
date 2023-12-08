@@ -13,6 +13,9 @@ public class Edge {
 	private double dxC;
 	private double dyC;
 	private double dzC;
+	private double dx0;
+	private double dy0;
+	private double dz0;
 			
 	private Color color;	
 
@@ -23,10 +26,10 @@ public class Edge {
 			
 	public static boolean isFiring;
 		
-	private RowOfTiles line1, line2, line3;
+	private RowOfTiles row1, row2, row3;
 			
 	// Constructor
-	public Edge(double dxA, double dyA, double dxC, double dyC){
+	public Edge(double dxA, double dyA, double dxC, double dyC, double dx0, double dy0){
 			
 		x = GamePanel.WIDTH / 2;		
 		y = GamePanel.HEIGHT / 2;
@@ -37,6 +40,9 @@ public class Edge {
 		this.dxC = dxC;
 		this.dyC = dyC;
 		dzC = 0;
+		this.dx0 = dx0;
+		this.dy0 = dy0;
+		dz0 = 0;
 				
 		color = Color.YELLOW;
 				
@@ -47,9 +53,9 @@ public class Edge {
 				
 		isFiring = false;
 			
-		line1 = new RowOfTiles(x + 0.1 * dxC, y + 0.1 * dyC, dxA, dyA, dxC, dyC, Color.RED);
-		line2 = new RowOfTiles(x + (0.1 + 1.2) * dxC, y + (0.1 + 1.2) * dyC, dxA, dyA, dxC, dyC, Color.CYAN);
-		line3 = new RowOfTiles(x + (0.1 + 2 * 1.2) * dxC, y + (0.1 + 2 * 1.2) * dyC, dxA, dyA, dxC, dyC, Color.DARK_GRAY);
+		row1 = new RowOfTiles(x + dx0 - dxC, y + dy0 - dyC, dxA, dyA, dxC, dyC, Color.RED);
+		row2 = new RowOfTiles(x + dx0,       y + dy0,       dxA, dyA, dxC, dyC, Color.CYAN);
+		row3 = new RowOfTiles(x + dx0 + dxC, y + dy0 + dyC, dxA, dyA, dxC, dyC, Color.DARK_GRAY);
 	
 	}
 			
@@ -63,14 +69,33 @@ public class Edge {
 		return y;
 	}
 			
-	public void update(){
+	public void update(double dxA, double dyA, double dxC, double dyC, double dx0, double dy0){
 				
-		x += 0;
-		y += 0;
+		x = GamePanel.WIDTH / 2;		
+		y = GamePanel.HEIGHT / 2;
+			
+		this.dxA = dxA;
+		this.dyA = dyA;
+		dzA = 0;
+		this.dxC = dxC;
+		this.dyC = dyC;
+		dzC = 0;
+		this.dx0 = dx0;
+		this.dy0 = dy0;
+		dz0 = 0;
 				
-		//if(isFiring){
-		//	GamePanel.bullets.add(new Bullet());
-		//}
+		color = Color.YELLOW;
+				
+		up = false;
+		down = false;
+		left = false;
+		right = false;
+				
+		isFiring = false;
+			
+		row1.update(x + dx0 - dxC, y + dy0 - dyC, dxA, dyA, dxC, dyC);
+		row2.update(x + dx0,       y + dy0,       dxA, dyA, dxC, dyC);
+		row3.update(x + dx0 + dxC, y + dy0 + dyC, dxA, dyA, dxC, dyC);
 	}
 			
 	public void draw(Graphics2D g){
@@ -82,9 +107,9 @@ public class Edge {
 		double xC = x + dxC;
 		double yC = y + dyC;
 			
-		line1.draw(g);
-		line2.draw(g);
-		line3.draw(g);
+		row1.draw(g);
+		row2.draw(g);
+		row3.draw(g);
 	}
 }
 

@@ -24,7 +24,7 @@ public class RowOfTiles {
 			
 		public static boolean isFiring;
 		
-		private Tile edge1, edge2, edge3;
+		private Tile tile1, tile2, tile3;
 			
 		// Constructor
 		public RowOfTiles(double x, double y, double dxA, double dyA, double dxC, double dyC, Color color){
@@ -48,9 +48,9 @@ public class RowOfTiles {
 				
 			isFiring = false;
 			
-			edge1 = new Tile(x + 0.1 * dxA, y + 0.1 * dyA, dxA, dyA, dxC, dyC, Color.RED);
-			edge2 = new Tile(x + (0.1 + 1.2) * dxA, y + (0.1 + 1.2) * dyA, dxA, dyA, dxC, dyC, Color.CYAN);
-			edge3 = new Tile(x + (0.1 + 2 * 1.2) * dxA, y + (0.1 + 2 * 1.2) * dyA, dxA, dyA, dxC, dyC, Color.DARK_GRAY);
+			tile1 = new Tile(x - dxA, y - dyA, dxA, dyA, dxC, dyC, Color.RED);
+			tile2 = new Tile(x,       y,       dxA, dyA, dxC, dyC, Color.CYAN);
+			tile3 = new Tile(x + dxA, y + dyA, dxA, dyA, dxC, dyC, Color.DARK_GRAY);
 		}
 			
 		// Functions
@@ -62,14 +62,30 @@ public class RowOfTiles {
 			return y;
 		}
 			
-		public void update(){
+		public void update(double x, double y, double dxA, double dyA, double dxC, double dyC){
 				
-			x += 0;
-			y += 0;
+			this.x = x; // GamePanel.WIDTH / 2;
+			this.y = y; // GamePanel.HEIGHT / 2;
+			
+			this.dxA = dxA;
+			this.dyA = dyA;
+			dzA = 0;
+			this.dxC = dxC;
+			this.dyC = dyC;
+			dzC = 0;
 				
-			//if(isFiring){
-			//	GamePanel.bullets.add(new Bullet());
-			//}
+			color1 = Color.YELLOW;
+				
+			up = false;
+			down = false;
+			left = false;
+			right = false;
+				
+			isFiring = false;
+			
+			tile1.update(x - dxA, y - dyA, dxA, dyA, dxC, dyC, Color.RED);
+			tile2.update(x,       y,       dxA, dyA, dxC, dyC, Color.CYAN);
+			tile3.update(x + dxA, y + dyA, dxA, dyA, dxC, dyC, Color.DARK_GRAY);
 		}
 			
 		public void draw(Graphics2D g){
@@ -88,9 +104,9 @@ public class RowOfTiles {
 			int num = 4;
 			//g.fillPolygon(argX, argY, num);
 			
-			edge1.draw(g);
-			edge2.draw(g);
-			edge3.draw(g);
+			tile1.draw(g);
+			tile2.draw(g);
+			tile3.draw(g);
 		}
 	}
 

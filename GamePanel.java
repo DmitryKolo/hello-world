@@ -7,8 +7,9 @@ import java.util.*;
 public class GamePanel extends JPanel implements Runnable{
 
 	// Fields
-	public static int WIDTH = 400;
-	public static int HEIGHT = 400;
+	
+	public static int WIDTH = 500;
+	public static int HEIGHT = 500;
 	
 	private Thread thread;
 	
@@ -48,19 +49,108 @@ public class GamePanel extends JPanel implements Runnable{
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		background = new GameBack();
-		player = new Player();
-		//bullets = new ArrayList<Bullet>();
 		
-		double xA = 2;
+		player = new Player(0, 50, 17);
+		
+		double x0 = 0;
+		double y0 = 0;
+		double z0 = 0;
+		
+		double r0 = 50;
+		
+		double xA = 0;
 		double yA = 50;
+		double zA = 17;
+		System.out.println("xA = " + xA);
+		System.out.println("yA = " + yA);
+		System.out.println("zA = " + zA);
 		
-		double xB = 50;
-		double yB = -22;
+		double rA2 = xA * xA + yA * yA + zA * zA;
+		System.out.println("rA(2) = " + rA2);
+		
+		double rA = Math.sqrt(rA2);
+		System.out.println("rA = " + rA);
+		
+		double co0A = r0 / rA;
+		xA = xA * co0A;
+		yA = yA * co0A;
+		zA = zA * co0A;
+		System.out.println("xA = " + xA);
+		System.out.println("yA = " + yA);
+		System.out.println("zA = " + zA);
+		
+		rA2 = xA * xA + yA * yA + zA * zA;
+		rA = Math.sqrt(rA2);
+		System.out.println("rA = " + rA);
+		
+		double xB = 40;
+		double yB = -19;
+		System.out.println("xB = " + xB);
+		System.out.println("yB = " + yB);
+		
+		double zB2 = rA2 - xB * xB - yB * yB;
+		System.out.println("zB(2) = " + zB2);
+		
+		double zB = Math.sqrt(zB2);
+		System.out.println("zB = " + zB);
+		
+		double scAB = xA * xB + yA * yB + zA * zB;
+		System.out.println("скалярное произведение AB = " + scAB);
+	
+		zB = - (xA * xB + yA * yB) / zA;
+		System.out.println("zB = " + zB);
+	
+		scAB = xA * xB + yA * yB + zA * zB;
+		System.out.println("скалярное произведение AB = " + scAB);
+		
+		double rB2 = xB * xB + yB * yB + zB * zB;
+		System.out.println("rB(2) = " + rB2);
+		
+		double rB = Math.sqrt(rB2);
+		System.out.println("rB = " + rB);
+
+		double coAB = rA / rB;
+		xB = xB * coAB;
+		yB = yB * coAB;
+		zB = zB * coAB;
+		System.out.println("xB = " + xB);
+		System.out.println("yB = " + yB);
+		System.out.println("zB = " + zB);
+		
+		rB2 = xB * xB + yB * yB + zB * zB;
+		System.out.println("rB(2) = " + rB2);
 		
 		double xC = -30;
-		double yC = -26;
+		System.out.println("xC = " + xC);
 		
-		vAngle = new VolumetricAngle(xA, yA, xB, yB, xC, yC);
+		double yC = -26;
+		System.out.println("yC = " + yC);
+		
+		yC = xC * (xA*zB - xB*zA) / (zA*yB - yA*zB);
+		System.out.println("yC = " + yC);
+		
+		double zC = xC * (xA*yB - xB*yA) / (yA*zB - zA*yB);
+		System.out.println("zC = " + zC);
+		
+		double rC2 = xC * xC + yC * yC + zC * zC;
+		System.out.println("rС(2) = " + rC2);
+		
+		double rC = Math.sqrt(rC2);
+		System.out.println("rС = " + rC);
+		
+		double coAC = rA / rC;
+		xC = xC * coAC;
+		yC = yC * coAC;
+		zC = zC * coAC;
+		
+		System.out.println("xC = " + xC);
+		System.out.println("yC = " + yC);
+		System.out.println("zC = " + zC);
+
+		rC2 = xC * xC + yC * yC + zC * zC;
+		System.out.println("rС(2) = " + rC2);
+		
+		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
 				
 		while(true){
 			
@@ -95,11 +185,11 @@ public class GamePanel extends JPanel implements Runnable{
 		// Background draw
 		background.draw(g);
 		
-		// Player draw
-		player.draw(g);
-		
 		// Volumetric Angle draw
 		vAngle.draw(g);
+		
+		// Player draw
+		player.draw(g);
 		
 	}
 	
