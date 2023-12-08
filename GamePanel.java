@@ -21,6 +21,7 @@ public class GamePanel extends JPanel implements Runnable{
 	//public static ArrayList<Bullet> bullets;
 	
 	public static VolumetricAngle vAngle;
+	public Cube cube;
 	
 	// Constructor
 	
@@ -61,97 +62,99 @@ public class GamePanel extends JPanel implements Runnable{
 		double xA = 0;
 		double yA = 50;
 		double zA = 17;
-		System.out.println("xA = " + xA);
-		System.out.println("yA = " + yA);
-		System.out.println("zA = " + zA);
+//		System.out.println("xA = " + xA);
+//		System.out.println("yA = " + yA);
+//		System.out.println("zA = " + zA);
 		
 		double rA2 = xA * xA + yA * yA + zA * zA;
-		System.out.println("rA(2) = " + rA2);
+//		System.out.println("rA(2) = " + rA2);
 		
 		double rA = Math.sqrt(rA2);
-		System.out.println("rA = " + rA);
+//		System.out.println("rA = " + rA);
 		
 		double co0A = r0 / rA;
 		xA = xA * co0A;
 		yA = yA * co0A;
 		zA = zA * co0A;
-		System.out.println("xA = " + xA);
-		System.out.println("yA = " + yA);
-		System.out.println("zA = " + zA);
+//		System.out.println("xA = " + xA);
+//		System.out.println("yA = " + yA);
+//		System.out.println("zA = " + zA);
 		
 		rA2 = xA * xA + yA * yA + zA * zA;
 		rA = Math.sqrt(rA2);
-		System.out.println("rA = " + rA);
+//		System.out.println("rA = " + rA);
 		
 		double xB = 40;
 		double yB = -19;
-		System.out.println("xB = " + xB);
-		System.out.println("yB = " + yB);
+//		System.out.println("xB = " + xB);
+//		System.out.println("yB = " + yB);
 		
 		double zB2 = rA2 - xB * xB - yB * yB;
-		System.out.println("zB(2) = " + zB2);
+//		System.out.println("zB(2) = " + zB2);
 		
 		double zB = Math.sqrt(zB2);
-		System.out.println("zB = " + zB);
+//		System.out.println("zB = " + zB);
 		
 		double scAB = xA * xB + yA * yB + zA * zB;
-		System.out.println("скалярное произведение AB = " + scAB);
+//		System.out.println("скалярное произведение AB = " + scAB);
 	
 		zB = - (xA * xB + yA * yB) / zA;
-		System.out.println("zB = " + zB);
+//		System.out.println("zB = " + zB);
 	
 		scAB = xA * xB + yA * yB + zA * zB;
-		System.out.println("скалярное произведение AB = " + scAB);
+//		System.out.println("скалярное произведение AB = " + scAB);
 		
 		double rB2 = xB * xB + yB * yB + zB * zB;
-		System.out.println("rB(2) = " + rB2);
+//		System.out.println("rB(2) = " + rB2);
 		
 		double rB = Math.sqrt(rB2);
-		System.out.println("rB = " + rB);
+//		System.out.println("rB = " + rB);
 
 		double coAB = rA / rB;
 		xB = xB * coAB;
 		yB = yB * coAB;
 		zB = zB * coAB;
-		System.out.println("xB = " + xB);
-		System.out.println("yB = " + yB);
-		System.out.println("zB = " + zB);
+//		System.out.println("xB = " + xB);
+//		System.out.println("yB = " + yB);
+//		System.out.println("zB = " + zB);
 		
 		rB2 = xB * xB + yB * yB + zB * zB;
-		System.out.println("rB(2) = " + rB2);
+//		System.out.println("rB(2) = " + rB2);
 		
 		double xC = -30;
-		System.out.println("xC = " + xC);
+//		System.out.println("xC = " + xC);
 		
 		double yC = -26;
-		System.out.println("yC = " + yC);
+//		System.out.println("yC = " + yC);
 		
 		yC = xC * (xA*zB - xB*zA) / (zA*yB - yA*zB);
-		System.out.println("yC = " + yC);
+//		System.out.println("yC = " + yC);
 		
 		double zC = xC * (xA*yB - xB*yA) / (yA*zB - zA*yB);
-		System.out.println("zC = " + zC);
+//		System.out.println("zC = " + zC);
 		
 		double rC2 = xC * xC + yC * yC + zC * zC;
-		System.out.println("rС(2) = " + rC2);
+//		System.out.println("rС(2) = " + rC2);
 		
 		double rC = Math.sqrt(rC2);
-		System.out.println("rС = " + rC);
+//		System.out.println("rС = " + rC);
 		
 		double coAC = rA / rC;
 		xC = xC * coAC;
 		yC = yC * coAC;
 		zC = zC * coAC;
 		
-		System.out.println("xC = " + xC);
-		System.out.println("yC = " + yC);
-		System.out.println("zC = " + zC);
+//		System.out.println("xC = " + xC);
+//		System.out.println("yC = " + yC);
+//		System.out.println("zC = " + zC);
 
 		rC2 = xC * xC + yC * yC + zC * zC;
-		System.out.println("rС(2) = " + rC2);
+//		System.out.println("rС(2) = " + rC2);
 		
 		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
-				
+		
+		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
+						
 		while(true){
 			
 			gameUpdate();
