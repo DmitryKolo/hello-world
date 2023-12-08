@@ -2,7 +2,9 @@ package RubiksCube;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
+import java.util.*;
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -17,6 +19,10 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public static GameBack background;
 	public static Player player;
+	public static ArrayList<Bullet> bullets;
+	
+	//public static Edge edge;
+	public static SquareOfEdges squareOfEdges1, squareOfEdges2, squareOfEdges3;
 	
 	// Constructor
 	public GamePanel(){
@@ -27,6 +33,7 @@ public class GamePanel extends JPanel implements Runnable{
 		requestFocus();
 		
 		addKeyListener(new Listeners());
+		
 	}
 	
 	// Functions
@@ -44,12 +51,24 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		background = new GameBack();
 		player = new Player();
+		bullets = new ArrayList<Bullet>();
 		
+		//edge = new Edge(250, 260);
+		squareOfEdges1 = new SquareOfEdges(2, 50, 50, -22);
+		squareOfEdges2 = new SquareOfEdges(50, -22, -30, -26);
+		squareOfEdges3 = new SquareOfEdges(-30, -26, 2, 50);
+				
 		while(true){
+			
+			//long timer = System.nanoTime();
 			
 			gameUpdate();
 			gameRender();
 			gameDraw();
+			
+			//System.out.println(bullets.size());
+			//long elapsed = (System.nanoTime() - timer) / 100000;
+			//System.out.println(elapsed);
 			
 			try {
 				thread.sleep(33);
@@ -67,14 +86,48 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		// Player update
 		player.update();
+		
+		// Bullets update
+		for(int i = 0; i < bullets.size(); i++){
+			bullets.get(i).update();
+			boolean remove = bullets.get(i).remove();
+			if(remove){
+				bullets.remove(i);
+				i--;
+			}
+		}
+		//System.out.println(bullets.size());
+		
+		// Edge update
+		//edge.update();
+		
+		// square of edges update
+		squareOfEdges1.update();
+		squareOfEdges2.update();
+		squareOfEdges3.update();
 	}
 	
 	public void gameRender(){
+		
 		// Background draw
 		background.draw(g);
 		
 		// Player draw
 		player.draw(g);
+		
+		// Bullets draw
+		for(int i = 0; i < bullets.size(); i++){
+			bullets.get(i).draw(g);
+		}
+		
+		// Edge draw
+		//edge.draw(g);
+		
+		// square of edges draw
+		squareOfEdges1.draw(g);
+		squareOfEdges2.draw(g);
+		squareOfEdges3.draw(g);
+		
 	}
 	
 	private void gameDraw(){

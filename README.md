@@ -1,6 +1,6 @@
-# hello-world
-hello-world repository of Dmitry Kolo
+# hello-world 
 
-November 28, 2023
+Rubik's Cube
+repository of Dmitry Kolo
 
-I am Dmitry from Mosca
+since November 28, 2023

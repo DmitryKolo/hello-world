@@ -9,6 +9,9 @@ public class Player {
 	private double y;
 	private int r;
 	
+	private double dx;
+	private double dy;
+	
 	private int speed;
 	
 	private Color color1;	
@@ -19,6 +22,8 @@ public class Player {
 	public static boolean left;
 	public static boolean right;
 	
+	public static boolean isFiring;
+	
 	// Constructor
 	public Player(){
 		x = GamePanel.WIDTH / 2;		
@@ -28,27 +33,55 @@ public class Player {
 		
 		speed = 5;
 		
+		dx = 0;
+		dy = 0;
+		
 		color1 = Color.WHITE;
 		
 		up = false;
 		down = false;
 		left = false;
 		right = false;
+		
+		isFiring = false;
 	}
 	
 	// Functions
+	public double getX(){
+		return x;
+	}
+	
+	public double getY(){
+		return y;
+	}
+	
 	public void update(){
 		if(up && y > r){
-			y -= speed;
+			dy = -speed;
 		}
 		if(down && y < GamePanel.HEIGHT - r){
-			y += speed;
+			dy = speed;
 		}
 		if(left && x > r){
-			x -= speed;
+			dx = -speed;
 		}
 		if(right && x < GamePanel.WIDTH - r){
-			x += speed;
+			dx = speed;
+		}
+		if(up && left || up && right || down && left || down && right){
+			double angle = Math.toRadians(45);
+			dx = dx * Math.cos(angle);
+			dy = dy * Math.sin(angle);
+		}
+		
+		x += dx;
+		y += dy;
+		
+		dx = 0;
+		dy = 0;
+		
+		if(isFiring){
+			GamePanel.bullets.add(new Bullet());
 		}
 	}
 	
@@ -69,6 +102,7 @@ public class Player {
 		//g.fillOval((int) (x - r), (int) (y - r), 2 * r, 2 * r);
 		g.fillOval((int)x1, (int)y1, 2 * r1, 2 * r1);
 		//g.setStroke(new BasicStroke(strokeThickness));
+		
 	}
 
 
