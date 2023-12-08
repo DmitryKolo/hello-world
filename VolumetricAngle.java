@@ -26,14 +26,14 @@ public class VolumetricAngle {
 	
 	private double speed;
 			
-	private Edge edge1, edge2, edge3;
+	private Edge edge1, edge2, edge3, edge4, edge5, edge6;
 			
 	// Constructor
 	
 	public VolumetricAngle(double xA, double yA, double zA, double xB, double yB, double zB, double xC, double yC, double zC){
 			
-		x = xA;		
-		y = yA;
+//		x = xA;		
+//		y = yA;
 		
 		this.xA = xA;
 		this.yA = yA;
@@ -56,6 +56,9 @@ public class VolumetricAngle {
 		edge1 = new Edge(xA, yA, xB, yB, 1.5*xC, 1.5*yC);
 		edge2 = new Edge(xB, yB, xC, yC, 1.5*xA, 1.5*yA);
 		edge3 = new Edge(xC, yC, xA, yA, 1.5*xB, 1.5*yB);
+		edge4 = new Edge(xA, yA, xB, yB, -1.5*xC, -1.5*yC);
+		edge5 = new Edge(xB, yB, xC, yC, -1.5*xA, -1.5*yA);
+		edge6 = new Edge(xC, yC, xA, yA, -1.5*xB, -1.5*yB);
 	
 	}
 			
@@ -72,6 +75,7 @@ public class VolumetricAngle {
 	private class RotatingVectors{
 		
 		// Fields
+		
 		double uA;
 		double uB;
 		double uC;
@@ -125,6 +129,19 @@ public class VolumetricAngle {
 		yA = rVect.vA;
 		yB = rVect.vB;
 		yC = rVect.vC;
+
+	}	
+	
+	public void rotateY(double z1, double x1, double z2, double x2, double z3, double x3, double rotateSpeed){
+		
+		RotatingVectors rVect = new RotatingVectors(z1, x1, z2, x2, z3, x3);
+		rVect.rotate(rotateSpeed);
+		zA = rVect.uA;
+		zB = rVect.uB;
+		zC = rVect.uC;
+		xA = rVect.vA;
+		xB = rVect.vB;
+		xC = rVect.vC;
 
 	}	
 	
@@ -252,82 +269,50 @@ public class VolumetricAngle {
 			edge3.update(xC, yC, xA, yA, 1.5*xB, 1.5*yB);
 		}
 	
-		if(right){
-			
-			double rotateSpeed = speed/20;
+		double rotateSpeed = speed/20;
 
-			if(shift){
-				rotateSpeed = -rotateSpeed;
-			}
-			
-//			System.out.println("xA (1) = " + xA);
-//			System.out.println("xB (1) = " + xB);
-//			System.out.println("xC (1) = " + xC);
-//			System.out.println("yA (1) = " + yA);
-//			System.out.println("yB (1) = " + yB);
-//			System.out.println("yC (1) = " + yC);
-			
-			rotateZ(xA, yA, xB, yB, xC, yC, rotateSpeed);
-			
-//			RotatingVectors rVect = new RotatingVectors(xA, yA, xB, yB, xC, yC);
-//			rVect.rotate(rotateSpeed);
-//			xA = rVect.uA;
-//			xB = rVect.uB;
-//			xC = rVect.uC;
-//			yA = rVect.vA;
-//			yB = rVect.vB;
-//			yC = rVect.vC;
-			
-//			System.out.println("xA (2) = " + xA);
-//			System.out.println("xB (2) = " + xB);
-//			System.out.println("xC (2) = " + xC);
-//			System.out.println("yA (2) = " + yA);
-//			System.out.println("yB (2) = " + yB);
-//			System.out.println("yC (2) = " + yC);
-		
-			edge1.update(xA, yA, xB, yB, 1.5*xC, 1.5*yC);
-			edge2.update(xB, yB, xC, yC, 1.5*xA, 1.5*yA);
-			edge3.update(xC, yC, xA, yA, 1.5*xB, 1.5*yB);
-		}
-		
 		if(up){
 
-//			double atan2A = Math.atan2(yA, zA);
-//			double atan2B = Math.atan2(yB, zB);
-//			double atan2C = Math.atan2(yC, zC);
-//			double r2A = Math.sqrt(zA*zA + yA*yA);
-//			double r2B = Math.sqrt(zB*zB + yB*yB);
-//			double r2C = Math.sqrt(zC*zC + yC*yC);
-//			if(shift){
-//				atan2A -= speed/20;
-//				atan2B -= speed/20;
-//				atan2C -= speed/20;
-//			}
-//			else{
-//				atan2A += speed/20;
-//				atan2B += speed/20;
-//				atan2C += speed/20;
-//			}
-//			zA = Math.cos(atan2A) * r2A;
-//			yA = Math.sin(atan2A) * r2A;
-//			zB = Math.cos(atan2B) * r2B;
-//			yB = Math.sin(atan2B) * r2B;
-//			zC = Math.cos(atan2C) * r2C;
-//			yC = Math.sin(atan2C) * r2C;
+			if(shift){
+				rotateSpeed = -rotateSpeed;
+			}
+			rotateX(zA, yA, zB, yB, zC, yC, rotateSpeed);
 			
-			double rotateSpeed = speed/20;
+		}
+
+		if(left){
 
 			if(shift){
 				rotateSpeed = -rotateSpeed;
 			}
+			rotateY(zA, xA, zB, xB, zC, xC, rotateSpeed);
+		}
+
+		if(right){
 			
+			if(shift){
+				rotateSpeed = -rotateSpeed;
+			}
+			rotateZ(xA, yA, xB, yB, xC, yC, rotateSpeed);
+			
+		}
+		
+		if(down){
+
+			if(!shift){
+				rotateSpeed = -rotateSpeed;
+			}
 			rotateX(zA, yA, zB, yB, zC, yC, rotateSpeed);
-			
+		}
+		
+		if(up || left || right || down){
 			edge1.update(xA, yA, xB, yB, 1.5*xC, 1.5*yC);
 			edge2.update(xB, yB, xC, yC, 1.5*xA, 1.5*yA);
 			edge3.update(xC, yC, xA, yA, 1.5*xB, 1.5*yB);
+			edge4.update(xC, yC, xA, yA, -1.5*xB, -1.5*yB);
+			edge5.update(xB, yB, xC, yC, -1.5*xA, -1.5*yA);
+			edge6.update(xC, yC, xA, yA, -1.5*xB, -1.5*yB);
 		}
-
 	}
 			
 	public void draw(Graphics2D g){
@@ -339,6 +324,10 @@ public class VolumetricAngle {
 		edge1.draw(g);
 		edge2.draw(g);
 		edge3.draw(g);
+//		edge4.draw(g);
+//		edge5.draw(g);
+//		edge6.draw(g);
+		
 	}
 }
 
