@@ -1,5 +1,3 @@
-package RubiksCube;
-
 import java.awt.event.*;
 
 public class Listeners implements KeyListener{

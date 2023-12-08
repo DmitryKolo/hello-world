@@ -1,5 +1,3 @@
-package RubiksCube;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -19,12 +17,12 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public static GameBack background;
 	public static Player player;
-	public static ArrayList<Bullet> bullets;
+	//public static ArrayList<Bullet> bullets;
 	
-	//public static Edge edge;
-	public static SquareOfEdges squareOfEdges1, squareOfEdges2, squareOfEdges3;
+	public static VolumetricAngle vAngle;
 	
 	// Constructor
+	
 	public GamePanel(){
 		super();
 		
@@ -51,24 +49,24 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		background = new GameBack();
 		player = new Player();
-		bullets = new ArrayList<Bullet>();
+		//bullets = new ArrayList<Bullet>();
 		
-		//edge = new Edge(250, 260);
-		squareOfEdges1 = new SquareOfEdges(2, 50, 50, -22);
-		squareOfEdges2 = new SquareOfEdges(50, -22, -30, -26);
-		squareOfEdges3 = new SquareOfEdges(-30, -26, 2, 50);
+		double xA = 2;
+		double yA = 50;
+		
+		double xB = 50;
+		double yB = -22;
+		
+		double xC = -30;
+		double yC = -26;
+		
+		vAngle = new VolumetricAngle(xA, yA, xB, yB, xC, yC);
 				
 		while(true){
-			
-			//long timer = System.nanoTime();
 			
 			gameUpdate();
 			gameRender();
 			gameDraw();
-			
-			//System.out.println(bullets.size());
-			//long elapsed = (System.nanoTime() - timer) / 100000;
-			//System.out.println(elapsed);
 			
 			try {
 				thread.sleep(33);
@@ -81,30 +79,15 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void gameUpdate(){
+		
 		// Background update
 		background.update();
 		
 		// Player update
 		player.update();
 		
-		// Bullets update
-		for(int i = 0; i < bullets.size(); i++){
-			bullets.get(i).update();
-			boolean remove = bullets.get(i).remove();
-			if(remove){
-				bullets.remove(i);
-				i--;
-			}
-		}
-		//System.out.println(bullets.size());
-		
-		// Edge update
-		//edge.update();
-		
-		// square of edges update
-		squareOfEdges1.update();
-		squareOfEdges2.update();
-		squareOfEdges3.update();
+		// Volumetric Angle update
+		vAngle.update();
 	}
 	
 	public void gameRender(){
@@ -115,18 +98,8 @@ public class GamePanel extends JPanel implements Runnable{
 		// Player draw
 		player.draw(g);
 		
-		// Bullets draw
-		for(int i = 0; i < bullets.size(); i++){
-			bullets.get(i).draw(g);
-		}
-		
-		// Edge draw
-		//edge.draw(g);
-		
-		// square of edges draw
-		squareOfEdges1.draw(g);
-		squareOfEdges2.draw(g);
-		squareOfEdges3.draw(g);
+		// Volumetric Angle draw
+		vAngle.draw(g);
 		
 	}
 	
