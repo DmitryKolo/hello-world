@@ -25,6 +25,15 @@ public class Listeners implements KeyListener{
 			VolumetricAngle.up = true;
 			Cube.up = true;
 		}
+		if(key == KeyEvent.VK_I){
+			Cube.rotateI = true;
+		}
+		if(key == KeyEvent.VK_J){
+			Cube.rotateJ = true;
+		}
+		if(key == KeyEvent.VK_K){
+			Cube.rotateK = true;
+		}
 		if(key == KeyEvent.VK_W){
 			Player.up = true;
 		}
@@ -64,6 +73,15 @@ public class Listeners implements KeyListener{
 		if(key == KeyEvent.VK_UP){
 			VolumetricAngle.up = false;
 			Cube.up = false;
+		}
+		if(key == KeyEvent.VK_I){
+			Cube.rotateI = false;
+		}
+		if(key == KeyEvent.VK_J){
+			Cube.rotateJ = false;
+		}
+		if(key == KeyEvent.VK_K){
+			Cube.rotateK = false;
 		}
 		if(key == KeyEvent.VK_W){
 			Player.up = false;

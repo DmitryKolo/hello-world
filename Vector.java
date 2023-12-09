@@ -1,5 +1,5 @@
 
-public class Vector{
+public class Vector {
 
 	// Fields
 		
@@ -23,6 +23,49 @@ public class Vector{
 		this.dy = coef * vector.dy; 
 		this.dz = coef * vector.dz;
 		
+	}	
+	
+	public Vector(Vector vector){
+		
+		double coef = Math.sqrt(vector.dx * vector.dx + vector.dy * vector.dy + vector.dz * vector.dz);
+		
+		this.dx = vector.dx / coef; 
+		this.dy = vector.dy / coef; 
+		this.dz = vector.dz / coef;
+		
+	}	
+	
+	// Functions
+	
+	public void rotateXYZ(double rotateAngleX, double rotateAngleY, double rotateAngleZ){
+	
+		if(rotateAngleX != 0){
+			
+			double atan2X = Math.atan2(dz, dy) + rotateAngleX;
+			double rX = Math.sqrt(dy*dy + dz*dz);
+			
+			dy = Math.cos(atan2X) * rX;
+			dz = Math.sin(atan2X) * rX;
+		}
+
+		if(rotateAngleY != 0){
+			
+			double atan2Y = Math.atan2(dx, dz) + rotateAngleY;
+			double rY = Math.sqrt(dz*dz + dx*dx);
+			
+			dz = Math.cos(atan2Y) * rY;
+			dx = Math.sin(atan2Y) * rY;
+		}
+
+		if(rotateAngleZ != 0){
+			
+			double atan2Z = Math.atan2(dy, dx) + rotateAngleZ;
+			double rZ = Math.sqrt(dx*dx + dy*dy);
+			
+			dx = Math.cos(atan2Z) * rZ;
+			dy = Math.sin(atan2Z) * rZ;
+		}
+	
 	}	
 	
 }
