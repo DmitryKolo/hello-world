@@ -17,4 +17,12 @@ public class Vector{
 		
 	}	
 	
+	public Vector(double coef, Vector vector){
+		
+		this.dx = coef * vector.dx; 
+		this.dy = coef * vector.dy; 
+		this.dz = coef * vector.dz;
+		
+	}	
+	
 }

@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
+
 import java.util.*;
 
 public class GamePanel extends JPanel implements Runnable{
@@ -154,7 +155,44 @@ public class GamePanel extends JPanel implements Runnable{
 		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
 		
 		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
-						
+		
+		Address3D upperAngleAddress = cube.upperAngleAddress();
+		System.out.println(" upperAngleAddress =  ["+upperAngleAddress.i+","+upperAngleAddress.j+","+upperAngleAddress.k+"]");
+		
+//		Point CurrentCorner = cube.edgesPairA.edge0.corner12;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge0.corner12cw;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge0.corner1cw2;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge0.corner1cw2cw;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge1.corner12;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge1.corner12cw;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge1.corner1cw2;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairA.edge1.corner1cw2cw;
+//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//							
+//		CurrentCorner = cube.edgesPairB.edge0.corner12;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge0.corner12cw;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge0.corner1cw2;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge0.corner1cw2cw;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge1.corner12;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge1.corner12cw;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge1.corner1cw2;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+//		CurrentCorner = cube.edgesPairB.edge1.corner1cw2cw;
+//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+							
 		while(true){
 			
 			gameUpdate();

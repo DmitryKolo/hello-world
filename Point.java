@@ -1,3 +1,5 @@
+import java.awt.Graphics2D;
+
 
 public class Point {
 
@@ -14,6 +16,14 @@ public class Point {
 		this.x = x; 
 		this.y = y; 
 		this.z = z;
+		
+	}	
+	
+	public Point(Point point, Vector vector){
+		
+		this.x = point.x + vector.dx; 
+		this.y = point.y + vector.dy; 
+		this.z = point.z + vector.dz;
 		
 	}	
 	
