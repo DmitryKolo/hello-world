@@ -19,11 +19,17 @@ public class Cube{
 	private Address3D upperAngle; 
 	
 	private double speed = 1;
+
+	public static boolean shift;
+	
 	public static boolean up;
 	public static boolean down;
 	public static boolean left;
 	public static boolean right;
-	public static boolean shift;
+
+	public static boolean rotateI;
+	public static boolean rotateJ;
+	public static boolean rotateK;
 
 	// Constructor
 	
@@ -86,6 +92,9 @@ public class Cube{
 		    for (int j = 0; j < angle[i].length; j++)
 			    for (int k = 0; k < angle[i][j].length; k++)
 					angle[i][j][k].rotateX(rotateAngle); 
+		
+		for (int i = 0; i < axis.length; i++)
+			axis[i].vector.rotateXYZ(rotateAngle, 0, 0); 
 	}	
 			    
 	public void rotateY(double rotateAngle){
@@ -94,6 +103,8 @@ public class Cube{
 		    for (int j = 0; j < angle[i].length; j++)
 			    for (int k = 0; k < angle[i][j].length; k++)
 					angle[i][j][k].rotateY(rotateAngle); 
+		for (int i = 0; i < axis.length; i++)
+			axis[i].vector.rotateXYZ(0, rotateAngle, 0); 
 	}	
 			    
 	public void rotateZ(double rotateAngle){
@@ -102,59 +113,83 @@ public class Cube{
 		    for (int j = 0; j < angle[i].length; j++)
 			    for (int k = 0; k < angle[i][j].length; k++)
 					angle[i][j][k].rotateZ(rotateAngle); 
+		for (int i = 0; i < axis.length; i++)
+			axis[i].vector.rotateXYZ(0, 0, rotateAngle); 
 	}	
+	
+	public void rotateV(Vector rotateAxis, double rotateAngle){
+		
+		Vector normalAxis = new Vector(rotateAxis);
+		
+		for (int i = 0; i < angle.length; i++)
+		    for (int j = 0; j < angle[i].length; j++)
+			    for (int k = 0; k < angle[i][j].length; k++){
+					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
+					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
+					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
+			    }
+		
+		for (int i = 0; i < axis.length; i++){
+			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+		}	
+	}
 	
 	public void update(){
 		
 		double rotateAngle = speed/20;
 
 		if(up){
-
-			if(shift){
-				rotateAngle = -rotateAngle;
-			}
+			if(shift) rotateAngle = -rotateAngle;
 			rotateX(rotateAngle);
-			
 		}
 
 		if(left){
-
-			if(!shift){
-				rotateAngle = -rotateAngle;
-			}
+			if(!shift) rotateAngle = -rotateAngle;
 			rotateY(rotateAngle);
 		}
 
 		if(right){
-			
-			if(shift){
-				rotateAngle = -rotateAngle;
-			}
+			if(shift) rotateAngle = -rotateAngle;
 			rotateZ(rotateAngle);
-			
 		}
 		
 		if(down){
-
-			if(!shift){
-				rotateAngle = -rotateAngle;
-			}
+			if(!shift) rotateAngle = -rotateAngle;
 			rotateX(rotateAngle);
 		}
 		
-		if(up || left || right || down){
-			this.upperAngle = this.upperAngleAddress();
-			for (int i = 0; i < angle.length; i++){
-			    for (int j = 0; j < angle[i].length; j++){
-				    for (int k = 0; k < angle[i][j].length; k++){
-				    	Point CurrentCorner = this.angle[i][j][k];
-						System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
+		if(rotateI){
+			if(!shift) rotateAngle = -rotateAngle;
+			//Vector rotateVector = new Vector(basis.vector[0].dx, basis.vector[1].dx, basis.vector[2].dx);
+			rotateV(basis.vector[0], rotateAngle);
+			//rotateV(rotateVector, rotateAngle);
+		}
 
-					}
-				}
-			}
-			System.out.println("upperAngleAddress = ("+upperAngle.i+", "+upperAngle.j+", "+upperAngle.k+")");
-			
+		if(rotateJ){
+			if(shift) rotateAngle = -rotateAngle;
+			//Vector rotateVector = new Vector(basis.vector[0].dy, basis.vector[1].dy, basis.vector[2].dy);
+			rotateV(basis.vector[1], rotateAngle);
+			//rotateV(rotateVector, rotateAngle);
+		}
+		
+		if(rotateK){
+			if(!shift) rotateAngle = -rotateAngle;
+			//Vector rotateVector = new Vector(basis.vector[0].dz, basis.vector[1].dz, basis.vector[2].dz);
+			rotateV(basis.vector[2], rotateAngle);
+			//rotateV(rotateVector, rotateAngle);
+		}
+		
+		if(up || left || right || down || rotateI || rotateJ || rotateK){
+			this.upperAngle = this.upperAngleAddress();
+//			for (int i = 0; i < angle.length; i++){
+//			    for (int j = 0; j < angle[i].length; j++){
+//				    for (int k = 0; k < angle[i][j].length; k++){
+//				    	Point CurrentCorner = this.angle[i][j][k];
+//						System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
+//					}
+//				}
+//			}
+//			System.out.println("upperAngleAddress = ("+upperAngle.i+", "+upperAngle.j+", "+upperAngle.k+")");
 		}
 	}
 			
@@ -225,7 +260,7 @@ public class Cube{
 		
 		Address3D upperAngleAddress = new Address3D(0, 0, 0);
 		Point upperAngle = angleAtAddress(upperAngleAddress);
-		System.out.println("   Angle["+0+","+0+","+0+"]: z = "+upperAngle.z);
+		//System.out.println("   Angle["+0+","+0+","+0+"]: z = "+upperAngle.z);
 				
 		for (int i = 0; i < angle.length; i++){
 		    for (int j = 0; j < angle[i].length; j++){
@@ -236,7 +271,7 @@ public class Cube{
 			    	if (upperAngle.z < currentAngle.z){
 			    		upperAngleAddress = currentAddress;
 			    		upperAngle = angleAtAddress(upperAngleAddress);
-						System.out.println("   Angle["+i+","+j+","+k+"]: z = " + upperAngle.z + " < " + currentAngle.z);
+						//System.out.println("   Angle["+i+","+j+","+k+"]: z = " + upperAngle.z + " < " + currentAngle.z);
 					}
 				}
 			}

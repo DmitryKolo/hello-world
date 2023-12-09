@@ -59,9 +59,6 @@ public class Tile{
 	
 	public void update(double x, double y, double dxA, double dyA, double dxC, double dyC, Color color){
 		
-		//if(x!=0){
-		//	this.x += x;
-		//}
 		this.x = x; // GamePanel.WIDTH / 2;
 		this.y = y; // GamePanel.HEIGHT / 2;
 		
