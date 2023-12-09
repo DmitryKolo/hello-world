@@ -257,10 +257,6 @@ public class VolumetricAngle {
 		yC = yC * coAC;
 		zC = zC * coAC;
 		
-		//System.out.println("xC = " + xC);
-		//System.out.println("yC = " + yC);
-		//System.out.println("zC = " + zC);
-
 		rC2 = xC * xC + yC * yC + zC * zC;
 		//System.out.println("r—(2) = " + rC2);
 		

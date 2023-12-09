@@ -32,6 +32,7 @@ public class Edge {
 	public static boolean isFiring;
 		
 	private RowOfTiles row1, row2, row3;
+	public RowOfTiles[] row = new RowOfTiles[5];
 			
 	// Constructors
 	
@@ -91,6 +92,14 @@ public class Edge {
 		this.corner1cw2 = new Point(centre.x - d1x + d2x, centre.y - d1y + d2y, centre.z - d1z + d2z);
 		this.corner1cw2cw = new Point(centre.x - d1x - d2x, centre.y - d1y - d2y, centre.z - d1z - d2z);
 		
+		System.out.println("("+corner12.x+","+corner12.y+","+corner12.z+"); ("+corner12cw.x+","+corner12cw.y+","+corner12cw.z+");");
+		System.out.println("    ("+corner1cw2.x+","+corner1cw2.y+","+corner1cw2.z+"); ("+corner1cw2cw.x+","+corner1cw2cw.y+","+corner1cw2cw.z+").");
+		
+		for(int i=0; i < size; i++){
+//			System.out.println("("+i+")");
+			row[i] = new RowOfTiles(centre.x - vector2.dx * (i-(size-1)/2), centre.y - vector2.dy * (i-(size-1)/2), vector1.dx, vector1.dy, vector2.dx, vector2.dy, Color.RED);
+		}
+
 	}
 			
 	// Functions
