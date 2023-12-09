@@ -160,9 +160,6 @@ public class VolumetricAngle {
 	
 	public void update(){
 				
-		x += 0;
-		y += 0;
-	
 		if(up && ! up && y > - GamePanel.HEIGHT / 2){
 			dy = -speed;
 		
@@ -313,16 +310,9 @@ public class VolumetricAngle {
 			
 	public void draw(Graphics2D g){
 				
-		//double yB = y + dyA + dyC;
-		
-		//System.out.println("xA = " + xA);
-			
 		edge1.draw(g);
 		edge2.draw(g);
 		edge3.draw(g);
-//		edge4.draw(g);
-//		edge5.draw(g);
-//		edge6.draw(g);
 		
 	}
 }

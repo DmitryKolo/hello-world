@@ -27,4 +27,42 @@ public class Point {
 		
 	}	
 	
-}
+	// Functions
+	
+	public void rotateX(double rotateAngle){
+	
+		double atan2 = Math.atan2(z, y);
+		double r = Math.sqrt(y*y + z*z);
+		
+		atan2 += rotateAngle;
+		
+		y = Math.cos(atan2) * r;
+		z = Math.sin(atan2) * r;
+
+	}
+	
+	public void rotateY(double rotateAngle){
+	
+		double atan2 = Math.atan2(x, z);
+		double r = Math.sqrt(z*z + x*x);
+		
+		atan2 += rotateAngle;
+		
+		z = Math.cos(atan2) * r;
+		x = Math.sin(atan2) * r;
+
+	}
+	
+	public void rotateZ(double rotateAngle){
+	
+		double atan2 = Math.atan2(y, x);
+		double r = Math.sqrt(x*x + y*y);
+		
+		atan2 += rotateAngle;
+		
+		x = Math.cos(atan2) * r;
+		y = Math.sin(atan2) * r;
+
+	}
+	
+}	

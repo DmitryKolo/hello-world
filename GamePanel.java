@@ -156,8 +156,8 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
 		
-		Address3D upperAngleAddress = cube.upperAngleAddress();
-		System.out.println(" upperAngleAddress =  ["+upperAngleAddress.i+","+upperAngleAddress.j+","+upperAngleAddress.k+"]");
+//		Address3D upperAngleAddress = cube.upperAngleAddress();
+//		System.out.println(" upperAngleAddress =  ["+upperAngleAddress.i+","+upperAngleAddress.j+","+upperAngleAddress.k+"]");
 		
 //		Point CurrentCorner = cube.edgesPairA.edge0.corner12;
 //		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
@@ -219,6 +219,9 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		// Volumetric Angle update
 		vAngle.update();
+		
+		cube.update();
+		
 	}
 	
 	public void gameRender(){
@@ -232,6 +235,8 @@ public class GamePanel extends JPanel implements Runnable{
 		// Player draw
 		player.draw(g);
 		
+		cube.draw(g);
+
 	}
 	
 	private void gameDraw(){
