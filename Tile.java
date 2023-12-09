@@ -99,7 +99,12 @@ public class Tile{
 		int argX[] = {(int)x0, (int)xA, (int)xB, (int)xC};
 		int argY[] = {(int)y0, (int)yA, (int)yB, (int)yC};
 		int num = 4;
-		g.fillPolygon(argX, argY, num);
+//		g.fillPolygon(argX, argY, num);
+		
+//		g.drawLine((int)x0, (int)y0, (int)xA, (int)yA);
+//		g.drawLine((int)xB, (int)yB, (int)xA, (int)yA);
+//		g.drawLine((int)x0, (int)y0, (int)xC, (int)yC);
+//		g.drawLine((int)xB, (int)yB, (int)xC, (int)yC);
 		
 	}
 }

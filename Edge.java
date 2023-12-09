@@ -143,12 +143,12 @@ public class Edge {
 			
 	public void draw(Graphics2D g){
 				
-		double xA = x + dxA;
-		double yA = y + dyA;
-		double xB = x + dxA + dxC;
-		double yB = y + dyA + dyC;
-		double xC = x + dxC;
-		double yC = y + dyC;
+//		double xA = x + dxA;
+//		double yA = y + dyA;
+//		double xB = x + dxA + dxC;
+//		double yB = y + dyA + dyC;
+//		double xC = x + dxC;
+//		double yC = y + dyC;
 			
 		row1.draw(g);
 		row2.draw(g);

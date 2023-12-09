@@ -99,9 +99,9 @@ public class RowOfTiles {
 			
 			g.setColor(color1);
 
-			int argX[] = {(int)x, (int)xA, (int)xB, (int)xC};
-			int argY[] = {(int)y, (int)yA, (int)yB, (int)yC};
-			int num = 4;
+//			int argX[] = {(int)x, (int)xA, (int)xB, (int)xC};
+//			int argY[] = {(int)y, (int)yA, (int)yB, (int)yC};
+//			int num = 4;
 			//g.fillPolygon(argX, argY, num);
 			
 			tile1.draw(g);
