@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -23,6 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public static VolumetricAngle vAngle;
 	public Cube cube;
+	public Block block;
 	
 	// Constructor
 	
@@ -156,42 +158,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
 		
-//		Address3D upperAngleAddress = cube.upperAngleAddress();
-//		System.out.println(" upperAngleAddress =  ["+upperAngleAddress.i+","+upperAngleAddress.j+","+upperAngleAddress.k+"]");
-		
-//		Point CurrentCorner = cube.edgesPairA.edge0.corner12;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge0.corner12cw;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge0.corner1cw2;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge0.corner1cw2cw;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge1.corner12;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge1.corner12cw;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge1.corner1cw2;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairA.edge1.corner1cw2cw;
-//		System.out.println("           ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//							
-//		CurrentCorner = cube.edgesPairB.edge0.corner12;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge0.corner12cw;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge0.corner1cw2;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge0.corner1cw2cw;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge1.corner12;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge1.corner12cw;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge1.corner1cw2;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
-//		CurrentCorner = cube.edgesPairB.edge1.corner1cw2cw;
-//		System.out.println("              ("+CurrentCorner.x+","+CurrentCorner.y+","+CurrentCorner.z+")...");
+		block = new Block(cube, Cube.DIMENSION, 0, 2);
 							
 		while(true){
 			
@@ -236,6 +203,8 @@ public class GamePanel extends JPanel implements Runnable{
 		player.draw(g);
 		
 		cube.draw(g);
+		
+		block.draw(g);
 
 	}
 	
@@ -243,6 +212,19 @@ public class GamePanel extends JPanel implements Runnable{
 		Graphics g2 = this.getGraphics();
 		g2.drawImage(image, 0, 0, null);
 		g2.dispose();
+	}
+	
+	public static void drawLine(Graphics2D g, Point beginingPoint, Point endingPoint, Point originPoint){
+		
+//		Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+//	   	g.setStroke(dashed); //2d
+		
+    	double xB = beginingPoint.x + originPoint.x;
+    	double yB = beginingPoint.y + originPoint.y;
+    	double xE = endingPoint.x + originPoint.x;
+    	double yE = endingPoint.y + originPoint.y;
+    	
+		g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
 	}
 
 }

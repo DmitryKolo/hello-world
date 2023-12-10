@@ -1,25 +1,27 @@
 
 import java.awt.*;
 
-public class Cube{
+public class Cube {
 
 	// Fields
 	
-	public CubeBasis basis;
+	//public CubeBasis basis;
 	
-	public Vector vectorA, vectorB, vectorC; // перейти на Axis, basis;
-//	public PairOfEdges edgesPairA, edgesPairB, edgesPairC; // перейти на Axis;
-	Axis[] axis = new Axis[3];
+	public Vector vectorA, vectorB, vectorC; // head on over to Axis, basis
+	Axis[] axis = new Axis[Cube.DIMENSION];
 		
 	public int size; 
 			
-	public Point centre, cornerA0B0C0, cornerA0B0C1, cornerA0B1C0, cornerA0B1C1, cornerA1B0C0, cornerA1B0C1, cornerA1B1C0, cornerA1B1C1; // перейти на Angle
-	Point[][][] angle = new Point[2][2][2];
+	public Point centre;
+	public Point cornerA0B0C0, cornerA0B0C1, cornerA0B1C0, cornerA0B1C1, cornerA1B0C0, cornerA1B0C1, cornerA1B1C0, cornerA1B1C1; // перейти на Angle
+	Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
 	private Address3D upperAngle; 
 	
 	private double speed = 1;
 
+	public final static int DIMENSION = 3;
+	
 	public static boolean shift;
 	
 	public static boolean up;
@@ -37,36 +39,34 @@ public class Cube{
 			
 		this.size = size;
 		this.centre = centre;
-		this.basis = new CubeBasis(vectorA, vectorB, vectorC);
 		
-		this.vectorA = vectorA;
+		CubeBasis basis = new CubeBasis(vectorA, vectorB, vectorC);
+		
+		this.vectorA = vectorA; // head on over to Axis, basis
 		this.vectorB = vectorB;
 		this.vectorC = vectorC;
 		
-		for (int i = 0; i < size; i++)
-			this.axis[i] = new Axis(i, this.basis, size, centre);
+		for (int i = 0; i < DIMENSION; i++)
+			this.axis[i] = new Axis(i, basis, size, centre);
 	
-		Point coordCentre = new Point(0, 0, 0);
-				
 		for (int i = 0; i < angle.length; i++){
 			
 			double halfsize = size / 2;
 			
 			double coefI = (i==0 ? -halfsize : halfsize);
-			Point pointI = new Point(coordCentre, new Vector(coefI, vectorA));				
+			Point pointI = new Point(Point.NULL, new Vector(coefI, basis.vector[0]));				
 						
 		    for (int j = 0; j < angle[i].length; j++){
 		    	
 				double coefJ = (j==0 ? -halfsize : halfsize);
-				Point pointJ = new Point(pointI, new Vector(coefJ, vectorB));				
+				Point pointJ = new Point(pointI, new Vector(coefJ, basis.vector[1]));				
 				
 			    for (int k = 0; k < angle[i][j].length; k++){
 			    	
 					double coefK = (k==0 ? -halfsize : halfsize);
-			    	this.angle[i][j][k] = new Point(pointJ, new Vector(coefK, vectorC));
-			    	Point CurrentCorner = this.angle[i][j][k];
-					System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
-			    	
+			    	this.angle[i][j][k] = new Point(pointJ, new Vector(coefK, basis.vector[2]));
+			    	//Point CurrentCorner = this.angle[i][j][k];
+					//System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
 			    }
 		    }
 	    }
@@ -161,21 +161,21 @@ public class Cube{
 		if(rotateI){
 			if(!shift) rotateAngle = -rotateAngle;
 			//Vector rotateVector = new Vector(basis.vector[0].dx, basis.vector[1].dx, basis.vector[2].dx);
-			rotateV(basis.vector[0], rotateAngle);
+			rotateV(axis[0].vector, rotateAngle);
 			//rotateV(rotateVector, rotateAngle);
 		}
 
 		if(rotateJ){
 			if(shift) rotateAngle = -rotateAngle;
 			//Vector rotateVector = new Vector(basis.vector[0].dy, basis.vector[1].dy, basis.vector[2].dy);
-			rotateV(basis.vector[1], rotateAngle);
+			rotateV(axis[1].vector, rotateAngle);
 			//rotateV(rotateVector, rotateAngle);
 		}
 		
 		if(rotateK){
 			if(!shift) rotateAngle = -rotateAngle;
 			//Vector rotateVector = new Vector(basis.vector[0].dz, basis.vector[1].dz, basis.vector[2].dz);
-			rotateV(basis.vector[2], rotateAngle);
+			rotateV(axis[2].vector, rotateAngle);
 			//rotateV(rotateVector, rotateAngle);
 		}
 		
@@ -208,7 +208,7 @@ public class Cube{
 	
 	public void draw(Graphics2D g){
 		
-		g.setColor(Color.green);
+		g.setColor(Color.GREEN);
 		
 		for (int i = 0; i < angle.length; i++){
 		    for (int j = 0; j < angle[i].length; j++){
@@ -219,31 +219,30 @@ public class Cube{
 		    	if (i == upperAngle.i || j == upperAngle.j) {
 		    		angle0 = angle[i][j][0];
 		    		angle1 = angle[i][j][1];
-		    		drawLine(g, angle0, angle1);
+		    		GamePanel.drawLine(g, angle0, angle1, centre);
 		    	}
 				
 		    	if (i == upperAngle.i || j == upperAngle.k) {
 			    	angle0 = angle[i][0][j];
 			    	angle1 = angle[i][1][j];
-			    	drawLine(g, angle0, angle1);
+			    	GamePanel.drawLine(g, angle0, angle1, centre);
 		    	}
 				
 		    	if (i == upperAngle.j || j == upperAngle.k) {
 			    	angle0 = angle[0][i][j];
 			    	angle1 = angle[1][i][j];
-			    	drawLine(g, angle0, angle1);
+			    	GamePanel.drawLine(g, angle0, angle1, centre);
 		    	}
-	    	
 		    }
 	    }
 		
 		g.setColor(Color.RED);
 		
-		Point cirrentUpperAngle = angle[upperAngle.i][upperAngle.j][upperAngle.k];
+		Point currentUpperAngle = angle[upperAngle.i][upperAngle.j][upperAngle.k];
 		
 		double r = 5;
-		double x0 = centre.x + cirrentUpperAngle.x - r/2;
-		double y0 = centre.x + cirrentUpperAngle.y - r/2;
+		double x0 = centre.x + currentUpperAngle.x - r/2;
+		double y0 = centre.y + currentUpperAngle.y - r/2;
 		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
 		//g.setColor(color1);
 		//g.fillOval((int)x1, (int)y1, 2 * r1, 2 * r1);

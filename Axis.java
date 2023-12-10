@@ -4,7 +4,12 @@ public class Axis {
 	// Fields
 	
 	public Vector vector;
-	public Edge[] edge = new Edge[2]; 
+	public int beginingIndex;
+	public int endingIndex;
+	
+	public final static int ENDS_QUANTITY = 2;
+
+	public Edge[] edge = new Edge[Axis.ENDS_QUANTITY]; // endingIndex - beginingIndex + 1]; 
 			
 	// Constructor
 	
