@@ -8,6 +8,8 @@ public class Point {
 	public double x;
 	public double y;
 	public double z;
+	
+	public final static Point NULL = new Point(0, 0, 0);
 
 	// Constructor
 	
@@ -29,7 +31,9 @@ public class Point {
 	
 	// Functions
 	
-	public void rotateX(double rotateAngle){
+	// Rotate functions are outdated; head on over to method for a Vector; rotate only basis; not rotate points but recalculate it from basis
+	
+	public void rotateX(double rotateAngle){ 
 	
 		double atan2 = Math.atan2(z, y);
 		double r = Math.sqrt(y*y + z*z);

@@ -6,6 +6,8 @@ public class Vector {
 	public double dx;
 	public double dy;
 	public double dz;
+	
+	public final static Vector NULL = new Vector(0, 0, 0);
 
 	// Constructor
 	
