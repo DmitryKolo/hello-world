@@ -86,36 +86,36 @@ public class Cube {
 			
 	// Functions
 	
-	public void rotateX(double rotateAngle){
-		
-		for (int i = 0; i < angle.length; i++)
-		    for (int j = 0; j < angle[i].length; j++)
-			    for (int k = 0; k < angle[i][j].length; k++)
-					angle[i][j][k].rotateX(rotateAngle); 
-		
-		for (int i = 0; i < axis.length; i++)
-			axis[i].vector.rotateXYZ(rotateAngle, 0, 0); 
-	}	
-			    
-	public void rotateY(double rotateAngle){
-		
-		for (int i = 0; i < angle.length; i++)
-		    for (int j = 0; j < angle[i].length; j++)
-			    for (int k = 0; k < angle[i][j].length; k++)
-					angle[i][j][k].rotateY(rotateAngle); 
-		for (int i = 0; i < axis.length; i++)
-			axis[i].vector.rotateXYZ(0, rotateAngle, 0); 
-	}	
-			    
-	public void rotateZ(double rotateAngle){
-		
-		for (int i = 0; i < angle.length; i++)
-		    for (int j = 0; j < angle[i].length; j++)
-			    for (int k = 0; k < angle[i][j].length; k++)
-					angle[i][j][k].rotateZ(rotateAngle); 
-		for (int i = 0; i < axis.length; i++)
-			axis[i].vector.rotateXYZ(0, 0, rotateAngle); 
-	}	
+//	public void rotateX(double rotateAngle){
+//		
+//		for (int i = 0; i < angle.length; i++)
+//		    for (int j = 0; j < angle[i].length; j++)
+//			    for (int k = 0; k < angle[i][j].length; k++)
+//					angle[i][j][k].rotateX(rotateAngle); 
+//		
+//		for (int i = 0; i < axis.length; i++)
+//			axis[i].vector.rotateXYZ(rotateAngle, 0, 0); 
+//	}	
+//			    
+//	public void rotateY(double rotateAngle){
+//		
+//		for (int i = 0; i < angle.length; i++)
+//		    for (int j = 0; j < angle[i].length; j++)
+//			    for (int k = 0; k < angle[i][j].length; k++)
+//					angle[i][j][k].rotateY(rotateAngle); 
+//		for (int i = 0; i < axis.length; i++)
+//			axis[i].vector.rotateXYZ(0, rotateAngle, 0); 
+//	}	
+//			    
+//	public void rotateZ(double rotateAngle){
+//		
+//		for (int i = 0; i < angle.length; i++)
+//		    for (int j = 0; j < angle[i].length; j++)
+//			    for (int k = 0; k < angle[i][j].length; k++)
+//					angle[i][j][k].rotateZ(rotateAngle); 
+//		for (int i = 0; i < axis.length; i++)
+//			axis[i].vector.rotateXYZ(0, 0, rotateAngle); 
+//	}	
 	
 	public void rotateV(Vector rotateAxis, double rotateAngle){
 		
@@ -130,7 +130,9 @@ public class Cube {
 			    }
 		
 		for (int i = 0; i < axis.length; i++){
+			System.out.println("Cube vector ["+i+"] sta = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
 			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+			System.out.println("Cube vector ["+i+"] end = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
 		}	
 	}
 	
@@ -140,43 +142,38 @@ public class Cube {
 
 		if(up){
 			if(shift) rotateAngle = -rotateAngle;
-			rotateX(rotateAngle);
+			rotateV(new Vector(1, 0, 0), rotateAngle);
 		}
 
 		if(left){
 			if(!shift) rotateAngle = -rotateAngle;
-			rotateY(rotateAngle);
+			rotateV(new Vector(0, 1, 0), rotateAngle);
 		}
 
 		if(right){
 			if(shift) rotateAngle = -rotateAngle;
-			rotateZ(rotateAngle);
+			rotateV(new Vector(0, 0, 1), rotateAngle);
 		}
 		
 		if(down){
 			if(!shift) rotateAngle = -rotateAngle;
-			rotateX(rotateAngle);
+			rotateV(new Vector(1, 0, 0), rotateAngle);
 		}
 		
 		if(rotateI){
 			if(!shift) rotateAngle = -rotateAngle;
-			//Vector rotateVector = new Vector(basis.vector[0].dx, basis.vector[1].dx, basis.vector[2].dx);
 			rotateV(axis[0].vector, rotateAngle);
 			//rotateV(rotateVector, rotateAngle);
 		}
 
 		if(rotateJ){
 			if(shift) rotateAngle = -rotateAngle;
-			//Vector rotateVector = new Vector(basis.vector[0].dy, basis.vector[1].dy, basis.vector[2].dy);
 			rotateV(axis[1].vector, rotateAngle);
-			//rotateV(rotateVector, rotateAngle);
 		}
 		
 		if(rotateK){
 			if(!shift) rotateAngle = -rotateAngle;
-			//Vector rotateVector = new Vector(basis.vector[0].dz, basis.vector[1].dz, basis.vector[2].dz);
 			rotateV(axis[2].vector, rotateAngle);
-			//rotateV(rotateVector, rotateAngle);
 		}
 		
 		if(up || left || right || down || rotateI || rotateJ || rotateK){
