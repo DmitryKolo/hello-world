@@ -12,23 +12,28 @@ public class Block {
 	//public Point centre;
 	private Address3D upperAngle; 
 
-	public final int rotatebledAxisNumber;
+	public final int rotatableAxisIndex;
 	private boolean turned;
 	
 	private double speed = 1;
 
-	public boolean shift;
+	public static boolean shift;
+	
+	public static boolean up;
+	public static boolean down;
+	public static boolean left;
+	public static boolean right;
 
-	public boolean rotateI;
-	public boolean rotateJ;
-	public boolean rotateK;
+	public static boolean rotateI;
+	public static boolean rotateJ;
+	public static boolean rotateK;
 
 	// Constructor
 	
-	public Block(Cube cube, int rotatebledAxisNumber, int beginingIndex, int endingIndex){
+	public Block(Cube cube, int rotatableAxisIndex, int beginingIndex, int endingIndex){
 			
 		this.cube = cube;
-		this.rotatebledAxisNumber = rotatebledAxisNumber;
+		this.rotatableAxisIndex = rotatableAxisIndex;
 		
 		CubeBasis basis = new CubeBasis(cube);
 //		if(rotatebledAxisNumber != Cube.DIMENSION){
@@ -40,7 +45,7 @@ public class Block {
 		double[] halfSize = new double[Cube.DIMENSION];
 
 		for (int i = 0; i < cube.DIMENSION; i++){
-			size[i] = (i == rotatebledAxisNumber ? rotatebledAxisSize : cube.size);
+			size[i] = (i == rotatableAxisIndex ? rotatebledAxisSize : cube.size);
 			this.axis[i] = new Axis(i, basis, size[i], cube.centre); // сообщать оси центр куба не нужно
 			halfSize[i] = (double)size[i] / 2;
 		}
@@ -59,23 +64,14 @@ public class Block {
 			    	
 					double coefK = (k==0 ? -halfSize[2] : halfSize[2]);
 			    	this.angle[i][j][k] = new Point(pointJ, new Vector(coefK, basis.vector[2]));
-//			    	Point CurrentCorner = this.angle[i][j][k];
-//					System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
+			    	Point CurrentCorner = this.angle[i][j][k];
+					System.out.println("Block angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
 			    }
 		    }
 	    }
 		
 		this.upperAngle = this.upperAngleAddress();
 		
-//		// to improve: first, create a three-dimensional array of vertices (angle), then specify them in the edges of the axes
-////		edgesPairA = new PairOfEdges(size, centre, vectorA, vectorB, vectorC);
-////		edgesPairB = new PairOfEdges(size, centre, vectorB, vectorC, vectorA);
-////		edgesPairC = new PairOfEdges(size, centre, vectorC, vectorA, vectorB);
-//		
-////		this.axis[0] = new Axis(vectorA, edgesPairA.edge0, edgesPairA.edge1); 
-////		this.axis[1] = new Axis(vectorB, edgesPairB.edge0, edgesPairB.edge1);
-////		this.axis[2] = new Axis(vectorC, edgesPairC.edge0, edgesPairC.edge1);
-//		
 	}
 			
 	// Functions
@@ -110,83 +106,68 @@ public class Block {
 //		for (int i = 0; i < axis.length; i++)
 //			axis[i].vector.rotateXYZ(0, 0, rotateAngle); 
 //	}	
-//	
-//	public void rotateV(Vector rotateAxis, double rotateAngle){
-//		
-//		Vector normalAxis = new Vector(rotateAxis);
-//		
-//		for (int i = 0; i < angle.length; i++)
-//		    for (int j = 0; j < angle[i].length; j++)
-//			    for (int k = 0; k < angle[i][j].length; k++){
-//					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
-//					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
-//					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
-//			    }
-//		
-//		for (int i = 0; i < axis.length; i++){
-//			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-//		}	
-//	}
-//	
-//	public void update(){
-//		
-//		double rotateAngle = speed/20;
-//
-//		if(up){
-//			if(shift) rotateAngle = -rotateAngle;
-//			rotateX(rotateAngle);
-//		}
-//
-//		if(left){
-//			if(!shift) rotateAngle = -rotateAngle;
-//			rotateY(rotateAngle);
-//		}
-//
-//		if(right){
-//			if(shift) rotateAngle = -rotateAngle;
-//			rotateZ(rotateAngle);
-//		}
-//		
-//		if(down){
-//			if(!shift) rotateAngle = -rotateAngle;
-//			rotateX(rotateAngle);
-//		}
-//		
-//		if(rotateI){
-//			if(!shift) rotateAngle = -rotateAngle;
-//			//Vector rotateVector = new Vector(basis.vector[0].dx, basis.vector[1].dx, basis.vector[2].dx);
-//			rotateV(basis.vector[0], rotateAngle);
-//			//rotateV(rotateVector, rotateAngle);
-//		}
-//
-//		if(rotateJ){
-//			if(shift) rotateAngle = -rotateAngle;
-//			//Vector rotateVector = new Vector(basis.vector[0].dy, basis.vector[1].dy, basis.vector[2].dy);
-//			rotateV(basis.vector[1], rotateAngle);
-//			//rotateV(rotateVector, rotateAngle);
-//		}
-//		
-//		if(rotateK){
-//			if(!shift) rotateAngle = -rotateAngle;
-//			//Vector rotateVector = new Vector(basis.vector[0].dz, basis.vector[1].dz, basis.vector[2].dz);
-//			rotateV(basis.vector[2], rotateAngle);
-//			//rotateV(rotateVector, rotateAngle);
-//		}
-//		
-//		if(up || left || right || down || rotateI || rotateJ || rotateK){
-//			this.upperAngle = this.upperAngleAddress();
-////			for (int i = 0; i < angle.length; i++){
-////			    for (int j = 0; j < angle[i].length; j++){
-////				    for (int k = 0; k < angle[i][j].length; k++){
-////				    	Point CurrentCorner = this.angle[i][j][k];
-////						System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
-////					}
-////				}
-////			}
-////			System.out.println("upperAngleAddress = ("+upperAngle.i+", "+upperAngle.j+", "+upperAngle.k+")");
-//		}
-//	}
-//			
+	
+	public void rotateXYZ(Vector rotateAxis, double rotateAngle){
+		
+		Vector normalAxis = new Vector(rotateAxis);
+		
+		for (int i = 0; i < angle.length; i++)
+		    for (int j = 0; j < angle[i].length; j++)
+			    for (int k = 0; k < angle[i][j].length; k++){
+					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
+					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
+					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
+			    }
+		
+		for (int i = 0; i < axis.length; i++){
+			System.out.println("Block vector ["+i+"] sta = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
+			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+			System.out.println("Block vector ["+i+"] end = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
+		}	
+	}
+	
+	public void update(){
+		
+		double rotateAngle = speed/20;
+
+		if(up){
+			if(shift) rotateAngle = -rotateAngle;
+			rotateXYZ(new Vector(1, 0, 0), rotateAngle);
+	}
+
+		if(left){
+			if(!shift) rotateAngle = -rotateAngle;
+			rotateXYZ(new Vector(0, 1, 0), rotateAngle);
+	}
+
+		if(right){
+			if(shift) rotateAngle = -rotateAngle;
+			rotateXYZ(new Vector(0, 0, 1), rotateAngle);
+		}
+		
+		if(down){
+			if(!shift) rotateAngle = -rotateAngle;
+			rotateXYZ(new Vector(1, 0, 0), rotateAngle);
+		}
+		
+		if(rotateI && rotatableAxisIndex == 0){
+				if(!shift) rotateAngle = -rotateAngle;
+				rotateXYZ(axis[0].vector, rotateAngle);
+			}
+
+		if(rotateJ && rotatableAxisIndex == 1){
+				if(shift) rotateAngle = -rotateAngle;
+				rotateXYZ(axis[1].vector, rotateAngle);
+			}
+
+		if(rotateK && rotatableAxisIndex == 2){
+				if(!shift) rotateAngle = -rotateAngle;
+				rotateXYZ(axis[2].vector, rotateAngle);
+			}
+				
+		if(up || left || right || down || rotateI || rotateJ || rotateK)
+			this.upperAngle = this.upperAngleAddress();
+	}
 	
 	public void draw(Graphics2D g){
 		

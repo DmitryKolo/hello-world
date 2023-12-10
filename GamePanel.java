@@ -158,7 +158,7 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
 		
-		block = new Block(cube, Cube.DIMENSION, 0, 2);
+		block = new Block(cube, 0, 0, 1); // 2nd: Cube.DIMENSION
 							
 		while(true){
 			
@@ -188,6 +188,8 @@ public class GamePanel extends JPanel implements Runnable{
 		vAngle.update();
 		
 		cube.update();
+		
+		block.update();
 		
 	}
 	
