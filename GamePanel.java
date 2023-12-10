@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public static VolumetricAngle vAngle;
 	public Cube cube;
-	public Block block;
+	public Block block, block0, block1;
 	
 	// Constructor
 	
@@ -158,7 +158,9 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
 		
-		block = new Block(cube, 0, 0, 1); // 2nd: Cube.DIMENSION
+		block = new Block(cube, 1, 0, 1); // 2nd: Cube.DIMENSION
+		block0 = new Block(cube, 2, 2, 2); // 2nd: Cube.DIMENSION
+		block1 = new Block(cube, Cube.DIMENSION, 0, 2); // 2nd: Cube.DIMENSION
 							
 		while(true){
 			
@@ -190,6 +192,8 @@ public class GamePanel extends JPanel implements Runnable{
 		cube.update();
 		
 		block.update();
+		block0.update();
+		block1.update();
 		
 	}
 	
@@ -204,9 +208,11 @@ public class GamePanel extends JPanel implements Runnable{
 		// Player draw
 		player.draw(g);
 		
-		cube.draw(g);
+		//cube.draw(g);
 		
-		block.draw(g);
+		block.draw(g, Color.BLACK);
+		block0.draw(g, Color.GREEN);
+		block1.draw(g, Color.RED);
 
 	}
 	
