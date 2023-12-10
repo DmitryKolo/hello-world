@@ -70,4 +70,12 @@ public class Vector {
 	
 	}	
 	
+	public double cos(Vector vector){
+		
+		double r0 = Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+		double r1 = Math.sqrt(vector.dx * vector.dx + vector.dy * vector.dy + vector.dz * vector.dz);
+		double multi = this.dx * vector.dx + this.dy * vector.dy + this.dz * vector.dz;
+		return multi / r0 / r1;
+		
+	}
 }

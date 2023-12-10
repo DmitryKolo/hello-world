@@ -47,7 +47,7 @@ public class Cube {
 		this.vectorC = vectorC;
 		
 		for (int i = 0; i < DIMENSION; i++)
-			this.axis[i] = new Axis(i, basis, size, centre);
+			this.axis[i] = new Axis(i, basis, size, centre, 0, size - 1);
 	
 		for (int i = 0; i < angle.length; i++){
 			
@@ -124,15 +124,16 @@ public class Cube {
 		for (int i = 0; i < angle.length; i++)
 		    for (int j = 0; j < angle[i].length; j++)
 			    for (int k = 0; k < angle[i][j].length; k++){
-					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
-					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
-					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
-			    }
+//					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
+//					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
+//					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
+			    	angle[i][j][k].rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz);
+			    } // отказаться: перейти к пересчету углов после пересчета векторов
 		
 		for (int i = 0; i < axis.length; i++){
-			System.out.println("Cube vector ["+i+"] sta = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
+			//System.out.println("Cube vector ["+i+"] sta = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
 			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-			System.out.println("Cube vector ["+i+"] end = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
+			//System.out.println("Cube vector ["+i+"] end = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
 		}	
 	}
 	
