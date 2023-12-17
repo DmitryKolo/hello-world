@@ -1,19 +1,26 @@
 
 import java.awt.*;
+import java.util.*;
 
 public class Block {
 
 	// Fields
 	
-	public Cube cube;
+	//public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
+	public Matrix transitionMatrix;
+	
+	public Cube cube; //1
 	public Axis[] axis = new Axis[Cube.DIMENSION];
 	public Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
 	public Point centre = Point.NULL;
 	private Address3D upperAngle; 
 
-	public final int rotatableAxisIndex;
-	public double rotationAngle;
+	public final int rotatableAxisIndex;//2
+	public double rotationAngle;//3
+	
+	//int BeginIndex; //4
+	//int EndIndex; //5
 	
 	private double speed = 0.04;
 
@@ -36,41 +43,86 @@ public class Block {
 		this.rotatableAxisIndex = rotatableAxisIndex;
 		this.rotationAngle = 0;
 		
+		//ArrayList<ArrayList<ArrayList<int[]>>> blockCoords = BlockCoords(endingIndex - beginingIndex + 1);
+		
+		double[] shift = {beginingIndex, beginingIndex, beginingIndex};
+		Matrix identityMatrix = Matrix.identity(Cube.DIMENSION);
+		if (rotatableAxisIndex != Cube.DIMENSION - 1)
+			identityMatrix = identityMatrix.swapIdentity(rotatableAxisIndex, 1 - rotatableAxisIndex);
+		transitionMatrix = identityMatrix.attachArray(shift);
+		
+		Matrix anglesMatrix = new Matrix(8, 3);
+		
+		anglesMatrix.data[1][0] = 1;
+		anglesMatrix.data[2][1] = 2;
+		anglesMatrix.data[3][0] = 1;
+		anglesMatrix.data[3][1] = 2;
+		
+		anglesMatrix.data[4][2] = 3;
+		anglesMatrix.data[5][2] = 3;
+		anglesMatrix.data[6][2] = 3;
+		anglesMatrix.data[7][2] = 3;
+
+		anglesMatrix.data[4][0] = 1;
+		anglesMatrix.data[5][1] = 2;
+		anglesMatrix.data[6][0] = 1;
+		anglesMatrix.data[7][1] = 2;
+		
+		for(int i = 0; i < 8; i++){
+			Matrix columnX = anglesMatrix.nPlus1Column(i);
+			Matrix columnY = transitionMatrix.times(columnX);
+			int j = i;
+			j++;
+		}
+
 		CubeBasis basis = new CubeBasis(cube);
 
 		for (int i = 0; i < cube.DIMENSION; i++){
-			
-			//size[i] = (i == rotatableAxisIndex ? rotatableAxisSize : cube.size);
 			
 			int currentBeginingIndex = (i == rotatableAxisIndex ? beginingIndex : 0);
 			int currentEndingIndex = (i == rotatableAxisIndex ? endingIndex : cube.size - 1);
 			
 			this.axis[i] = new Axis(i, basis, cube.size, cube.centre, currentBeginingIndex, currentEndingIndex); // сообщать оси центр куба не нужно?
-			
-//			if (i == rotatableAxisIndex){
-//				
-//				double blockMiddle = (beginingIndex + endingIndex) / 2.0;
-//				double cubeMiddle = (cube.size - 1) / 2.0;
-//				
-//				if(blockMiddle != cubeMiddle){
-//					
-//					double shiftMiddle = blockMiddle - cubeMiddle;
-//					this.centre = new Point(Point.NULL, new Vector(shiftMiddle, axis[i].vector));
-//				}
-//			}
 		}
-
-//		this.upperAngle = this.upperAngleAddress();
-		
+			
 		this.CalculateCenter();
 		this.CalculateAngles();
+		
 	}
 	
 	
 	// Functions
 	
-	public void RecalculateBasis(){
+//	public ArrayList<ArrayList<ArrayList<int[]>>> BlockCoords(int height){
+//		
+//		ArrayList<ArrayList<ArrayList<int[]>>> blockCoords;
+//		ArrayList<ArrayList<int[]>> edgeCoords;
+//		ArrayList<int[]> rowCoords;
+//
+//		blockCoords = new ArrayList<ArrayList<ArrayList<int[]>>>();
+//		for(int k = 0; k < height; k++){
+//			edgeCoords = new ArrayList<ArrayList<int[]>>();
+//			for(int i = 0; i < Cube.DIMENSION; i++){
+//				rowCoords = new ArrayList<int[]>();
+//				for(int j = 0; j < Cube.DIMENSION; j++){
+//					int[] address = {i, j, k};
+//					rowCoords.add(address);
+//				}
+//				edgeCoords.add(rowCoords);
+//			}
+//			blockCoords.add(edgeCoords);
+//		}
+//		
+//		int[] ff = blockCoords.get(0).get(2).get(1);
+//		int y = ff[1];
+//		
+//		int[][][][] asd = new int[Cube.DIMENSION][Cube.DIMENSION][Cube.DIMENSION][Cube.DIMENSION];
+//		asd[1][2][2][1] = 78;
+//		return blockCoords;
+//	}
 		
+	public void RecalculateBasis(){
+			
 		CubeBasis basis = new CubeBasis(cube);
 
 		for (int i = 0; i < cube.DIMENSION; i++)
@@ -240,25 +292,25 @@ public class Block {
 		    	Point angle0;
 		    	Point angle1;
 		    	
-		    	if (i == upperAngle.i || j == upperAngle.j) {
-		    		//g.setColor(Color.CYAN);
-		    		angle0 = angle[i][j][0];
-		    		angle1 = angle[i][j][1];
-		    		GamePanel.drawLine(g, angle0, angle1, cube.centre);
+		    	if (i == upperAngle.j || j == upperAngle.k) {
+		    		g.setColor(Color.RED);
+			    	angle0 = angle[0][i][j];
+			    	angle1 = angle[1][i][j];
+			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
 		    	}
 				
 		    	if (i == upperAngle.i || j == upperAngle.k) {
-		    		//g.setColor(Color.DARK_GRAY);
+		    		g.setColor(Color.ORANGE);
 			    	angle0 = angle[i][0][j];
 			    	angle1 = angle[i][1][j];
 			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
 		    	}
-				
-		    	if (i == upperAngle.j || j == upperAngle.k) {
-		    		//g.setColor(Color.GREEN);
-			    	angle0 = angle[0][i][j];
-			    	angle1 = angle[1][i][j];
-			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
+		    	
+		    	if (i == upperAngle.i || j == upperAngle.j) {
+		    		g.setColor(Color.GREEN);
+		    		angle0 = angle[i][j][0];
+		    		angle1 = angle[i][j][1];
+		    		GamePanel.drawLine(g, angle0, angle1, cube.centre);
 		    	}
 		    }
 	    }
@@ -308,6 +360,13 @@ public class Block {
 		
 		return upperAngleAddress;
 		
+	}
+	
+	public static void drawCollection(Graphics2D g, ArrayList<Block> blockCollect){
+		//System.out.println("drawCollection");
+		for(Block block : blockCollect){
+			block.draw(g, Color.MAGENTA);
+		}
 	}
 	
 }
