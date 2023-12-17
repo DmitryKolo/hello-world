@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import java.util.*;
+import java.util.*;	
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -25,6 +25,10 @@ public class GamePanel extends JPanel implements Runnable{
 	public static VolumetricAngle vAngle;
 	public Cube cube;
 	public Block block, block0, block1;
+	
+	//public Block[] blockCollection;
+	
+	ArrayList<Block> blockCollection = new ArrayList<Block>();
 	
 	// Constructor
 	
@@ -156,11 +160,16 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
 		
-		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
+		//cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
+		cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(50, 1, -2), new Vector(0, 50, -5), new Vector(1.5, 5, 50));
 		
-		block = new Block(cube, 1, 0, 1); // 2nd: Cube.DIMENSION
-		block0 = new Block(cube, 2, 2, 2); // 2nd: Cube.DIMENSION
-		block1 = new Block(cube, Cube.DIMENSION, 0, 2); // 2nd: Cube.DIMENSION
+		block = new Block(cube, 0, 0, 0); 
+		block0 = new Block(cube, 0, 1, 1); 
+		block1 = new Block(cube, 0, 2, 2); 
+		
+		blockCollection.add(new Block(cube, 2, 0, 1)); 
+		//blockCollection.add(new Block(cube, 1, 0, 2)); 
+//		blockCollection.add(new Block(cube, Cube.DIMENSION, 0, 2));
 							
 		while(true){
 			
@@ -210,9 +219,11 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		//cube.draw(g);
 		
-		block.draw(g, Color.BLACK);
-		block0.draw(g, Color.GREEN);
-		block1.draw(g, Color.RED);
+//		block.draw(g, Color.BLACK);
+//		block0.draw(g, Color.GREEN);
+//		block1.draw(g, Color.RED);
+		
+		Block.drawCollection(g, blockCollection);
 
 	}
 	

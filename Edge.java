@@ -30,6 +30,9 @@ public class Edge {
 	public static boolean right;
 			
 	public static boolean isFiring;
+	
+	//Block block;
+	//int AxisIndex;//2
 		
 	private RowOfTiles row1, row2, row3;
 	public RowOfTiles[] row = new RowOfTiles[5];
