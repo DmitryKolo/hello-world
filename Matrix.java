@@ -88,7 +88,7 @@ final public class Matrix {
     	for(int w = 0; w < Math.min(M, N); w++){
     		double temp = A.data[i][w];
     		A.data[i][w] = A.data[j][w];
-    		A.data[j][w] = -temp;
+    		A.data[j][w] = temp;
     	}
     	return A;
     }
