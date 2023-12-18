@@ -6,12 +6,13 @@ public class Block {
 
 	// Fields
 	
-	//public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
-	public Matrix transitionMatrix;
+	public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
+	//public Matrix transitionMatrix;
 	
 	public Cube cube; //1
 	public Axis[] axis = new Axis[Cube.DIMENSION];
 	public Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
+	public Point[][][] anglesInBasis = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
 	public Point centre = Point.NULL;
 	private Address3D upperAngle; 
@@ -45,34 +46,44 @@ public class Block {
 		
 		//ArrayList<ArrayList<ArrayList<int[]>>> blockCoords = BlockCoords(endingIndex - beginingIndex + 1);
 		
-		double[] shift = {beginingIndex, beginingIndex, beginingIndex};
+		double[] shift = {0, 0, 0}; // {beginingIndex, beginingIndex, beginingIndex};
 		Matrix identityMatrix = Matrix.identity(Cube.DIMENSION);
 		if (rotatableAxisIndex != Cube.DIMENSION - 1)
-			identityMatrix = identityMatrix.swapIdentity(rotatableAxisIndex, 1 - rotatableAxisIndex);
+			identityMatrix = identityMatrix.swapIdentity(rotatableAxisIndex, Cube.DIMENSION - 1);
 		transitionMatrix = identityMatrix.attachArray(shift);
 		
-		Matrix anglesMatrix = new Matrix(8, 3);
+//		Matrix anglesMatrix = new Matrix(8, 3);
+//		
+//		anglesMatrix.data[1][0] = 1;
+//		anglesMatrix.data[2][1] = 2;
+//		anglesMatrix.data[3][0] = 1;
+//		anglesMatrix.data[3][1] = 2;
+//		
+//		anglesMatrix.data[4][2] = 3;
+//		anglesMatrix.data[5][2] = 3;
+//		anglesMatrix.data[6][2] = 3;
+//		anglesMatrix.data[7][2] = 3;
+//
+//		anglesMatrix.data[4][0] = 1;
+//		anglesMatrix.data[5][1] = 2;
+//		anglesMatrix.data[6][0] = 1;
+//		anglesMatrix.data[7][1] = 2;
 		
-		anglesMatrix.data[1][0] = 1;
-		anglesMatrix.data[2][1] = 2;
-		anglesMatrix.data[3][0] = 1;
-		anglesMatrix.data[3][1] = 2;
-		
-		anglesMatrix.data[4][2] = 3;
-		anglesMatrix.data[5][2] = 3;
-		anglesMatrix.data[6][2] = 3;
-		anglesMatrix.data[7][2] = 3;
-
-		anglesMatrix.data[4][0] = 1;
-		anglesMatrix.data[5][1] = 2;
-		anglesMatrix.data[6][0] = 1;
-		anglesMatrix.data[7][1] = 2;
-		
-		for(int i = 0; i < 8; i++){
-			Matrix columnX = anglesMatrix.nPlus1Column(i);
-			Matrix columnY = transitionMatrix.times(columnX);
-			int j = i;
-			j++;
+		for(int i = 0; i < 2; i++){
+			for(int j = 0; j < 2; j++){
+				for(int k = 0; k < 2; k++){
+					int q = 4 * i + 2 * j + k;
+					//Matrix columnX0 = anglesMatrix.nPlus1Column(q);
+					Matrix columnX = new Matrix(Cube.DIMENSION + 1, 1);
+					columnX.data[0][0] = (- 0.5 + i) * Cube.DIMENSION;
+					columnX.data[1][0] = (- 0.5 + j) * Cube.DIMENSION;
+					columnX.data[2][0] = - 0.5 * Cube.DIMENSION + beginingIndex + k * (endingIndex - beginingIndex + 1);
+					columnX.data[3][0] = 1;
+					Matrix columnY = transitionMatrix.times(columnX);
+					anglesInBasis[i][j][k] = new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
+					q++;
+				}
+			}
 		}
 
 		CubeBasis basis = new CubeBasis(cube);
@@ -284,6 +295,23 @@ public class Block {
 	
 	public void draw(Graphics2D g, Color color){
 		
+		for(int i = 0; i < 2; i++){
+			for(int j = 0; j < 2; j++){
+				for(int k = 0; k < 2; k++){
+					int q = 4 * i + 2 * j + k;
+					//Matrix columnX0 = anglesMatrix.nPlus1Column(q);
+					Matrix columnX = new Matrix(Cube.DIMENSION + 1, 1);
+					columnX.data[0][0] = anglesInBasis[i][j][k].x;
+					columnX.data[1][0] = anglesInBasis[i][j][k].y;
+					columnX.data[2][0] = anglesInBasis[i][j][k].z;
+					columnX.data[3][0] = 1;
+					Matrix columnY = cube.transitionMatrix.times(columnX);
+					angle[i][j][k] = new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
+					q++;
+				}
+			}
+		}
+
 		g.setColor(color);
 		
 		for (int i = 0; i < angle.length; i++){

@@ -5,7 +5,8 @@ public class Cube {
 
 	// Fields
 	
-	//public CubeBasis basis;
+	public final static int DIMENSION = 3;
+	public Matrix transitionMatrix = new Matrix(DIMENSION, DIMENSION + 1);
 	
 	public Vector vectorA, vectorB, vectorC; // head on over to Axis, basis
 	Axis[] axis = new Axis[Cube.DIMENSION];
@@ -19,8 +20,6 @@ public class Cube {
 	private Address3D upperAngle; 
 	
 	private double speed = 1;
-
-	public final static int DIMENSION = 3;
 	
 	public static boolean shift;
 	
@@ -49,6 +48,20 @@ public class Cube {
 		for (int i = 0; i < DIMENSION; i++)
 			this.axis[i] = new Axis(i, basis, size, centre, 0, size - 1);
 	
+		this.transitionMatrix.data[0][0] = vectorA.dx;
+		this.transitionMatrix.data[0][1] = vectorA.dy;
+		this.transitionMatrix.data[0][2] = vectorA.dz;
+		this.transitionMatrix.data[0][3] = GamePanel.WIDTH / 2;
+		
+		this.transitionMatrix.data[1][0] = vectorB.dx;
+		this.transitionMatrix.data[1][1] = vectorB.dy;
+		this.transitionMatrix.data[1][2] = vectorB.dz;
+		this.transitionMatrix.data[1][3] = GamePanel.HEIGHT / 2;
+		
+		this.transitionMatrix.data[2][0] = vectorC.dx;
+		this.transitionMatrix.data[2][1] = vectorC.dy;
+		this.transitionMatrix.data[2][2] = vectorC.dz;
+		
 		for (int i = 0; i < angle.length; i++){
 			
 			double halfsize = size / 2;
