@@ -6,24 +6,24 @@ public class Block {
 
 	// Fields
 	
-	public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
-	//public Matrix transitionMatrix;
+	//public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
+	public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION);
 	
-	public Cube cube; //1
+	public Cube cube; 
+	
+	public final int rotatableAxisIndex;
+	public int beginingIndex, endingIndex;
+	public double rotationAngle;
+	
 	public Axis[] axis = new Axis[Cube.DIMENSION];
-	public Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	public Point[][][] anglesInBasis = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
+	public Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
 	public Point centre = Point.NULL;
-	private Address3D upperAngle; 
+	public Address3D nearestAngleAddress; 
+	public Point nearestAngle;
 
-	public final int rotatableAxisIndex;//2
-	public double rotationAngle;//3
-	
-	//int BeginIndex; //4
-	//int EndIndex; //5
-	
-	private double speed = 0.04;
+	private double speed;
 
 	public static boolean shift;
 	
@@ -38,53 +38,39 @@ public class Block {
 
 	// Constructor
 	
-	public Block(Cube cube, int rotatableAxisIndex, int beginingIndex, int endingIndex){
+	public Block(Cube cube, int rotatableAxisIndex, int beginingIndex, int endingIndex, double speed){
 			
 		this.cube = cube;
 		this.rotatableAxisIndex = rotatableAxisIndex;
+		this.beginingIndex = beginingIndex;
+		this.endingIndex = endingIndex;
+
 		this.rotationAngle = 0;
+		this.speed = speed;
 		
-		//ArrayList<ArrayList<ArrayList<int[]>>> blockCoords = BlockCoords(endingIndex - beginingIndex + 1);
-		
-		double[] shift = {0, 0, 0}; // {beginingIndex, beginingIndex, beginingIndex};
-		Matrix identityMatrix = Matrix.identity(Cube.DIMENSION);
+//		Matrix identityMatrix = Matrix.identity(Cube.DIMENSION);
+//		if (rotatableAxisIndex != Cube.DIMENSION - 1)
+//			identityMatrix = identityMatrix.swapIdentity(rotatableAxisIndex, Cube.DIMENSION - 1);
+		//transitionMatrix = identityMatrix.attachArray(shift);
+		transitionMatrix = Matrix.identity(Cube.DIMENSION);
 		if (rotatableAxisIndex != Cube.DIMENSION - 1)
-			identityMatrix = identityMatrix.swapIdentity(rotatableAxisIndex, Cube.DIMENSION - 1);
-		transitionMatrix = identityMatrix.attachArray(shift);
+			transitionMatrix = transitionMatrix.swapIdentity(rotatableAxisIndex, Cube.DIMENSION - 1);
+
+//		for(int i = 0; i < 2; i++){
+//			for(int j = 0; j < 2; j++){
+//				for(int k = 0; k < 2; k++){
+//					Matrix columnX = new Matrix(Cube.DIMENSION, 1);
+//					columnX.data[0][0] = (- 0.5 + i) * Cube.DIMENSION;
+//					columnX.data[1][0] = (- 0.5 + j) * Cube.DIMENSION;
+//					columnX.data[2][0] = - 0.5 * Cube.DIMENSION + beginingIndex + k * (endingIndex - beginingIndex + 1);
+//					//columnX.data[3][0] = 1;
+//					Matrix columnY = transitionMatrix.times(columnX);
+//					anglesInBasis[i][j][k] = new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
+//				}
+//			}
+//		}
 		
-//		Matrix anglesMatrix = new Matrix(8, 3);
-//		
-//		anglesMatrix.data[1][0] = 1;
-//		anglesMatrix.data[2][1] = 2;
-//		anglesMatrix.data[3][0] = 1;
-//		anglesMatrix.data[3][1] = 2;
-//		
-//		anglesMatrix.data[4][2] = 3;
-//		anglesMatrix.data[5][2] = 3;
-//		anglesMatrix.data[6][2] = 3;
-//		anglesMatrix.data[7][2] = 3;
-//
-//		anglesMatrix.data[4][0] = 1;
-//		anglesMatrix.data[5][1] = 2;
-//		anglesMatrix.data[6][0] = 1;
-//		anglesMatrix.data[7][1] = 2;
-		
-		for(int i = 0; i < 2; i++){
-			for(int j = 0; j < 2; j++){
-				for(int k = 0; k < 2; k++){
-					int q = 4 * i + 2 * j + k;
-					//Matrix columnX0 = anglesMatrix.nPlus1Column(q);
-					Matrix columnX = new Matrix(Cube.DIMENSION + 1, 1);
-					columnX.data[0][0] = (- 0.5 + i) * Cube.DIMENSION;
-					columnX.data[1][0] = (- 0.5 + j) * Cube.DIMENSION;
-					columnX.data[2][0] = - 0.5 * Cube.DIMENSION + beginingIndex + k * (endingIndex - beginingIndex + 1);
-					columnX.data[3][0] = 1;
-					Matrix columnY = transitionMatrix.times(columnX);
-					anglesInBasis[i][j][k] = new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-					q++;
-				}
-			}
-		}
+		rotate(rotationAngle);
 
 		CubeBasis basis = new CubeBasis(cube);
 
@@ -104,34 +90,6 @@ public class Block {
 	
 	// Functions
 	
-//	public ArrayList<ArrayList<ArrayList<int[]>>> BlockCoords(int height){
-//		
-//		ArrayList<ArrayList<ArrayList<int[]>>> blockCoords;
-//		ArrayList<ArrayList<int[]>> edgeCoords;
-//		ArrayList<int[]> rowCoords;
-//
-//		blockCoords = new ArrayList<ArrayList<ArrayList<int[]>>>();
-//		for(int k = 0; k < height; k++){
-//			edgeCoords = new ArrayList<ArrayList<int[]>>();
-//			for(int i = 0; i < Cube.DIMENSION; i++){
-//				rowCoords = new ArrayList<int[]>();
-//				for(int j = 0; j < Cube.DIMENSION; j++){
-//					int[] address = {i, j, k};
-//					rowCoords.add(address);
-//				}
-//				edgeCoords.add(rowCoords);
-//			}
-//			blockCoords.add(edgeCoords);
-//		}
-//		
-//		int[] ff = blockCoords.get(0).get(2).get(1);
-//		int y = ff[1];
-//		
-//		int[][][][] asd = new int[Cube.DIMENSION][Cube.DIMENSION][Cube.DIMENSION][Cube.DIMENSION];
-//		asd[1][2][2][1] = 78;
-//		return blockCoords;
-//	}
-		
 	public void RecalculateBasis(){
 			
 		CubeBasis basis = new CubeBasis(cube);
@@ -191,7 +149,7 @@ public class Block {
 		    }
 	    }
 		
-		this.upperAngle = this.upperAngleAddress();
+		//Address3D upperAngle = this.upperAngleAddress();
 	}
 	
 	
@@ -219,6 +177,30 @@ public class Block {
 	}	
 	
 	
+	public void rotate(double rotateAngleZ){
+	
+		for(int i = 0; i < 2; i++){
+			for(int j = 0; j < 2; j++){
+				for(int k = 0; k < 2; k++){
+					
+					double dx = (- 0.5 + i) * Cube.DIMENSION;
+					double dy = (- 0.5 + j) * Cube.DIMENSION;
+					double dz =  - 0.5 * Cube.DIMENSION + beginingIndex + k * (endingIndex - beginingIndex + 1);
+					
+					if(rotateAngleZ != 0){
+						double atan2 = Math.atan2(dy, dx) + rotateAngleZ;
+						double r = Math.sqrt(0.5) * Cube.DIMENSION;
+						dx = Math.cos(atan2) * r;
+						dy = Math.sin(atan2) * r;
+					}
+				
+					anglesInBasis[i][j][k] = transitionMatrix.timesVector( new Vector(dx, dy, dz) );
+				}
+			}
+		}
+	}
+	
+	
 	public void rotateBasis(Vector rotateAxis, double rotateAngle){
 		
 		Vector normalAxis = new Vector(rotateAxis);
@@ -227,7 +209,8 @@ public class Block {
 			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
 	}
 	
-	public void update(){
+	
+	public void update(ArrayList<Edge> edgeCollection){
 		
 		double rotateAngle = speed;
 
@@ -289,17 +272,21 @@ public class Block {
 				rotateXYZ(axis[2].vector, rotateAngle);
 			}
 				
-		if(up || left || right || down || rotateI || rotateJ || rotateK)
-			this.upperAngle = this.upperAngleAddress();
-	}
-	
-	public void draw(Graphics2D g, Color color){
+//		if(up || left || right || down || rotateI || rotateJ || rotateK)
+//			this.upperAngle = this.upperAngleAddress();
+		
+		rotationAngle = rotationAngle + speed;
+		
+		while(rotationAngle > Math.PI) rotationAngle -= 2 * Math.PI;
+		while(rotationAngle < -Math.PI) rotationAngle += 2 * Math.PI;
+		
+		//System.out.println("rotationAngle = " + rotationAngle);
+		
+		rotate(rotationAngle);
 		
 		for(int i = 0; i < 2; i++){
 			for(int j = 0; j < 2; j++){
 				for(int k = 0; k < 2; k++){
-					int q = 4 * i + 2 * j + k;
-					//Matrix columnX0 = anglesMatrix.nPlus1Column(q);
 					Matrix columnX = new Matrix(Cube.DIMENSION + 1, 1);
 					columnX.data[0][0] = anglesInBasis[i][j][k].x;
 					columnX.data[1][0] = anglesInBasis[i][j][k].y;
@@ -307,9 +294,47 @@ public class Block {
 					columnX.data[3][0] = 1;
 					Matrix columnY = cube.transitionMatrix.times(columnX);
 					angle[i][j][k] = new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-					q++;
 				}
 			}
+		}
+		
+		nearestAngleAddress = nearestAngleAddress();
+		nearestAngle = angleAtAddress(nearestAngleAddress);
+		
+		edgeCollection.add(new Edge(0, 0, 0, 0, 0, 0));
+
+	}
+	
+	
+	public void draw(Graphics2D g, Color color){
+		
+		for (int i = 0; i < Cube.DIMENSION; i++){
+			Point angle00 = nearestAngle;
+			Point angle01;
+			Point angle10;
+			Point angle11;
+			switch(i){
+			case 0: 
+				angle01 = angleAtAddress( new Address3D(    nearestAngleAddress.i,     nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
+				angle10 = angleAtAddress( new Address3D(    nearestAngleAddress.i, 1 - nearestAngleAddress.j,     nearestAngleAddress.k) );
+				angle11 = angleAtAddress( new Address3D(    nearestAngleAddress.i, 1 - nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
+				break;
+			case 1: 
+				angle01 = angleAtAddress( new Address3D(    nearestAngleAddress.i,     nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
+				angle10 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i,     nearestAngleAddress.j,     nearestAngleAddress.k) );
+				angle11 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i,     nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
+				break;
+			default: 
+				angle01 = angleAtAddress( new Address3D(    nearestAngleAddress.i, 1 - nearestAngleAddress.j,     nearestAngleAddress.k) );
+				angle10 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i,     nearestAngleAddress.j,     nearestAngleAddress.k) );
+				angle11 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i, 1 - nearestAngleAddress.j,     nearestAngleAddress.k) );
+				break;
+			}
+      		g.setColor(Color.WHITE);
+		
+      		int argX[] = {(int)angle00.x, (int)angle01.x, (int)angle11.x, (int)angle10.x};
+      		int argY[] = {(int)angle00.y, (int)angle01.y, (int)angle11.y, (int)angle10.y};
+      		g.fillPolygon(argX, argY, 4);
 		}
 
 		g.setColor(color);
@@ -320,22 +345,22 @@ public class Block {
 		    	Point angle0;
 		    	Point angle1;
 		    	
-		    	if (i == upperAngle.j || j == upperAngle.k) {
+		    	if (i == nearestAngleAddress.j || j == nearestAngleAddress.k) {
 		    		g.setColor(Color.RED);
 			    	angle0 = angle[0][i][j];
 			    	angle1 = angle[1][i][j];
 			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
 		    	}
 				
-		    	if (i == upperAngle.i || j == upperAngle.k) {
-		    		g.setColor(Color.ORANGE);
+		    	if (i == nearestAngleAddress.i || j == nearestAngleAddress.k) {
+		    		g.setColor(Color.RED);
 			    	angle0 = angle[i][0][j];
 			    	angle1 = angle[i][1][j];
 			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
 		    	}
 		    	
-		    	if (i == upperAngle.i || j == upperAngle.j) {
-		    		g.setColor(Color.GREEN);
+		    	if (i == nearestAngleAddress.i || j == nearestAngleAddress.j) {
+		    		g.setColor(Color.RED);
 		    		angle0 = angle[i][j][0];
 		    		angle1 = angle[i][j][1];
 		    		GamePanel.drawLine(g, angle0, angle1, cube.centre);
@@ -344,28 +369,20 @@ public class Block {
 	    }
 		
 		g.setColor(Color.RED);
-		
-		Point currentUpperAngle = angle[upperAngle.i][upperAngle.j][upperAngle.k];
-		
-//		System.out.println("upperAngle.j = "+upperAngle.j);
-//		System.out.println("upperAngle.k = "+upperAngle.k);
-//		System.out.println("upperAngleAddress = ("+upperAngle.i+", "+upperAngle.j+", "+upperAngle.k+")");
-//		System.out.println("currentUpperAngle = " + currentUpperAngle);
-		
+
 		double r = 5;
-		double x0 = cube.centre.x + currentUpperAngle.x - r/2;
-		double y0 = cube.centre.y + currentUpperAngle.y - r/2;
+		double x0 = cube.centre.x + nearestAngle.x - r/2;
+		double y0 = cube.centre.y + nearestAngle.y - r/2;
 		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
 
 	}
-				
+	
+	
 	public Point angleAtAddress(Address3D address){
-		
 		return angle[address.i][address.j][address.k];
-		
 	}
 		
-	public Address3D upperAngleAddress(){
+	public Address3D nearestAngleAddress(){
 		
 		Address3D upperAngleAddress = new Address3D(0, 0, 0);
 		Point upperAngle = angleAtAddress(upperAngleAddress);
@@ -377,7 +394,7 @@ public class Block {
 			    	
 			    	Address3D currentAddress = new Address3D(i, j, k);
 			    	Point currentAngle = angleAtAddress(currentAddress);
-			    	if (upperAngle.z < currentAngle.z){
+			    	if (upperAngle.z > currentAngle.z){
 			    		upperAngleAddress = currentAddress;
 			    		upperAngle = angleAtAddress(upperAngleAddress);
 						//System.out.println("   Angle["+i+","+j+","+k+"]: z = " + upperAngle.z + " < " + currentAngle.z);
@@ -390,10 +407,47 @@ public class Block {
 		
 	}
 	
+	
 	public static void drawCollection(Graphics2D g, ArrayList<Block> blockCollect){
-		//System.out.println("drawCollection");
+		
+		//System.out.println("Collection");
+		
+//		for(Block block : blockCollect){
+//			block.nearestAngle = block.angleAtAddress( block.nearestAngleAddress() );
+//			System.out.println("block.nearestAngle.z = " + block.nearestAngle.z);
+//			//block.draw(g, Color.MAGENTA);
+//		}
+
+		for(int i = 0; i < blockCollect.size() - 1; i++){
+			for(int j = i + 1; j < blockCollect.size(); j++){
+				if(blockCollect.get(i).nearestAngle.z < blockCollect.get(j).nearestAngle.z){
+					Block temp = blockCollect.get(i);
+					blockCollect.set(i, blockCollect.get(j));
+					blockCollect.set(j, temp);
+					//blockCollect.System.out.println("Collection swap: " + i + " " + j);
+				}
+			}
+		}
+
+		//System.out.println("draw Collection");
+		
+//		for(Block block : blockCollect){
+//		//block.nearestAngle = block.angleAtAddress( block.nearestAngleAddress() );
+//		System.out.println("block.nearestAngle.z = "+block.nearestAngle.z);
+//		block.draw(g, Color.MAGENTA);
 		for(Block block : blockCollect){
-			block.draw(g, Color.MAGENTA);
+		//block.nearestAngle = block.angleAtAddress( block.nearestAngleAddress() );
+		//System.out.println("block.nearestAngle.z = " + block.nearestAngle.z);
+		block.draw(g, Color.MAGENTA);
+		}
+	}
+	
+	
+	public static void updateCollection(ArrayList<Block> blockCollect, ArrayList<Edge> edgeCollection){
+		edgeCollection.clear();
+		for(Block block : blockCollect){
+			block.update(edgeCollection);
+			System.out.println("edgeCollection size = " + edgeCollection.size());
 		}
 	}
 	

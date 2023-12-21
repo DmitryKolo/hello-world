@@ -150,6 +150,17 @@ final public class Matrix {
                     C.data[i][j] += (A.data[i][k] * B.data[k][j]);
         return C;
     }
+    
+    
+    // return Y = A * X
+    public Point timesVector(Vector vector’) {
+    	Matrix columnX = new Matrix(Cube.DIMENSION, 1);
+		columnX.data[0][0] = vector’.dx;
+		columnX.data[1][0] = vector’.dy;
+		columnX.data[2][0] = vector’.dz;
+		Matrix columnY = this.times(columnX);
+		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
+	}
 
 
     // return x = A^-1 b, assuming A is square and has full rank
