@@ -301,7 +301,9 @@ public class Block {
 		nearestAngleAddress = nearestAngleAddress();
 		nearestAngle = angleAtAddress(nearestAngleAddress);
 		
-		edgeCollection.add(new Edge(0, 0, 0, 0, 0, 0));
+		edgeCollection.add(new Edge(this, 0, nearestAngleAddress.i));
+		edgeCollection.add(new Edge(this, 1, nearestAngleAddress.j));
+		edgeCollection.add(new Edge(this, 2, nearestAngleAddress.k));
 
 	}
 	

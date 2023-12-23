@@ -1,5 +1,6 @@
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Edge {
 
@@ -34,6 +35,7 @@ public class Edge {
 	public Block block;
 	int axisIndex;
 	int positionAtAxis;
+	public Address3D[][] anglesAddresses = new Address3D[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 		
 	private RowOfTiles row1, row2, row3;
 	public RowOfTiles[] row = new RowOfTiles[5];
@@ -110,6 +112,28 @@ public class Edge {
 		this.block = block;
 		this.axisIndex = axisIndex;
 		this.positionAtAxis = positionAtAxis;
+		
+		for(int i = 0; i < Axis.ENDS_QUANTITY; i++)
+			for(int j = 0; j < Axis.ENDS_QUANTITY; j++)
+				switch(axisIndex){	
+				case 0:
+					anglesAddresses[i][j] = new Address3D(positionAtAxis, i, j);
+					break;
+				case 1:
+					anglesAddresses[i][j] = new Address3D(i, positionAtAxis, j);
+					break;
+				default:
+					anglesAddresses[i][j] = new Address3D(i, j, positionAtAxis);
+					break;
+				}	
+		
+		Point angle00 = block.angleAtAddress(anglesAddresses[0][0]);
+		Point angle01 = block.angleAtAddress(anglesAddresses[0][1]);
+		Point angle10 = block.angleAtAddress(anglesAddresses[1][0]);
+		
+		this.vector1 = new Vector(angle00, angle01);
+		this.vector2 = new Vector(angle00, angle10);
+
 	}
 			
 		
@@ -118,11 +142,13 @@ public class Edge {
 	public double getX(){
 		return x;
 	}
-			
+		
+	
 	public double getY(){
 		return y;
 	}
-			
+	
+	
 	public void update(double dxA, double dyA, double dxC, double dyC, double dx0, double dy0){
 				
 		x = GamePanel.WIDTH / 2;		
@@ -151,7 +177,8 @@ public class Edge {
 		row2.update(x + dx0,       y + dy0,       dxA, dyA, dxC, dyC);
 		row3.update(x + dx0 + dxC, y + dy0 + dyC, dxA, dyA, dxC, dyC);
 	}
-			
+		
+	
 	public void draw(Graphics2D g){
 				
 //		double xA = x + dxA;
@@ -165,5 +192,43 @@ public class Edge {
 		row2.draw(g);
 		row3.draw(g);
 	}
+
+
+	public static void arrangeCollection(ArrayList<Edge> collection){
+		
+		for(int n = 0; n < collection.size(); n++){
+
+			Edge edge = collection.get(n);
+			Block block = edge.block;
+		
+			Point angle00 = block.angleAtAddress(edge.anglesAddresses[0][0]);
+		
+			Vector vector1 = edge.vector1;
+			Vector vector2 = edge.vector2;
+			
+			for(int m = n + 1; m < collection.size(); m++){
+				
+				Edge edgeA = collection.get(m);
+				Block blockA = edgeA.block;
+				
+				for(int i = 0; i < Axis.ENDS_QUANTITY; i++)
+					for(int j = 0; j < Axis.ENDS_QUANTITY; j++){
+						
+						Point angleA = block.angleAtAddress(edgeA.anglesAddresses[0][0]);
+						
+						double zA = angleA.zProectionOnEdge(edge);
+						
+						if(zA < angleA.z){
+							collection.set(n, edgeA);
+							collection.set(m, edge);
+							//blockCollect.System.out.println("Collection swap: " + i + " " + j);
+						}
+					}
+			}
+		}
+
+	}
+	
 }
+
 

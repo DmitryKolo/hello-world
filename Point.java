@@ -1,5 +1,6 @@
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 public class Point {
 
@@ -99,5 +100,37 @@ public class Point {
 		}
 	
 	}	
+	
+	
+	public double zProectionOnEdge(Edge edge){
+		
+		Block block = edge.block;
+
+		Point angle00 = block.angleAtAddress(edge.anglesAddresses[0][0]);
+		
+		Vector vector1 = edge.vector1;
+		Vector vector2 = edge.vector2;
+		
+		Matrix A = new Matrix(2, 2);
+		A.data[0][0] = vector1.dx;
+		A.data[0][1] = vector1.dy;
+		A.data[1][0] = vector2.dx;
+		A.data[1][1] = vector2.dy;
+		
+		Vector V = new Vector(angle00, this);
+		
+		Matrix X0 = new Matrix(2, 1);
+		X0.data[0][0] = V.dx;
+		X0.data[1][0] = V.dy;
+		
+		Matrix Y0 = A.solve(X0);
+		
+		Point proection = new Point(
+				new Point(this, new Vector(Y0.data[0][0], vector1)), 
+				new Vector(Y0.data[1][0], vector2));
+		
+		return proection.z;
+
+	}
 	
 }	
