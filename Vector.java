@@ -19,6 +19,14 @@ public class Vector {
 		
 	}	
 	
+	public Vector(Point point0, Point point1){
+		
+		this.dx = point1.x - point0.x; 
+		this.dy = point1.y - point0.y; 
+		this.dz = point1.z - point0.z;
+		
+	}	
+	
 	public Vector(double coef, Vector vector){
 		
 		this.dx = coef * vector.dx; 
