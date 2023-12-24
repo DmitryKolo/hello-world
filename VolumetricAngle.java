@@ -310,9 +310,9 @@ public class VolumetricAngle {
 			
 	public void draw(Graphics2D g){
 				
-		edge1.draw(g);
-		edge2.draw(g);
-		edge3.draw(g);
+//		edge1.draw(g);
+//		edge2.draw(g);
+//		edge3.draw(g);
 		
 	}
 }

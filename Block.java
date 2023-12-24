@@ -22,6 +22,8 @@ public class Block {
 	public Point centre = Point.NULL;
 	public Address3D nearestAngleAddress; 
 	public Point nearestAngle;
+	
+	ArrayList<Edge> edgeCollection = new ArrayList<Edge>();
 
 	private double speed;
 
@@ -86,8 +88,7 @@ public class Block {
 		this.CalculateAngles();
 		
 	}
-	
-	
+		
 	// Functions
 	
 	public void RecalculateBasis(){
@@ -179,9 +180,9 @@ public class Block {
 	
 	public void rotate(double rotateAngleZ){
 	
-		for(int i = 0; i < 2; i++){
-			for(int j = 0; j < 2; j++){
-				for(int k = 0; k < 2; k++){
+		for(int i = 0; i < Axis.ENDS_QUANTITY; i++){
+			for(int j = 0; j < Axis.ENDS_QUANTITY; j++){
+				for(int k = 0; k < Axis.ENDS_QUANTITY; k++){
 					
 					double dx = (- 0.5 + i) * Cube.DIMENSION;
 					double dy = (- 0.5 + j) * Cube.DIMENSION;
@@ -210,7 +211,14 @@ public class Block {
 	}
 	
 	
-	public void update(ArrayList<Edge> edgeCollection){
+	public static void updateCollection(ArrayList<Block> blockCollect){ /// , ArrayList<Edge> edgeCollection){
+
+		for(Block block : blockCollect) block.update();
+
+	}
+	
+	
+	public void update(){ 
 		
 		double rotateAngle = speed;
 
@@ -301,81 +309,10 @@ public class Block {
 		nearestAngleAddress = nearestAngleAddress();
 		nearestAngle = angleAtAddress(nearestAngleAddress);
 		
-		edgeCollection.add(new Edge(this, 0, nearestAngleAddress.i));
-		edgeCollection.add(new Edge(this, 1, nearestAngleAddress.j));
-		edgeCollection.add(new Edge(this, 2, nearestAngleAddress.k));
-
-	}
-	
-	
-	public void draw(Graphics2D g, Color color){
+		edgeCollection.clear();
 		
-		for (int i = 0; i < Cube.DIMENSION; i++){
-			Point angle00 = nearestAngle;
-			Point angle01;
-			Point angle10;
-			Point angle11;
-			switch(i){
-			case 0: 
-				angle01 = angleAtAddress( new Address3D(    nearestAngleAddress.i,     nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
-				angle10 = angleAtAddress( new Address3D(    nearestAngleAddress.i, 1 - nearestAngleAddress.j,     nearestAngleAddress.k) );
-				angle11 = angleAtAddress( new Address3D(    nearestAngleAddress.i, 1 - nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
-				break;
-			case 1: 
-				angle01 = angleAtAddress( new Address3D(    nearestAngleAddress.i,     nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
-				angle10 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i,     nearestAngleAddress.j,     nearestAngleAddress.k) );
-				angle11 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i,     nearestAngleAddress.j, 1 - nearestAngleAddress.k) );
-				break;
-			default: 
-				angle01 = angleAtAddress( new Address3D(    nearestAngleAddress.i, 1 - nearestAngleAddress.j,     nearestAngleAddress.k) );
-				angle10 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i,     nearestAngleAddress.j,     nearestAngleAddress.k) );
-				angle11 = angleAtAddress( new Address3D(1 - nearestAngleAddress.i, 1 - nearestAngleAddress.j,     nearestAngleAddress.k) );
-				break;
-			}
-      		g.setColor(Color.WHITE);
-		
-      		int argX[] = {(int)angle00.x, (int)angle01.x, (int)angle11.x, (int)angle10.x};
-      		int argY[] = {(int)angle00.y, (int)angle01.y, (int)angle11.y, (int)angle10.y};
-      		g.fillPolygon(argX, argY, 4);
-		}
-
-		g.setColor(color);
-		
-		for (int i = 0; i < angle.length; i++){
-		    for (int j = 0; j < angle[i].length; j++){
-		    	
-		    	Point angle0;
-		    	Point angle1;
-		    	
-		    	if (i == nearestAngleAddress.j || j == nearestAngleAddress.k) {
-		    		g.setColor(Color.RED);
-			    	angle0 = angle[0][i][j];
-			    	angle1 = angle[1][i][j];
-			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
-		    	}
-				
-		    	if (i == nearestAngleAddress.i || j == nearestAngleAddress.k) {
-		    		g.setColor(Color.RED);
-			    	angle0 = angle[i][0][j];
-			    	angle1 = angle[i][1][j];
-			    	GamePanel.drawLine(g, angle0, angle1, cube.centre);
-		    	}
-		    	
-		    	if (i == nearestAngleAddress.i || j == nearestAngleAddress.j) {
-		    		g.setColor(Color.RED);
-		    		angle0 = angle[i][j][0];
-		    		angle1 = angle[i][j][1];
-		    		GamePanel.drawLine(g, angle0, angle1, cube.centre);
-		    	}
-		    }
-	    }
-		
-		g.setColor(Color.RED);
-
-		double r = 5;
-		double x0 = cube.centre.x + nearestAngle.x - r/2;
-		double y0 = cube.centre.y + nearestAngle.y - r/2;
-		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
+		for(int i = 0; i < Cube.DIMENSION; i++)
+			edgeCollection.add(new Edge(this, i, nearestAngleAddress.getCoordinate(i)));
 
 	}
 	
@@ -384,10 +321,11 @@ public class Block {
 		return angle[address.i][address.j][address.k];
 	}
 		
+	
 	public Address3D nearestAngleAddress(){
 		
-		Address3D upperAngleAddress = new Address3D(0, 0, 0);
-		Point upperAngle = angleAtAddress(upperAngleAddress);
+		Address3D selectedAngleAddress = new Address3D(0, 0, 0);
+		Point selectedAngle = angleAtAddress(selectedAngleAddress);
 		//System.out.println("   Angle["+0+","+0+","+0+"]: z = "+upperAngle.z);
 				
 		for (int i = 0; i < angle.length; i++){
@@ -396,61 +334,199 @@ public class Block {
 			    	
 			    	Address3D currentAddress = new Address3D(i, j, k);
 			    	Point currentAngle = angleAtAddress(currentAddress);
-			    	if (upperAngle.z > currentAngle.z){
-			    		upperAngleAddress = currentAddress;
-			    		upperAngle = angleAtAddress(upperAngleAddress);
-						//System.out.println("   Angle["+i+","+j+","+k+"]: z = " + upperAngle.z + " < " + currentAngle.z);
+			    	if (selectedAngle.z < currentAngle.z){
+			    		selectedAngleAddress = currentAddress;
+			    		selectedAngle = angleAtAddress(selectedAngleAddress);
 					}
 				}
 			}
 	    }
 		
-		return upperAngleAddress;
+		return selectedAngleAddress;
 		
 	}
 	
-	
-	public static void drawCollection(Graphics2D g, ArrayList<Block> blockCollect){
-		
-		//System.out.println("Collection");
-		
-//		for(Block block : blockCollect){
-//			block.nearestAngle = block.angleAtAddress( block.nearestAngleAddress() );
-//			System.out.println("block.nearestAngle.z = " + block.nearestAngle.z);
-//			//block.draw(g, Color.MAGENTA);
-//		}
 
-		for(int i = 0; i < blockCollect.size() - 1; i++){
-			for(int j = i + 1; j < blockCollect.size(); j++){
-				if(blockCollect.get(i).nearestAngle.z < blockCollect.get(j).nearestAngle.z){
-					Block temp = blockCollect.get(i);
-					blockCollect.set(i, blockCollect.get(j));
-					blockCollect.set(j, temp);
-					//blockCollect.System.out.println("Collection swap: " + i + " " + j);
+	public void draw(Graphics2D g, Color color){
+		
+		for(Edge edge : edgeCollection){
+			
+			Point angle00 = angleAtAddress(edge.anglesAddresses[0][0]);
+			Point angle01 = angleAtAddress(edge.anglesAddresses[0][1]);
+			Point angle10 = angleAtAddress(edge.anglesAddresses[1][0]);
+			Point angle11 = angleAtAddress(edge.anglesAddresses[1][1]);
+			
+   	    	GamePanel.drawLine(g, angle00, angle01, cube.centre, color);
+	    	GamePanel.drawLine(g, angle01, angle11, cube.centre, color);
+	    	GamePanel.drawLine(g, angle11, angle10, cube.centre, color);
+	    	GamePanel.drawLine(g, angle10, angle00, cube.centre, color);
+	    	
+    		int argX[] = {(int)angle00.x, (int)angle01.x, (int)angle11.x, (int)angle10.x};
+      		int argY[] = {(int)angle00.y, (int)angle01.y, (int)angle11.y, (int)angle10.y};
+      		
+//	   		g.setColor(Color.WHITE);
+//	   		g.fillPolygon(argX, argY, 4);
+//	   		
+//	   		System.out.println("[0][0] = "); edge.anglesAddresses[0][0].print();
+//	   		System.out.println("[0][1] = "); edge.anglesAddresses[0][1].print();
+//	   		System.out.println("[1][0] = "); edge.anglesAddresses[1][0].print();
+//	   		System.out.println("[1][1] = "); edge.anglesAddresses[1][1].print();
+      		
+      		edge.draw(g);
+	   		      		
+		}
+	
+		nearestAngle.draw(g, cube.centre, Color.RED, 5);
+
+	}
+	
+	
+	public static void drawCollection(Graphics2D g, ArrayList<Block> blockCollection){
+		
+		Block.arrangeCollection(blockCollection, g);
+		
+		Color color = Color.MAGENTA;
+				
+		for(Block block : blockCollection){
+			block.draw(g, color);
+			if(color == Color.MAGENTA) color = Color.GRAY;
+			else if(color == Color.GRAY) color = Color.LIGHT_GRAY;
+			
+		}
+		
+	}
+
+
+	public static void arrangeCollection(ArrayList<Block> collection, Graphics2D g){
+		
+		for(int n = 0; n < collection.size() - 1; n++){
+			for(int m = n + 1; m < collection.size(); m++){
+
+				Block blockN = collection.get(n);
+				Block blockM = collection.get(m);
+				
+				int n_hasLargerOrSmallerZ_m = blockN.hasLargerOrSmallerZ(blockM, g, null); // Color.GREEN);
+				//System.out.println("n hasLargerOrSmallerZ m = " + n_hasLargerOrSmallerZ_m);
+				
+				if(n_hasLargerOrSmallerZ_m == 1){
+					collection.set(n, blockM);
+					collection.set(m, blockN);
+					//System.out.println("swap "+n+" - "+m);
+				}
+				if(n_hasLargerOrSmallerZ_m != 0) continue;
+				
+				int m_hasLargerOrSmallerZ_n = blockM.hasLargerOrSmallerZ(blockN, g, Color.GRAY);
+				//System.out.println("m hasLargerOrSmallerZ n = " + m_hasLargerOrSmallerZ_n);
+				
+				if(m_hasLargerOrSmallerZ_n == -1){
+					collection.set(n, blockM);
+					collection.set(m, blockN);
+					//System.out.println("swap "+m+" - "+n);
 				}
 			}
 		}
-
-		//System.out.println("draw Collection");
+	}
+	
+	
+	public int hasLargerOrSmallerZ (Block bloñkA, Graphics2D g, Color color){
 		
-//		for(Block block : blockCollect){
-//		//block.nearestAngle = block.angleAtAddress( block.nearestAngleAddress() );
-//		System.out.println("block.nearestAngle.z = "+block.nearestAngle.z);
-//		block.draw(g, Color.MAGENTA);
-		for(Block block : blockCollect){
-		//block.nearestAngle = block.angleAtAddress( block.nearestAngleAddress() );
-		//System.out.println("block.nearestAngle.z = " + block.nearestAngle.z);
-		block.draw(g, Color.MAGENTA);
+		Block blockN = this;
+		Block blockM = bloñkA;
+		
+		Address3D nearestAngleAddressN = blockN.nearestAngleAddress;
+				
+		Point[] visibleAngleN = new Point[7];
+		visibleAngleN[0] = blockN.angle[    nearestAngleAddressN.i][    nearestAngleAddressN.j][    nearestAngleAddressN.k];
+		visibleAngleN[1] = blockN.angle[    nearestAngleAddressN.i][    nearestAngleAddressN.j][1 - nearestAngleAddressN.k];
+		visibleAngleN[2] = blockN.angle[    nearestAngleAddressN.i][1 - nearestAngleAddressN.j][    nearestAngleAddressN.k];
+		visibleAngleN[3] = blockN.angle[1 - nearestAngleAddressN.i][    nearestAngleAddressN.j][    nearestAngleAddressN.k];
+		visibleAngleN[4] = blockN.angle[    nearestAngleAddressN.i][1 - nearestAngleAddressN.j][1 - nearestAngleAddressN.k];
+		visibleAngleN[5] = blockN.angle[1 - nearestAngleAddressN.i][    nearestAngleAddressN.j][1 - nearestAngleAddressN.k];
+		visibleAngleN[6] = blockN.angle[1 - nearestAngleAddressN.i][1 - nearestAngleAddressN.j][    nearestAngleAddressN.k];
+				
+		int testI = 10;
+		int testII = 20;
+		
+		int ii = 0;
+		
+		for (Point angleN : visibleAngleN){
+			
+			ii++;
+//			if(ii==3) {
+//				angleN.draw(g, cube.centre, Color.GREEN, 9);
+//				System.out.println("3   angleN: x = " + angleN.x + ", y = " + angleN.y + ", z = " + angleN.z);
+//			}
+			if(ii == testII) {
+				//angleN.draw(g, cube.centre, Color.MAGENTA, 9);
+				System.out.println("   angleN: x = " + angleN.x + ", y = " + angleN.y + ", z = " + angleN.z);
+			}
+			
+			//angleN.draw(g, cube.centre, Color.GREEN, 9);
+			
+			int i = 0;
+			
+			for (Edge edgeM : blockM.edgeCollection){
+				
+				//if(color != null && i == testI) edgeM.drawAngles(g, color);
+				
+				Proection proectionNM = angleN.ProectionOnEdge(edgeM);
+				
+//				if(ii==3) {
+//					proectionNM.point.draw(g, cube.centre, Color.GRAY, 12);
+//					System.out.println("      edge index = " + i + ". proectionNM.inside = " + proectionNM.inside + ". proectionNM: õ = " + proectionNM.point.x + ", y = " + proectionNM.point.y + " z = " + proectionNM.point.z);
+//				}
+				if(ii == testII) {
+					if(i == testI){
+						proectionNM.pointI.draw(g, cube.centre, Color.DARK_GRAY, 10);
+						proectionNM.pointJ.draw(g, cube.centre, Color.DARK_GRAY, 10);
+						proectionNM.point.draw(g, 
+								cube.centre, 
+								proectionNM.point.z < angleN.z ? Color.DARK_GRAY : Color.GRAY, 
+								proectionNM.inside ? 15 : 8);
+						
+						Point ang00 = edgeM.block.angleAtAddress(edgeM.anglesAddresses[0][0]);
+						Point ang01 = edgeM.block.angleAtAddress(edgeM.anglesAddresses[0][1]);
+						Point ang10 = edgeM.block.angleAtAddress(edgeM.anglesAddresses[1][0]);
+						Point ang11 = edgeM.block.angleAtAddress(edgeM.anglesAddresses[1][1]);
+						//angleN.draw(g, cube.centre, Color.GREEN, 2);
+						ang00.draw(g, cube.centre, Color.RED, 10);
+						ang01.draw(g, cube.centre, Color.RED, 5);
+						ang10.draw(g, cube.centre, Color.RED, 5);
+						ang11.draw(g, cube.centre, Color.RED, 5);
+//						GamePanel.drawLine(g, ang00, proectionNM.point, edgeM.block.cube.centre);
+//						GamePanel.drawLine(g, ang01, proectionNM.point, edgeM.block.cube.centre);
+//						GamePanel.drawLine(g, ang10, proectionNM.point, edgeM.block.cube.centre);
+						GamePanel.drawLine(g, proectionNM.pointI, angleN, edgeM.block.cube.centre, Color.GREEN);
+						GamePanel.drawLine(g, proectionNM.pointJ, angleN, edgeM.block.cube.centre, Color.GREEN);
+						GamePanel.drawLine(g, proectionNM.pointI, ang00, edgeM.block.cube.centre, Color.GREEN);
+						GamePanel.drawLine(g, proectionNM.pointJ, ang00, edgeM.block.cube.centre, Color.GREEN);
+						GamePanel.drawLine(g, angleN, ang00, edgeM.block.cube.centre, Color.GREEN);
+						System.out.println("      edge index = " + i + ". ang00: õ = " + ang00.x + ", y = " + ang00.y + " z = " + ang00.z);
+						System.out.println("      edge index = " + i + ". proectionNM.vI: dõ = " + proectionNM.vI.dx + ", dy = " + proectionNM.vI.dy + " dz = " + proectionNM.vI.dz);
+						System.out.println("      edge index = " + i + ". proectionNM.vJ: dõ = " + proectionNM.vJ.dx + ", dy = " + proectionNM.vJ.dy + " dz = " + proectionNM.vJ.dz);
+						System.out.println("      edge index = " + i + ". proectionNM.inside = " + proectionNM.inside + ". proectionNM: õ = " + proectionNM.point.x + ", y = " + proectionNM.point.y + " z = " + proectionNM.point.z);
+						System.out.println("      edge index = " + i + ". coefI = " + proectionNM.coefI + ", coefJ = " + proectionNM.coefJ);
+					}
+				}
+				
+				i++;
+				
+				if(proectionNM.inside){
+					if(proectionNM.point.z < angleN.z) return 1;
+					else if (proectionNM.point.z > angleN.z) return -1;
+				}
+			}
 		}
+		return 0;
 	}
 	
 	
-	public static void updateCollection(ArrayList<Block> blockCollect, ArrayList<Edge> edgeCollection){
-		edgeCollection.clear();
-		for(Block block : blockCollect){
-			block.update(edgeCollection);
-			System.out.println("edgeCollection size = " + edgeCollection.size());
-		}
+	public Point returnAndDrawAngle(int i, int j, int k, Graphics2D g){
+		
+		Point angle0 = angle[i][j][k];
+		//angle0.draw(g, cube.centre);
+		
+		return angle0;
 	}
-	
+		
 }
