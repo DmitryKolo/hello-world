@@ -14,7 +14,8 @@ public class GameBack {
 	
 	// Functions
 	
-	public void update(){
+	public void update(Color color){
+		//this.color = color;
 		
 	}
 	

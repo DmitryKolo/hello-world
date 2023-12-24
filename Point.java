@@ -1,4 +1,5 @@
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
@@ -32,43 +33,19 @@ public class Point {
 	
 	// Functions
 	
-	// Rotate functions are outdated; head on over to method for a Vector; rotate only basis; not rotate points but recalculate it from basis
+	public void draw(Graphics2D g, Point origin, Color color, int radius){
+		
+		GamePanel.drawPoint(g, this, origin, color, radius);
+		
+	}
+
 	
-//	public void rotateX(double rotateAngle){ 
-//	
-//		double atan2 = Math.atan2(z, y);
-//		double r = Math.sqrt(y*y + z*z);
-//		
-//		atan2 += rotateAngle;
-//		
-//		y = Math.cos(atan2) * r;
-//		z = Math.sin(atan2) * r;
-//
-//	}
-//	
-//	public void rotateY(double rotateAngle){
-//	
-//		double atan2 = Math.atan2(x, z);
-//		double r = Math.sqrt(z*z + x*x);
-//		
-//		atan2 += rotateAngle;
-//		
-//		z = Math.cos(atan2) * r;
-//		x = Math.sin(atan2) * r;
-//
-//	}
-//	
-//	public void rotateZ(double rotateAngle){
-//	
-//		double atan2 = Math.atan2(y, x);
-//		double r = Math.sqrt(x*x + y*y);
-//		
-//		atan2 += rotateAngle;
-//		
-//		x = Math.cos(atan2) * r;
-//		y = Math.sin(atan2) * r;
-//
-//	}
+	public void draw(Graphics2D g, Point origin){
+		
+		GamePanel.drawPoint(g, this, origin, Color.BLACK, 6);
+		
+	}
+
 	
 	public void rotateXYZ(double rotateAngleX, double rotateAngleY, double rotateAngleZ){
 		
@@ -102,7 +79,7 @@ public class Point {
 	}	
 	
 	
-	public double zProectionOnEdge(Edge edge){
+	public Proection ProectionOnEdge(Edge edge){
 		
 		Block block = edge.block;
 
@@ -113,8 +90,8 @@ public class Point {
 		
 		Matrix A = new Matrix(2, 2);
 		A.data[0][0] = vector1.dx;
-		A.data[0][1] = vector1.dy;
-		A.data[1][0] = vector2.dx;
+		A.data[1][0] = vector1.dy;
+		A.data[0][1] = vector2.dx;
 		A.data[1][1] = vector2.dy;
 		
 		Vector V = new Vector(angle00, this);
@@ -125,11 +102,23 @@ public class Point {
 		
 		Matrix Y0 = A.solve(X0);
 		
-		Point proection = new Point(
-				new Point(this, new Vector(Y0.data[0][0], vector1)), 
-				new Vector(Y0.data[1][0], vector2));
+		double yI = Y0.data[0][0]; 
+		double yJ = Y0.data[1][0];
 		
-		return proection.z;
+		Vector vectorI = new Vector(yI, vector1);
+		Vector vectorJ = new Vector(yJ, vector2);
+		
+		Point pointI = new Point(angle00, vectorI);
+		Point pointJ = new Point(angle00, vectorJ);
+		
+		Point proectionPoint = new Point(pointI, vectorJ);
+		
+		return new Proection(
+			yI >= 0 && yI <= 1 && yJ >= 0 && yJ <= 1, 
+			proectionPoint, 
+			yI, yJ,
+			pointI, pointJ,
+			vector1, vector2);
 
 	}
 	

@@ -10,8 +10,8 @@ public class GamePanel extends JPanel implements Runnable{
 
 	// Fields
 	
-	public static int WIDTH = 500;
-	public static int HEIGHT = 500;
+	public static int WIDTH = 600;
+	public static int HEIGHT = 600;
 	
 	private Thread thread;
 	
@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements Runnable{
 	//public Block[] blockCollection;
 	
 	ArrayList<Block> blockCollection = new ArrayList<Block>();
-	ArrayList<Edge> edgeCollection = new ArrayList<Edge>();
+	//ArrayList<Edge> edgeCollection = new ArrayList<Edge>();
 	
 	// Constructor
 	
@@ -50,6 +50,8 @@ public class GamePanel extends JPanel implements Runnable{
 		thread = new Thread(this);
 		thread.start();
 	}
+	
+	
 	public void run() {
 		
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -152,21 +154,17 @@ public class GamePanel extends JPanel implements Runnable{
 		yC = yC * coAC;
 		zC = zC * coAC;
 		
-//		System.out.println("xC = " + xC);
-//		System.out.println("yC = " + yC);
-//		System.out.println("zC = " + zC);
-
 		rC2 = xC * xC + yC * yC + zC * zC;
 //		System.out.println("r—(2) = " + rC2);
 		
 		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
 		
-		//cube = new Cube(3, new Point(WIDTH/2, HEIGHT/2, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
-		cube = new Cube(3, new Point(0, 0, 0), new Vector(50, 1, -2), new Vector(0, 50, -5), new Vector(1.5, 5, 50));
+		cube = new Cube(3, new Point(0, 0, 0), new Vector(-xA, -yA, -zA), new Vector(-xB, -yB, -zB), new Vector(-xC, -yC, -zC));
+		//cube = new Cube(3, new Point(0, 0, 0), new Vector(35, 10, -2), new Vector(-5, 30, -5), new Vector(2, 6, 45));
 		
-		blockCollection.add(new Block(cube, 1, 0, 0, 0.0035)); 
-		blockCollection.add(new Block(cube, 1, 1, 1, 0.0011)); 
-		blockCollection.add(new Block(cube, 1, 2, 2, 0.0008)); 
+		blockCollection.add(new Block(cube, 1, 0, 0, 0.13)); 
+		blockCollection.add(new Block(cube, 1, 1, 1, 0.27)); 
+		blockCollection.add(new Block(cube, 1, 2, 2, 0.18)); 
 							
 		while(true){
 			
@@ -175,7 +173,7 @@ public class GamePanel extends JPanel implements Runnable{
 			gameDraw();
 			
 			try {
-				thread.sleep(33);
+				thread.sleep(90);
 			} catch (InterruptedException e){
 				e.printStackTrace();
 			}
@@ -184,10 +182,8 @@ public class GamePanel extends JPanel implements Runnable{
 		
 	}
 	
+	
 	public void gameUpdate(){
-		
-		// Background update
-		background.update();
 		
 		// Player update
 		player.update();
@@ -197,9 +193,13 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		cube.update();
 		
-		Block.updateCollection(blockCollection, edgeCollection);
+		// Background update
+		background.update(cube.tile[0][1][2][1]);
+		
+		Block.updateCollection(blockCollection); ///, edgeCollection);
 		
 	}
+	
 	
 	public void gameRender(){
 		
@@ -207,16 +207,12 @@ public class GamePanel extends JPanel implements Runnable{
 		background.draw(g);
 		
 		// Volumetric Angle draw
-		vAngle.draw(g);
+		//vAngle.draw(g);
 		
 		// Player draw
 		player.draw(g);
 		
 		//cube.draw(g);
-		
-//		block.draw(g, Color.BLACK);
-//		block0.draw(g, Color.GREEN);
-//		block1.draw(g, Color.RED);
 		
 		Block.drawCollection(g, blockCollection);
 
@@ -228,7 +224,7 @@ public class GamePanel extends JPanel implements Runnable{
 		g2.dispose();
 	}
 	
-	public static void drawLine(Graphics2D g, Point beginingPoint, Point endingPoint, Point originPoint){
+	public static void drawLine(Graphics2D g, Point beginingPoint, Point endingPoint, Point originPoint, Color color){
 		
 //		Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 //	   	g.setStroke(dashed); //2d
@@ -238,7 +234,19 @@ public class GamePanel extends JPanel implements Runnable{
     	double xE = endingPoint.x + originPoint.x;
     	double yE = endingPoint.y + originPoint.y;
     	
-		g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
+    	g.setColor(color);
+    	g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
+	}	
+	
+	
+	public static void drawPoint(Graphics2D g, Point point, Point origin, Color color, int radius){
+		
+		g.setColor(color);
+		
+		double x0 = point.x + origin.x - radius / 2;
+    	double y0 = point.y + origin.y - radius / 2;
+     	
+		g.fillOval((int)x0, (int)y0, (int)radius, radius);
 	}
 
 }

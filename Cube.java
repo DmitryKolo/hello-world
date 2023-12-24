@@ -17,6 +17,8 @@ public class Cube {
 	public Point cornerA0B0C0, cornerA0B0C1, cornerA0B1C0, cornerA0B1C1, cornerA1B0C0, cornerA1B0C1, cornerA1B1C0, cornerA1B1C1; // перейти на Angle
 	Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
+	Color[][][][] tile = new Color[DIMENSION][Axis.ENDS_QUANTITY][3][3];
+	
 	private Address3D upperAngle; 
 	
 	private double speed = 1;
@@ -47,21 +49,9 @@ public class Cube {
 		
 		for (int i = 0; i < DIMENSION; i++)
 			this.axis[i] = new Axis(i, basis, size, centre, 0, size - 1);
+		
+		CalculateTransitionMatrix();
 	
-		this.transitionMatrix.data[0][0] = vectorA.dx;
-		this.transitionMatrix.data[0][1] = vectorA.dy;
-		this.transitionMatrix.data[0][2] = vectorA.dz;
-		this.transitionMatrix.data[0][3] = GamePanel.WIDTH / 2;
-		
-		this.transitionMatrix.data[1][0] = vectorB.dx;
-		this.transitionMatrix.data[1][1] = vectorB.dy;
-		this.transitionMatrix.data[1][2] = vectorB.dz;
-		this.transitionMatrix.data[1][3] = GamePanel.HEIGHT / 2;
-		
-		this.transitionMatrix.data[2][0] = vectorC.dx;
-		this.transitionMatrix.data[2][1] = vectorC.dy;
-		this.transitionMatrix.data[2][2] = vectorC.dz;
-		
 		for (int i = 0; i < angle.length; i++){
 			
 			double halfsize = size / 2;
@@ -86,68 +76,57 @@ public class Cube {
 		
 		this.upperAngle = this.upperAngleAddress();
 		
-		// to improve: first, create a three-dimensional array of vertices (angle), then specify them in the edges of the axes
-//		edgesPairA = new PairOfEdges(size, centre, vectorA, vectorB, vectorC);
-//		edgesPairB = new PairOfEdges(size, centre, vectorB, vectorC, vectorA);
-//		edgesPairC = new PairOfEdges(size, centre, vectorC, vectorA, vectorB);
-		
-//		this.axis[0] = new Axis(vectorA, edgesPairA.edge0, edgesPairA.edge1); 
-//		this.axis[1] = new Axis(vectorB, edgesPairB.edge0, edgesPairB.edge1);
-//		this.axis[2] = new Axis(vectorC, edgesPairC.edge0, edgesPairC.edge1);
-		
+		for(int i = 0; i < DIMENSION - 1; i++)
+		    for (int n = 0; n < Axis.ENDS_QUANTITY - 1; n++)
+			    for (int j = 0; j < size - 1; j++)
+				    for (int k = 0; k < size - 1; k++)
+				    	tile[i][n][j][k] = Color.getHSBColor(Float.intBitsToFloat(i), Float.intBitsToFloat(n + k), Float.intBitsToFloat(j));
 	}
 			
 	// Functions
 	
-//	public void rotateX(double rotateAngle){
-//		
-//		for (int i = 0; i < angle.length; i++)
-//		    for (int j = 0; j < angle[i].length; j++)
-//			    for (int k = 0; k < angle[i][j].length; k++)
-//					angle[i][j][k].rotateX(rotateAngle); 
-//		
-//		for (int i = 0; i < axis.length; i++)
-//			axis[i].vector.rotateXYZ(rotateAngle, 0, 0); 
-//	}	
-//			    
-//	public void rotateY(double rotateAngle){
-//		
-//		for (int i = 0; i < angle.length; i++)
-//		    for (int j = 0; j < angle[i].length; j++)
-//			    for (int k = 0; k < angle[i][j].length; k++)
-//					angle[i][j][k].rotateY(rotateAngle); 
-//		for (int i = 0; i < axis.length; i++)
-//			axis[i].vector.rotateXYZ(0, rotateAngle, 0); 
-//	}	
-//			    
-//	public void rotateZ(double rotateAngle){
-//		
-//		for (int i = 0; i < angle.length; i++)
-//		    for (int j = 0; j < angle[i].length; j++)
-//			    for (int k = 0; k < angle[i][j].length; k++)
-//					angle[i][j][k].rotateZ(rotateAngle); 
-//		for (int i = 0; i < axis.length; i++)
-//			axis[i].vector.rotateXYZ(0, 0, rotateAngle); 
-//	}	
-	
+	public void CalculateTransitionMatrix(){
+		
+		transitionMatrix.data[0][0] = vectorA.dx;
+		transitionMatrix.data[0][1] = vectorA.dy;
+		transitionMatrix.data[0][2] = vectorA.dz;
+		transitionMatrix.data[0][3] = GamePanel.WIDTH / 2;
+		
+		transitionMatrix.data[1][0] = vectorB.dx;
+		transitionMatrix.data[1][1] = vectorB.dy;
+		transitionMatrix.data[1][2] = vectorB.dz;
+		transitionMatrix.data[1][3] = GamePanel.HEIGHT / 2;
+		
+		transitionMatrix.data[2][0] = vectorC.dx;
+		transitionMatrix.data[2][1] = vectorC.dy;
+		transitionMatrix.data[2][2] = vectorC.dz;
+		
+	}
+
+		
 	public void rotateV(Vector rotateAxis, double rotateAngle){
 		
 		Vector normalAxis = new Vector(rotateAxis);
 		
-		for (int i = 0; i < angle.length; i++)
-		    for (int j = 0; j < angle[i].length; j++)
-			    for (int k = 0; k < angle[i][j].length; k++){
-//					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
-//					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
-//					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
-			    	angle[i][j][k].rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz);
-			    } // отказаться: перейти к пересчету углов после пересчета векторов
+//		for (int i = 0; i < angle.length; i++)
+//		    for (int j = 0; j < angle[i].length; j++)
+//			    for (int k = 0; k < angle[i][j].length; k++){
+////					angle[i][j][k].rotateX(rotateAngle * normalAxis.dx); 
+////					angle[i][j][k].rotateY(rotateAngle * normalAxis.dy); 
+////					angle[i][j][k].rotateZ(rotateAngle * normalAxis.dz); 
+//			    	angle[i][j][k].rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz);
+//			    } // отказаться: перейти к пересчету углов после пересчета векторов
+//		
+//		for (int i = 0; i < axis.length; i++){
+//			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+//		}	
 		
-		for (int i = 0; i < axis.length; i++){
-			//System.out.println("Cube vector ["+i+"] sta = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
-			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-			//System.out.println("Cube vector ["+i+"] end = ("+axis[i].vector.dx+", "+axis[i].vector.dy+", "+axis[i].vector.dz+")");
-		}	
+		vectorA.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+		vectorB.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+		vectorC.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
+		
+		CalculateTransitionMatrix();
+		
 	}
 	
 	public void update(){
@@ -219,8 +198,6 @@ public class Cube {
 	
 	public void draw(Graphics2D g){
 		
-		g.setColor(Color.GREEN);
-		
 		for (int i = 0; i < angle.length; i++){
 		    for (int j = 0; j < angle[i].length; j++){
 		    	
@@ -230,19 +207,19 @@ public class Cube {
 		    	if (i == upperAngle.i || j == upperAngle.j) {
 		    		angle0 = angle[i][j][0];
 		    		angle1 = angle[i][j][1];
-		    		GamePanel.drawLine(g, angle0, angle1, centre);
+		    		GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
 		    	}
 				
 		    	if (i == upperAngle.i || j == upperAngle.k) {
 			    	angle0 = angle[i][0][j];
 			    	angle1 = angle[i][1][j];
-			    	GamePanel.drawLine(g, angle0, angle1, centre);
+			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
 		    	}
 				
 		    	if (i == upperAngle.j || j == upperAngle.k) {
 			    	angle0 = angle[0][i][j];
 			    	angle1 = angle[1][i][j];
-			    	GamePanel.drawLine(g, angle0, angle1, centre);
+			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
 		    	}
 		    }
 	    }
@@ -255,8 +232,6 @@ public class Cube {
 		double x0 = centre.x + currentUpperAngle.x - r/2;
 		double y0 = centre.y + currentUpperAngle.y - r/2;
 		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
-		//g.setColor(color1);
-		//g.fillOval((int)x1, (int)y1, 2 * r1, 2 * r1);
 			
 	}
 				

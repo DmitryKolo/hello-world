@@ -7,7 +7,7 @@ public class Edge {
 	// Fields
 	
 	public int size; 
-	public Point centre, corner12, corner12cw, corner1cw2, corner1cw2cw;
+	public Point centre; //, corner12, corner12cw, corner1cw2, corner1cw2cw;
 	
 	private double x;
 	private double y;
@@ -93,10 +93,10 @@ public class Edge {
 		double d2y = vector2.dy * size / 2;
 		double d2z = vector2.dz * size / 2;
 		
-		this.corner12 = new Point(centre.x + d1x + d2x, centre.y + d1y + d2y, centre.z + d1z + d2z);
-		this.corner12cw = new Point(centre.x + d1x - d2x, centre.y + d1y - d2y, centre.z + d1z - d2z);
-		this.corner1cw2 = new Point(centre.x - d1x + d2x, centre.y - d1y + d2y, centre.z - d1z + d2z);
-		this.corner1cw2cw = new Point(centre.x - d1x - d2x, centre.y - d1y - d2y, centre.z - d1z - d2z);
+//		this.corner12 = new Point(centre.x + d1x + d2x, centre.y + d1y + d2y, centre.z + d1z + d2z);
+//		this.corner12cw = new Point(centre.x + d1x - d2x, centre.y + d1y - d2y, centre.z + d1z - d2z);
+//		this.corner1cw2 = new Point(centre.x - d1x + d2x, centre.y - d1y + d2y, centre.z - d1z + d2z);
+//		this.corner1cw2cw = new Point(centre.x - d1x - d2x, centre.y - d1y - d2y, centre.z - d1z - d2z);
 		
 		//System.out.println("("+corner12.x+","+corner12.y+","+corner12.z+"); ("+corner12cw.x+","+corner12cw.y+","+corner12cw.z+");");
 		//System.out.println("    ("+corner1cw2.x+","+corner1cw2.y+","+corner1cw2.z+"); ("+corner1cw2cw.x+","+corner1cw2cw.y+","+corner1cw2cw.z+").");
@@ -180,55 +180,35 @@ public class Edge {
 		
 	
 	public void draw(Graphics2D g){
-				
-//		double xA = x + dxA;
-//		double yA = y + dyA;
-//		double xB = x + dxA + dxC;
-//		double yB = y + dyA + dyC;
-//		double xC = x + dxC;
-//		double yC = y + dyC;
-			
-		row1.draw(g);
-		row2.draw(g);
-		row3.draw(g);
+		
+//		row1.draw(g);
+//		row2.draw(g);
+//		row3.draw(g);
+		
+		Point angle00 = block.angleAtAddress(anglesAddresses[0][0]);
+		Point angle01 = block.angleAtAddress(anglesAddresses[0][1]);
+		Point angle10 = block.angleAtAddress(anglesAddresses[1][0]);
+		Point angle11 = block.angleAtAddress(anglesAddresses[1][1]);
+		
+		int argX[] = {(int)angle00.x, (int)angle01.x, (int)angle11.x, (int)angle10.x};
+  		int argY[] = {(int)angle00.y, (int)angle01.y, (int)angle11.y, (int)angle10.y};
+  		
+   		g.setColor(Color.WHITE);
+   		g.fillPolygon(argX, argY, 4);
+
 	}
 
-
-	public static void arrangeCollection(ArrayList<Edge> collection){
+	
+	public void drawAngles(Graphics2D g, Color color){
 		
-		for(int n = 0; n < collection.size(); n++){
-
-			Edge edge = collection.get(n);
-			Block block = edge.block;
-		
-			Point angle00 = block.angleAtAddress(edge.anglesAddresses[0][0]);
-		
-			Vector vector1 = edge.vector1;
-			Vector vector2 = edge.vector2;
-			
-			for(int m = n + 1; m < collection.size(); m++){
-				
-				Edge edgeA = collection.get(m);
-				Block blockA = edgeA.block;
-				
-				for(int i = 0; i < Axis.ENDS_QUANTITY; i++)
-					for(int j = 0; j < Axis.ENDS_QUANTITY; j++){
-						
-						Point angleA = block.angleAtAddress(edgeA.anglesAddresses[0][0]);
-						
-						double zA = angleA.zProectionOnEdge(edge);
-						
-						if(zA < angleA.z){
-							collection.set(n, edgeA);
-							collection.set(m, edge);
-							//blockCollect.System.out.println("Collection swap: " + i + " " + j);
-						}
-					}
+		for(int i = 0; i < Axis.ENDS_QUANTITY; i++){
+			for(int j = 0; j < Axis.ENDS_QUANTITY; j++){
+				Point angle = block.angleAtAddress(anglesAddresses[i][j]);
+				angle.draw(g, block.cube.centre, color, 10);
 			}
 		}
-
 	}
-	
+
 }
 
 
