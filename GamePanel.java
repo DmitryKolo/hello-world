@@ -159,12 +159,12 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
 		
-		cube = new Cube(3, new Point(0, 0, 0), new Vector(-xA, -yA, -zA), new Vector(-xB, -yB, -zB), new Vector(-xC, -yC, -zC));
+		cube = new Cube(3, new Point(0, 0, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
 		//cube = new Cube(3, new Point(0, 0, 0), new Vector(35, 10, -2), new Vector(-5, 30, -5), new Vector(2, 6, 45));
 		
-		blockCollection.add(new Block(cube, 1, 0, 0, 0.13)); 
-		blockCollection.add(new Block(cube, 1, 1, 1, 0.27)); 
-		blockCollection.add(new Block(cube, 1, 2, 2, 0.18)); 
+		blockCollection.add(new Block(cube, 0, 0, 0, -0.017)); 
+		blockCollection.add(new Block(cube, 0, 1, 1, -0.022)); 
+		blockCollection.add(new Block(cube, 0, 2, 2, 0.008)); 
 							
 		while(true){
 			
