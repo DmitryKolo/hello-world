@@ -6,7 +6,7 @@ public class Edge {
 
 	// Fields
 	
-	public int size; 
+	//public int size; 
 	public Point centre; //, corner12, corner12cw, corner1cw2, corner1cw2cw;
 	
 	private double x;
@@ -24,6 +24,8 @@ public class Edge {
 	public Vector vector0, vector1, vector2;
 			
 	private Color color;	
+	
+	public Color[][] tile = new Color[3][3];
 
 	public static boolean up;
 	public static boolean down;
@@ -74,7 +76,7 @@ public class Edge {
 			
 	public Edge(int size, Point cubeCentre, Vector vector0, Vector vector1, Vector vector2){
 		
-		this.size = size;
+		//this.size = size;
 		this.vector0 = vector0;
 		this.vector1 = vector1;
 		this.vector2 = vector2;
@@ -133,9 +135,22 @@ public class Edge {
 		
 		this.vector1 = new Vector(angle00, angle01);
 		this.vector2 = new Vector(angle00, angle10);
-
+		
+		boolean isSquare = (axisIndex == Cube.DIMENSION - 1);
+		
+		boolean isNotEmptyEdge = !isSquare
+			   		|| ( positionAtAxis == 1 && block.endingIndex == block.cube.size - 1 ) 
+			   		|| ( positionAtAxis == 0 && block.beginingIndex == 0 );
+			   		
+//		boolean isEmptyEdge = ( axisIndex == block.rotatableAxisIndex
+//			&& ( ( positionAtAxis == 0 && block.beginingIndex != 0) || ( positionAtAxis == 1 && block.endingIndex != block.cube.size ) ) );
+			    
+		for (int j = 0; j < block.cube.size; j++)
+		    for (int k = 0; k < block.cube.size; k++){
+		    	if(isNotEmptyEdge) tile[j][k] = block.tile[axisIndex][positionAtAxis][j][k];
+		    	else tile[j][k] = Color.WHITE; 
+		      }
 	}
-			
 		
 	// Functions
 	
@@ -195,9 +210,115 @@ public class Edge {
   		
    		g.setColor(Color.WHITE);
    		g.fillPolygon(argX, argY, 4);
+   		
+   	   	Vector vectorA = new Vector(angle00, angle10);
+		Vector vectorB = new Vector(angle00, angle01);
+		   	
+	   	int beginingIndexA = 0;
+	   	int endingIndexA = block.cube.size - 1;
+	   	
+	   	int tileQuantityA = endingIndexA - beginingIndexA + 1;
+   		Vector vA = new Vector(1.0/tileQuantityA, vectorA);
+	   	
+	   	Point point201 = new Point(angle00, vA);
+	   	Point point211 = new Point(angle01, vA);
+	   		
+	   	GamePanel.drawLine(g, point201, point211, new Point(0,0,0), Color.RED);
+	   		
+	   	Point point202 = new Point(point201, vA);
+	   	Point point212 = new Point(point211, vA);
+	   		
+	   	GamePanel.drawLine(g, point202, point212, new Point(0,0,0), Color.RED);
+	   	
+	   	int beginingIndexB = 0;
+	   	int endingIndexB = block.cube.size - 1;
+	   	
+   		boolean isSquare = (axisIndex == Cube.DIMENSION - 1);
+	   	
+	   	if(!isSquare){
+	   		beginingIndexB = block.beginingIndex;
+	   		endingIndexB = block.endingIndex;
+	   	}
+	   	
+	   	int tileQuantityB = endingIndexB - beginingIndexB + 1;
+	   	Vector vB = new Vector(1.0/tileQuantityB, vectorB);
+	
+	   	if(tileQuantityB > 1){
+	   			
+		   	Point point0 = angle00;
+		   	Point point1 = angle10;
+		   		
+		   	for(int i = 1; i < tileQuantityB; i++){
+		   			
+				point0 = new Point(point0, vB);
+				point1 = new Point(point1, vB);
+			   		
+				GamePanel.drawLine(g, point0, point1, new Point(0,0,0), Color.RED);
+	   			
+		   	}
+	   	}
+	 
+   		Vector vA2 = new Vector(0.5, vA);
+   		Vector vB2 = new Vector(0.5, vB);
+   		
+   		Vector vAp = new Vector(0.85, vA2);
+   		Vector vBp = new Vector(0.85, vB2);
+   		Vector vAm = new Vector(-1.0, vAp);
+   		Vector vBm = new Vector(-1.0, vBp);
+   		
+	   	Point point0 = angle00;
+	   	
+	   	if(isSquare){
+	   		int t = 5;
+	   	}
+   		
+	   	for(int i = beginingIndexA; i <= endingIndexA; i++){
+	   		
+	   		Point point0A = point0;
+	   		Point point1A = new Point(point0A, vA);
+	   		Point point0B = new Point(point0A, vB);
+	   		Point point1B = new Point(point1A, vB);
+	   		
+		   	for(int j = beginingIndexB; j <= endingIndexB; j++){
+		   		
+		   		Point pointC = new Point (new Point (point0A, vA2), vB2);
+		   		
+		   		Point pointC00 = new Point (new Point (pointC, vAm), vBm);
+		   		Point pointC01 = new Point (new Point (pointC, vAm), vBp);
+		   		Point pointC10 = new Point (new Point (pointC, vAp), vBm);
+		   		Point pointC11 = new Point (new Point (pointC, vAp), vBp);
+		   		
+				int argX0[] = {(int)pointC00.x, (int)pointC01.x, (int)pointC11.x, (int)pointC10.x};
+		  		int argY0[] = {(int)pointC00.y, (int)pointC01.y, (int)pointC11.y, (int)pointC10.y};
+		  		
+//		   		g.setColor(tile[i][j]);
+//		   		g.setColor(Color.GREEN);
+		   		
+			   	if(!isSquare
+			   		|| ( positionAtAxis == 1 && block.endingIndex == block.cube.size - 1 ) 
+			   		|| ( positionAtAxis == 0 && block.beginingIndex == 0 ) ) {
+		    	
+			   	}
+				//tile[i][n][j][k] = color;
+				//tile[i][n][j][k] = Color.getHSBColor(Float.intBitsToFloat(i), Float.intBitsToFloat(n + k), Float.intBitsToFloat(j));  					
 
-	}
-
+			   	color = tile[i][j];
+		    	//g.setColor(color);
+			   	g.setColor(color);
+			   	g.fillPolygon(argX0, argY0, 4);
+		   		
+		   		point0A = point0B;
+		   		point1A = point1B;
+		   		point0B = new Point(point0B, vB);
+		   		point1B = new Point(point1B, vB);
+	
+		   	}
+		   	
+		   	point0 = new Point(point0, vA);
+//
+	   	}
+	   	
+   	}
 	
 	public void drawAngles(Graphics2D g, Color color){
 		

@@ -19,6 +19,8 @@ public class Block {
 	public Point[][][] anglesInBasis = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	public Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
+	public Color[][][][] tile = new Color[Cube.DIMENSION][Axis.ENDS_QUANTITY][3][3];
+	
 	public Point centre = Point.NULL;
 	public Address3D nearestAngleAddress; 
 	public Point nearestAngle;
@@ -50,28 +52,10 @@ public class Block {
 		this.rotationAngle = 0;
 		this.speed = speed;
 		
-//		Matrix identityMatrix = Matrix.identity(Cube.DIMENSION);
-//		if (rotatableAxisIndex != Cube.DIMENSION - 1)
-//			identityMatrix = identityMatrix.swapIdentity(rotatableAxisIndex, Cube.DIMENSION - 1);
-		//transitionMatrix = identityMatrix.attachArray(shift);
 		transitionMatrix = Matrix.identity(Cube.DIMENSION);
 		if (rotatableAxisIndex != Cube.DIMENSION - 1)
-			transitionMatrix = transitionMatrix.swapIdentity(rotatableAxisIndex, Cube.DIMENSION - 1);
+			transitionMatrix = transitionMatrix.swapIdentity(1 - rotatableAxisIndex, Cube.DIMENSION - 1);
 
-//		for(int i = 0; i < 2; i++){
-//			for(int j = 0; j < 2; j++){
-//				for(int k = 0; k < 2; k++){
-//					Matrix columnX = new Matrix(Cube.DIMENSION, 1);
-//					columnX.data[0][0] = (- 0.5 + i) * Cube.DIMENSION;
-//					columnX.data[1][0] = (- 0.5 + j) * Cube.DIMENSION;
-//					columnX.data[2][0] = - 0.5 * Cube.DIMENSION + beginingIndex + k * (endingIndex - beginingIndex + 1);
-//					//columnX.data[3][0] = 1;
-//					Matrix columnY = transitionMatrix.times(columnX);
-//					anglesInBasis[i][j][k] = new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-//				}
-//			}
-//		}
-		
 		rotate(rotationAngle);
 
 		CubeBasis basis = new CubeBasis(cube);
@@ -87,9 +71,42 @@ public class Block {
 		this.CalculateCenter();
 		this.CalculateAngles();
 		
+		for(int i = 0; i < Cube.DIMENSION; i++){
+			
+			int axisIndex = axisIndexAfterRotation(i);
+			
+		    for (int n = 0; n < Axis.ENDS_QUANTITY; n++){
+		    	
+		    	int positionAtAxis = positionAtAxisAfterRotation(i, n);
+		    	boolean isNotEmptyEdge = true; 
+		    	
+			    for (int j = 0; j < cube.size; j++)
+				    for (int k = 0; k < cube.size; k++){
+				    	
+				    	if(isNotEmptyEdge) tile[i][n][j][k] = cube.tile[axisIndex][positionAtAxis][j][k];
+				    	else tile[axisIndex][positionAtAxis][j][k] = Color.WHITE;
+				    }
+			}
+		}
 	}
 		
 	// Functions
+
+	public int axisIndexAfterRotation(int i){
+		
+		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i == rotatableAxisIndex) return i;
+		else return Cube.DIMENSION - rotatableAxisIndex - i;
+		
+	}
+    
+
+	public int positionAtAxisAfterRotation(int i, int n){
+		
+		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i != 1 - rotatableAxisIndex) return n;
+		else return 1 - n;
+		
+	}
+    
 	
 	public void RecalculateBasis(){
 			
@@ -288,8 +305,6 @@ public class Block {
 		while(rotationAngle > Math.PI) rotationAngle -= 2 * Math.PI;
 		while(rotationAngle < -Math.PI) rotationAngle += 2 * Math.PI;
 		
-		//System.out.println("rotationAngle = " + rotationAngle);
-		
 		rotate(rotationAngle);
 		
 		for(int i = 0; i < 2; i++){
@@ -406,22 +421,18 @@ public class Block {
 				Block blockM = collection.get(m);
 				
 				int n_hasLargerOrSmallerZ_m = blockN.hasLargerOrSmallerZ(blockM, g, null); // Color.GREEN);
-				//System.out.println("n hasLargerOrSmallerZ m = " + n_hasLargerOrSmallerZ_m);
 				
 				if(n_hasLargerOrSmallerZ_m == 1){
 					collection.set(n, blockM);
 					collection.set(m, blockN);
-					//System.out.println("swap "+n+" - "+m);
 				}
 				if(n_hasLargerOrSmallerZ_m != 0) continue;
 				
 				int m_hasLargerOrSmallerZ_n = blockM.hasLargerOrSmallerZ(blockN, g, Color.GRAY);
-				//System.out.println("m hasLargerOrSmallerZ n = " + m_hasLargerOrSmallerZ_n);
 				
 				if(m_hasLargerOrSmallerZ_n == -1){
 					collection.set(n, blockM);
 					collection.set(m, blockN);
-					//System.out.println("swap "+m+" - "+n);
 				}
 			}
 		}

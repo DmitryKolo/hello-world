@@ -6,6 +6,8 @@ public class Cube {
 	// Fields
 	
 	public final static int DIMENSION = 3;
+	public final static int SIZE = 3;
+	
 	public Matrix transitionMatrix = new Matrix(DIMENSION, DIMENSION + 1);
 	
 	public Vector vectorA, vectorB, vectorC; // head on over to Axis, basis
@@ -17,7 +19,7 @@ public class Cube {
 	public Point cornerA0B0C0, cornerA0B0C1, cornerA0B1C0, cornerA0B1C1, cornerA1B0C0, cornerA1B0C1, cornerA1B1C0, cornerA1B1C1; // перейти на Angle
 	Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
-	Color[][][][] tile = new Color[DIMENSION][Axis.ENDS_QUANTITY][3][3];
+	public Color[][][][] tile = new Color[Cube.DIMENSION][Axis.ENDS_QUANTITY][3][3];
 	
 	private Address3D upperAngle; 
 	
@@ -76,14 +78,65 @@ public class Cube {
 		
 		this.upperAngle = this.upperAngleAddress();
 		
-		for(int i = 0; i < DIMENSION - 1; i++)
-		    for (int n = 0; n < Axis.ENDS_QUANTITY - 1; n++)
-			    for (int j = 0; j < size - 1; j++)
-				    for (int k = 0; k < size - 1; k++)
-				    	tile[i][n][j][k] = Color.getHSBColor(Float.intBitsToFloat(i), Float.intBitsToFloat(n + k), Float.intBitsToFloat(j));
+		for(int i = 0; i < Cube.DIMENSION; i++)
+		    for (int n = 0; n < Axis.ENDS_QUANTITY; n++)
+			    for (int j = 0; j < size; j++)
+				    for (int k = 0; k < size; k++) 
+    					tile[i][n][j][k] = colorINJK(i, n, j, k);
 	}
 			
 	// Functions
+	
+	public Color colorINJK(int i, int n, int j, int k){
+		
+    	int colorNumber = i * 2 + n;
+    	
+    	switch(colorNumber){
+	    	case 0:
+	    		return Color.CYAN;
+	    	case 1:
+	    		return Color.GREEN;
+	    	case 2:
+	    		return Color.MAGENTA;
+	    	case 3:
+	    		return Color.ORANGE;
+	    	case 4:
+	    		return Color.PINK;
+	    	case 5:
+	    		return Color.RED;
+	    	case 6:
+	    		return Color.YELLOW;
+	    	default:
+	    		return Color.WHITE;
+	   	}
+    }
+
+	
+	public Color colorINJK_random(int i, int n, int j, int k){
+	
+	double random = Math.random() * 6;
+	int colorNumber = ((int) random) % 6;
+	
+	switch(colorNumber){
+    	case 0:
+    		return Color.CYAN;
+    	case 1:
+    		return Color.GREEN;
+    	case 2:
+    		return Color.MAGENTA;
+    	case 3:
+    		return Color.ORANGE;
+    	case 4:
+    		return Color.PINK;
+    	case 5:
+    		return Color.RED;
+    	case 6:
+    		return Color.YELLOW;
+    	default:
+    		return Color.WHITE;
+   	}
+}
+
 	
 	public void CalculateTransitionMatrix(){
 		
