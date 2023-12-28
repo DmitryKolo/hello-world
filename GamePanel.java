@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
-import java.util.*;	
+
 
 public class GamePanel extends JPanel implements Runnable{
 
@@ -20,15 +20,11 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public static GameBack background;
 	public static Player player;
-	//public static ArrayList<Bullet> bullets;
-	
-	public static VolumetricAngle vAngle;
+
 	public Cube cube;
-	public Block block, block0, block1;
+	//public Block block, block0, block1;
 	
-	//public Block[] blockCollection;
-	
-	ArrayList<Block> blockCollection = new ArrayList<Block>();
+	//ArrayList<Block> block_Collection = new ArrayList<Block>();
 	//ArrayList<Edge> edgeCollection = new ArrayList<Edge>();
 	
 	// Constructor
@@ -72,38 +68,23 @@ public class GamePanel extends JPanel implements Runnable{
 		double xA = 0;
 		double yA = 50;
 		double zA = 17;
-//		System.out.println("xA = " + xA);
-//		System.out.println("yA = " + yA);
-//		System.out.println("zA = " + zA);
 		
 		double rA2 = xA * xA + yA * yA + zA * zA;
-//		System.out.println("rA(2) = " + rA2);
-		
 		double rA = Math.sqrt(rA2);
-//		System.out.println("rA = " + rA);
 		
 		double co0A = r0 / rA;
 		xA = xA * co0A;
 		yA = yA * co0A;
 		zA = zA * co0A;
-//		System.out.println("xA = " + xA);
-//		System.out.println("yA = " + yA);
-//		System.out.println("zA = " + zA);
 		
 		rA2 = xA * xA + yA * yA + zA * zA;
 		rA = Math.sqrt(rA2);
-//		System.out.println("rA = " + rA);
 		
 		double xB = 40;
 		double yB = -19;
-//		System.out.println("xB = " + xB);
-//		System.out.println("yB = " + yB);
 		
 		double zB2 = rA2 - xB * xB - yB * yB;
-//		System.out.println("zB(2) = " + zB2);
-		
 		double zB = Math.sqrt(zB2);
-//		System.out.println("zB = " + zB);
 		
 		double scAB = xA * xB + yA * yB + zA * zB;
 //		System.out.println("скалярное произведение AB = " + scAB);
@@ -112,42 +93,28 @@ public class GamePanel extends JPanel implements Runnable{
 //		System.out.println("zB = " + zB);
 	
 		scAB = xA * xB + yA * yB + zA * zB;
-//		System.out.println("скалярное произведение AB = " + scAB);
 		
 		double rB2 = xB * xB + yB * yB + zB * zB;
-//		System.out.println("rB(2) = " + rB2);
-		
 		double rB = Math.sqrt(rB2);
-//		System.out.println("rB = " + rB);
 
 		double coAB = rA / rB;
 		xB = xB * coAB;
 		yB = yB * coAB;
 		zB = zB * coAB;
-//		System.out.println("xB = " + xB);
-//		System.out.println("yB = " + yB);
-//		System.out.println("zB = " + zB);
 		
 		rB2 = xB * xB + yB * yB + zB * zB;
-//		System.out.println("rB(2) = " + rB2);
 		
 		double xC = -30;
-//		System.out.println("xC = " + xC);
 		
 		double yC = -26;
-//		System.out.println("yC = " + yC);
 		
 		yC = xC * (xA*zB - xB*zA) / (zA*yB - yA*zB);
-//		System.out.println("yC = " + yC);
 		
 		double zC = xC * (xA*yB - xB*yA) / (yA*zB - zA*yB);
-//		System.out.println("zC = " + zC);
 		
 		double rC2 = xC * xC + yC * yC + zC * zC;
-//		System.out.println("rС(2) = " + rC2);
 		
 		double rC = Math.sqrt(rC2);
-//		System.out.println("rС = " + rC);
 		
 		double coAC = rA / rC;
 		xC = xC * coAC;
@@ -155,16 +122,15 @@ public class GamePanel extends JPanel implements Runnable{
 		zC = zC * coAC;
 		
 		rC2 = xC * xC + yC * yC + zC * zC;
-//		System.out.println("rС(2) = " + rC2);
 		
-		vAngle = new VolumetricAngle(xA, yA, zA, xB, yB, zB, xC, yC, zC);
+		cube = new Cube(Cube.SIZE, 
+				//new Point(GamePanel.WIDTH/2, GamePanel.HEIGHT / 2, 0),
+				Point.NULL, 
+				new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
 		
-		cube = new Cube(3, new Point(0, 0, 0), new Vector(xA, yA, zA), new Vector(xB, yB, zB), new Vector(xC, yC, zC));
-		//cube = new Cube(3, new Point(0, 0, 0), new Vector(35, 10, -2), new Vector(-5, 30, -5), new Vector(2, 6, 45));
-		
-		blockCollection.add(new Block(cube, 0, 0, 0, -0.017)); 
-		blockCollection.add(new Block(cube, 0, 1, 1, -0.022)); 
-		blockCollection.add(new Block(cube, 0, 2, 2, 0.008)); 
+//		blockCollection.add(new Block(cube, 0, 0, -0.017)); 
+//		blockCollection.add(new Block(cube, 0, 1, -0.022)); 
+//		blockCollection.add(new Block(cube, 0, 2,  0.008)); 
 							
 		while(true){
 			
@@ -185,37 +151,23 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	public void gameUpdate(){
 		
-		// Player update
 		player.update();
-		
-		// Volumetric Angle update
-		vAngle.update();
 		
 		cube.update();
 		
-		// Background update
 		background.update(cube.tile[0][1][2][1]);
 		
-		Block.updateCollection(blockCollection); ///, edgeCollection);
-		
+		Block.updateCollection(cube.blockCollection); ///, edgeCollection);
 	}
 	
 	
 	public void gameRender(){
 		
-		// Background draw
 		background.draw(g);
 		
-		// Volumetric Angle draw
-		//vAngle.draw(g);
-		
-		// Player draw
 		player.draw(g);
 		
-		//cube.draw(g);
-		
-		Block.drawCollection(g, blockCollection);
-
+		Block.drawCollection(g, cube.blockCollection);
 	}
 	
 	private void gameDraw(){

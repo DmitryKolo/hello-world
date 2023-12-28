@@ -6,48 +6,51 @@ public class Listeners implements KeyListener{
 		int key = e.getKeyCode();
 		
 		if(key == KeyEvent.VK_SHIFT){
-			VolumetricAngle.shift = true;
+			//VolumetricAngle.shift = true;
 			Cube.shift = true;
 			Block.shift = true;
 		}
 		if(key == KeyEvent.VK_RIGHT){
-			VolumetricAngle.right = true;
+			//VolumetricAngle.right = true;
 			Cube.right = true;
 			Block.right = true;
 		}
 		if(key == KeyEvent.VK_LEFT){
-			VolumetricAngle.left = true;
+			//VolumetricAngle.left = true;
 			Cube.left = true;
 			Block.left = true;
 		}
 		if(key == KeyEvent.VK_DOWN){
-			VolumetricAngle.down = true;
+			//VolumetricAngle.down = true;
 			Cube.down = true;
 			Block.down = true;
 		}
 		if(key == KeyEvent.VK_UP){
-			VolumetricAngle.up = true;
+			//VolumetricAngle.up = true;
 			Cube.up = true;
 			Block.up = true;
 		}
 		if(key == KeyEvent.VK_I){
-			//Cube.rotateI = true;
+			Cube.rotateI = true;
 			Block.rotateI = true;
 		}
 		if(key == KeyEvent.VK_J){
-			//Cube.rotateJ = true;
+			Cube.rotateJ = true;
 			Block.rotateJ = true;
 		}
 		if(key == KeyEvent.VK_K){
-			//Cube.rotateK = true;
+			Cube.rotateK = true;
 			Block.rotateK = true;
 		}
-//		if(key == KeyEvent.VK_W){
-//			Player.up = true;
-//		}
-//		if(key == KeyEvent.VK_X){
-//			Player.down = true;
-//		}
+		if(key == KeyEvent.VK_Q){
+			Cube.rotateTop = true;
+		}
+		if(key == KeyEvent.VK_W){
+			Cube.rotateBackCounterWise = true;
+		}
+		if(key == KeyEvent.VK_E){
+			Block.rotateFrontClockWise = true;
+		}
 //		if(key == KeyEvent.VK_A){
 //			Player.left = true;
 //		}
@@ -63,45 +66,51 @@ public class Listeners implements KeyListener{
 		int key = e.getKeyCode();
 		
 		if(key == KeyEvent.VK_SHIFT){
-			VolumetricAngle.shift = false;
+			//VolumetricAngle.shift = false;
 			Cube.shift = false;
 			Block.shift = false;
 		}
 		if(key == KeyEvent.VK_RIGHT){
-			VolumetricAngle.right = false;
+			//VolumetricAngle.right = false;
 			Cube.right = false;
 			Block.right = false;
 		}
 		if(key == KeyEvent.VK_LEFT){
-			VolumetricAngle.down = false;
+			//VolumetricAngle.down = false;
 			Cube.left = false;
 			Block.left = false;
 		}
 		if(key == KeyEvent.VK_DOWN){
-			VolumetricAngle.down = false;
+			//VolumetricAngle.down = false;
 			Cube.down = false;
 			Block.down = false;
 		}
 		if(key == KeyEvent.VK_UP){
-			VolumetricAngle.up = false;
+			//VolumetricAngle.up = false;
 			Cube.up = false;
 			Block.up = false;
 		}
 		if(key == KeyEvent.VK_I){
-			//Cube.rotateI = false;
+			Cube.rotateI = false;
 			Block.rotateI = false;
 		}
 		if(key == KeyEvent.VK_J){
-			//Cube.rotateJ = false;
+			Cube.rotateJ = false;
 			Block.rotateJ = false;
 		}
 		if(key == KeyEvent.VK_K){
-			//Cube.rotateK = false;
+			Cube.rotateK = false;
 			Block.rotateK = false;
 		}
-//		if(key == KeyEvent.VK_W){
-//			Player.up = false;
-//		}
+		if(key == KeyEvent.VK_Q){
+			Cube.rotateTop = false;
+		}
+		if(key == KeyEvent.VK_W){
+			Cube.rotateBackCounterWise = false;
+		}
+		if(key == KeyEvent.VK_E){
+			Block.rotateFrontClockWise = false;
+		}
 //		if(key == KeyEvent.VK_X){
 //			Player.down = false;
 //		}

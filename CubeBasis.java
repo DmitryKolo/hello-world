@@ -20,5 +20,20 @@ public class CubeBasis {
 		this.vector[2] = vectorK;
 		
 	}	
+	
+	// Functions
+
+	public static int axisIndexCubeToLayer(int rotatableAxisIndex, int i){
+		
+		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i == rotatableAxisIndex) return i;
+		else return Cube.DIMENSION - rotatableAxisIndex - i;		
+	}
+    
+
+	public static int positionAtAxisCubeToLayer(int rotatableAxisIndex, int i, int n){
+		
+		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i != 1 - rotatableAxisIndex) return n;
+		else return 1 - n;		
+	}	
 		
 }

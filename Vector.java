@@ -47,6 +47,22 @@ public class Vector {
 	
 	// Functions
 	
+	public double getCoordinate(int coordinateIndex){
+		
+		switch(coordinateIndex){
+		
+			case 0: 
+				return this.dx; 
+			case 1: 
+				return this.dy; 
+			case 2: 
+				return this.dz;
+			default:
+				throw new RuntimeException("Illegal coordinate index.");
+		}	
+	}
+
+	
 	public void rotateXYZ(double rotateAngleX, double rotateAngleY, double rotateAngleZ){
 	
 		if(rotateAngleX != 0){

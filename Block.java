@@ -12,7 +12,8 @@ public class Block {
 	public Cube cube; 
 	
 	public final int rotatableAxisIndex;
-	public int beginingIndex, endingIndex;
+	public int layerIndex;
+	public int beginingIndex, endingIndex; // outdated
 	public double rotationAngle;
 	
 	public Axis[] axis = new Axis[Cube.DIMENSION];
@@ -39,15 +40,19 @@ public class Block {
 	public static boolean rotateI;
 	public static boolean rotateJ;
 	public static boolean rotateK;
+	
+	public static boolean rotateFrontClockWise;
 
 	// Constructor
 	
-	public Block(Cube cube, int rotatableAxisIndex, int beginingIndex, int endingIndex, double speed){
+	public Block(Cube cube, int rotatableAxisIndex, int layerIndex, double speed){
 			
 		this.cube = cube;
 		this.rotatableAxisIndex = rotatableAxisIndex;
-		this.beginingIndex = beginingIndex;
-		this.endingIndex = endingIndex;
+		
+		this.layerIndex = layerIndex;
+		this.beginingIndex = layerIndex; 	// outdated
+		this.endingIndex = layerIndex; 		// outdated
 
 		this.rotationAngle = 0;
 		this.speed = speed;
@@ -58,53 +63,88 @@ public class Block {
 
 		rotate(rotationAngle);
 
-		CubeBasis basis = new CubeBasis(cube);
+		//CubeBasis basis = cube.basis;
 
 		for (int i = 0; i < cube.DIMENSION; i++){
-			
-			int currentBeginingIndex = (i == rotatableAxisIndex ? beginingIndex : 0);
-			int currentEndingIndex = (i == rotatableAxisIndex ? endingIndex : cube.size - 1);
-			
-			this.axis[i] = new Axis(i, basis, cube.size, cube.centre, currentBeginingIndex, currentEndingIndex); // сообщать оси центр куба не нужно?
+//			int currentBeginingIndex = (i == rotatableAxisIndex ? beginingIndex : 0);
+//			int currentEndingIndex = (i == rotatableAxisIndex ? endingIndex : cube.size - 1);
+			this.axis[i] = new Axis(i, cube);
 		}
 			
 		this.CalculateCenter();
 		this.CalculateAngles();
 		
-		for(int i = 0; i < Cube.DIMENSION; i++){
-			
-			int axisIndex = axisIndexAfterRotation(i);
-			
-		    for (int n = 0; n < Axis.ENDS_QUANTITY; n++){
-		    	
-		    	int positionAtAxis = positionAtAxisAfterRotation(i, n);
-		    	boolean isNotEmptyEdge = true; 
-		    	
-			    for (int j = 0; j < cube.size; j++)
-				    for (int k = 0; k < cube.size; k++){
-				    	
-				    	if(isNotEmptyEdge) tile[i][n][j][k] = cube.tile[axisIndex][positionAtAxis][j][k];
-				    	else tile[axisIndex][positionAtAxis][j][k] = Color.WHITE;
-				    }
-			}
-		}
+		this.tilesCubeToLayer();
+		
+//		for(int i = 0; i < Cube.DIMENSION; i++){
+//			
+//			int axisIndex = CubeBasis.axisIndexCubeToLayer(rotatableAxisIndex, i);
+//			
+//		    for (int n = 0; n < Axis.ENDS_QUANTITY; n++){
+//		    	
+//		    	int positionAtAxis = CubeBasis.positionAtAxisCubeToLayer(rotatableAxisIndex, i, n);
+//		    	//boolean isNotEmptyEdge = true; 
+//		    	
+//			    for (int j = 0; j < cube.size; j++)
+//				    for (int k = 0; k < cube.size; k++){
+////				    	if(isNotEmptyEdge) tile[i][n][j][k] = cube.tile[axisIndex][positionAtAxis][j][k];
+////				    	else tile[axisIndex][positionAtAxis][j][k] = Color.WHITE;
+//				    	tile[i][n][j][k] = cube.tile[axisIndex][positionAtAxis][j][k];
+//				    }
+//			}
+//		}
 	}
 		
 	// Functions
 
-	public int axisIndexAfterRotation(int i){
-		
-		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i == rotatableAxisIndex) return i;
-		else return Cube.DIMENSION - rotatableAxisIndex - i;
-		
-	}
-    
+//	public int axisIndexAfterRotation(int i){
+//		
+//		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i == rotatableAxisIndex) return i;
+//		else return Cube.DIMENSION - rotatableAxisIndex - i;
+//		
+//	}
+//    
+//
+//	public int positionAtAxisAfterRotation(int i, int n){
+//		
+//		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i != 1 - rotatableAxisIndex) return n;
+//		else return 1 - n;
+//		
+//	}
 
-	public int positionAtAxisAfterRotation(int i, int n){
-		
-		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i != 1 - rotatableAxisIndex) return n;
-		else return 1 - n;
-		
+	public void tilesCubeToLayer(){
+
+		for(int i = 0; i < Cube.DIMENSION; i++){
+	
+			int axisIndex = CubeBasis.axisIndexCubeToLayer(rotatableAxisIndex, i);
+	
+			for (int n = 0; n < Axis.ENDS_QUANTITY; n++){
+    	
+				int positionAtAxis = CubeBasis.positionAtAxisCubeToLayer(rotatableAxisIndex, i, n);
+
+				for (int j = 0; j < cube.size; j++)
+					for (int k = 0; k < cube.size; k++)
+						tile[i][n][j][k] = cube.tile[axisIndex][positionAtAxis][j][k];
+		    }
+		}
+	}
+	
+	
+	public void tilesLayerToCube(){
+
+		for(int i = 0; i < Cube.DIMENSION; i++){
+	
+			int axisIndex = CubeBasis.axisIndexCubeToLayer(rotatableAxisIndex, i);
+	
+			for (int n = 0; n < Axis.ENDS_QUANTITY; n++){
+    	
+				int positionAtAxis = CubeBasis.positionAtAxisCubeToLayer(rotatableAxisIndex, i, n);
+
+				for (int j = 0; j < cube.size; j++)
+					for (int k = 0; k < cube.size; k++)
+						cube.tile[axisIndex][positionAtAxis][j][k] = tile[i][n][j][k];
+		    }
+		}
 	}
     
 	
@@ -130,7 +170,7 @@ public class Block {
 			CubeBasis basis = new CubeBasis(cube);
 			Axis rotatableAxis = axis[rotatableAxisIndex];
 
-			double blockMiddle = (rotatableAxis.beginingIndex + rotatableAxis.endingIndex) / 2.0;
+			double blockMiddle = (beginingIndex + endingIndex) / 2.0;
 			double cubeMiddle = (cube.size - 1) / 2.0;
 				
 			if(blockMiddle != cubeMiddle){
@@ -146,7 +186,7 @@ public class Block {
 		double[] halfSize = new double[Cube.DIMENSION];
 
 		for (int i = 0; i < cube.DIMENSION; i++)
-			halfSize[i] = (axis[i].endingIndex - axis[i].beginingIndex + 1) / 2.0;
+			halfSize[i] = (endingIndex - beginingIndex + 1) / 2.0;
 		
 
 		for (int i = 0; i < angle.length; i++){
@@ -237,6 +277,8 @@ public class Block {
 	
 	public void update(){ 
 		
+		//if(cube.stabilizeMode) speed = 0;
+		
 		double rotateAngle = speed;
 
 		if(up){
@@ -300,6 +342,60 @@ public class Block {
 //		if(up || left || right || down || rotateI || rotateJ || rotateK)
 //			this.upperAngle = this.upperAngleAddress();
 		
+		if(cube.stabilizeMode) {
+			
+			speed = 0;
+			
+			up = false;
+			left = false;
+			right = false;
+			down = false;
+			rotateI = false;
+			rotateJ = false;
+			rotateK = false;
+			
+			if      ( rotationAngle >  0.75 * Math.PI ) rotationAngle =   Math.PI;
+			else if ( rotationAngle >  0.25 * Math.PI ) rotationAngle =   Math.PI / 2;
+			else if ( rotationAngle < -0.75 * Math.PI ) rotationAngle = - Math.PI;
+			else if ( rotationAngle < -0.25 * Math.PI ) rotationAngle = - Math.PI / 2;
+			else                                        rotationAngle =   0;
+			
+			if(rotationAngle != 0){
+
+					System.out.println("   rotatableAxisIndex = " + rotatableAxisIndex);
+				for(int i = 0; i < Cube.DIMENSION; i++){
+					
+					int rotatableIndex = (rotatableAxisIndex == 2) ? 2 : (1 - rotatableAxisIndex);
+ 					
+					int axisIndex = CubeBasis.axisIndexCubeToLayer(rotatableIndex, i);
+					System.out.println("i / axisIndex = " + i + " / " + axisIndex);
+
+					if(axisIndex == rotatableIndex) continue;
+			
+					for (int n = 0; n < Axis.ENDS_QUANTITY; n++){
+		    	
+						int positionAtAxis = CubeBasis.positionAtAxisCubeToLayer(rotatableAxisIndex, i, n);
+
+						for (int j = 0; j < cube.size; j++){
+							if ((rotatableAxisIndex == 1 || (rotatableAxisIndex == 2 && axisIndex == 0) ) && j != layerIndex) continue;
+							for (int k = 0; k < cube.size; k++){
+								if ((rotatableAxisIndex == 0 || (rotatableAxisIndex == 2 && axisIndex == 1) ) && k != layerIndex) continue;
+								cube.tile[axisIndex][positionAtAxis][j][k] = Color.GRAY;
+							}
+						}
+					}
+				}
+			}
+
+		}
+		
+		if(rotateFrontClockWise) {
+			if(rotationAngle != 0){
+				System.out.println("   tilesLayerToCube");
+				tilesLayerToCube();
+			}
+		}
+		
 		rotationAngle = rotationAngle + speed;
 		
 		while(rotationAngle > Math.PI) rotationAngle -= 2 * Math.PI;
@@ -341,8 +437,7 @@ public class Block {
 		
 		Address3D selectedAngleAddress = new Address3D(0, 0, 0);
 		Point selectedAngle = angleAtAddress(selectedAngleAddress);
-		//System.out.println("   Angle["+0+","+0+","+0+"]: z = "+upperAngle.z);
-				
+						
 		for (int i = 0; i < angle.length; i++){
 		    for (int j = 0; j < angle[i].length; j++){
 			    for (int k = 0; k < angle[i][j].length; k++){
@@ -366,26 +461,26 @@ public class Block {
 		
 		for(Edge edge : edgeCollection){
 			
-			Point angle00 = angleAtAddress(edge.anglesAddresses[0][0]);
-			Point angle01 = angleAtAddress(edge.anglesAddresses[0][1]);
-			Point angle10 = angleAtAddress(edge.anglesAddresses[1][0]);
-			Point angle11 = angleAtAddress(edge.anglesAddresses[1][1]);
-			
-   	    	GamePanel.drawLine(g, angle00, angle01, cube.centre, color);
-	    	GamePanel.drawLine(g, angle01, angle11, cube.centre, color);
-	    	GamePanel.drawLine(g, angle11, angle10, cube.centre, color);
-	    	GamePanel.drawLine(g, angle10, angle00, cube.centre, color);
-	    	
-    		int argX[] = {(int)angle00.x, (int)angle01.x, (int)angle11.x, (int)angle10.x};
-      		int argY[] = {(int)angle00.y, (int)angle01.y, (int)angle11.y, (int)angle10.y};
-      		
-//	   		g.setColor(Color.WHITE);
-//	   		g.fillPolygon(argX, argY, 4);
-//	   		
-//	   		System.out.println("[0][0] = "); edge.anglesAddresses[0][0].print();
-//	   		System.out.println("[0][1] = "); edge.anglesAddresses[0][1].print();
-//	   		System.out.println("[1][0] = "); edge.anglesAddresses[1][0].print();
-//	   		System.out.println("[1][1] = "); edge.anglesAddresses[1][1].print();
+//			Point angle00 = angleAtAddress(edge.anglesAddresses[0][0]);
+//			Point angle01 = angleAtAddress(edge.anglesAddresses[0][1]);
+//			Point angle10 = angleAtAddress(edge.anglesAddresses[1][0]);
+//			Point angle11 = angleAtAddress(edge.anglesAddresses[1][1]);
+//			
+//   	    	//GamePanel.drawLine(g, angle00, angle01, cube.centre, color);
+//	    	//GamePanel.drawLine(g, angle01, angle11, cube.centre, color);
+//	    	//GamePanel.drawLine(g, angle11, angle10, cube.centre, color);
+//	    	//GamePanel.drawLine(g, angle10, angle00, cube.centre, color);
+//	    	
+//    		int argX[] = {(int)angle00.x, (int)angle01.x, (int)angle11.x, (int)angle10.x};
+//      		int argY[] = {(int)angle00.y, (int)angle01.y, (int)angle11.y, (int)angle10.y};
+//      		
+////	   		g.setColor(Color.WHITE);
+////	   		g.fillPolygon(argX, argY, 4);
+////	   		
+////	   		System.out.println("[0][0] = "); edge.anglesAddresses[0][0].print();
+////	   		System.out.println("[0][1] = "); edge.anglesAddresses[0][1].print();
+////	   		System.out.println("[1][0] = "); edge.anglesAddresses[1][0].print();
+////	   		System.out.println("[1][1] = "); edge.anglesAddresses[1][1].print();
       		
       		edge.draw(g);
 	   		      		
