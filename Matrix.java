@@ -150,9 +150,26 @@ final public class Matrix {
                     C.data[i][j] += (A.data[i][k] * B.data[k][j]);
         return C;
     }
+   
+    // return square C = A * B (KDV)
+    public Matrix squareTimes(Matrix B) {
+        Matrix A = this;
+        int M = Math.min(A.N, B.M);
+        int N = Math.min(A.N, B.M);
+        int K = Math.min(A.N, B.M);
+        Matrix C = new Matrix(M, A.N);
+        for (int i = 0; i < C.M; i++){
+            for (int j = 0; j < C.M; j++)
+                for (int k = 0; k < K; k++)
+                    C.data[i][j] += (A.data[i][k] * B.data[k][j]);
+            for (int j = C.M; j < C.N; j++)
+                    C.data[i][j] = A.data[i][j];
+        }
+        return C;
+    }
     
     
-    // return Y = A * X
+    // return Y = A * X (KDV)
     public Point timesVector(Vector vectorÕ) {
     	Matrix columnX = new Matrix(Cube.DIMENSION, 1);
 		columnX.data[0][0] = vectorÕ.dx;

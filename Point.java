@@ -33,6 +33,23 @@ public class Point {
 	
 	// Functions
 	
+	public double getCoordinate(int coordinateIndex){
+		
+		switch(coordinateIndex){
+		
+			case 0: 
+				return this.x; 
+			case 1: 
+				return this.y; 
+			case 2: 
+				return this.z;
+			default:
+				throw new RuntimeException("Illegal coordinate index.");
+		
+		}	
+	}
+	
+	
 	public void draw(Graphics2D g, Point origin, Color color, int radius){
 		
 		GamePanel.drawPoint(g, this, origin, color, radius);

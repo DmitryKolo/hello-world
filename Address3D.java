@@ -6,6 +6,8 @@ public class Address3D {
 	public int i;
 	public int j;
 	public int k;
+	
+	public final static Address3D NULL = new Address3D(0, 0, 0);
 
 	// Constructor
 	
@@ -34,6 +36,21 @@ public class Address3D {
 		
 		}	
 	}
+	
+	public void setCoordinate(int coordinateIndex, int coordinateValue){
+	
+	switch(coordinateIndex){
+	
+		case 0: 
+			this.i = coordinateValue; 
+		case 1: 
+			this.j = coordinateValue; 
+		case 2: 
+			this.k = coordinateValue;
+		default:
+			throw new RuntimeException("Illegal coordinate index.");
+	}	
+}
 
 	public void print(){
 		

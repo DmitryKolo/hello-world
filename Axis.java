@@ -3,9 +3,14 @@ public class Axis {
 
 	// Fields
 	
-	public Vector vector;
-	public int beginingIndex;
-	public int endingIndex;
+	public Vector vector; // ? or in Cube
+	
+	public int index;
+	
+	public Cube cube;
+	public boolean rotatable;
+	//public int axisIndex;
+	public Layer[] layer = new Layer[Cube.DIMENSION];
 	
 	public final static int ENDS_QUANTITY = 2;
 
@@ -21,11 +26,16 @@ public class Axis {
 	
 	}
 	
-	public Axis(int number, CubeBasis basis, int cubeSize, Point centre, int beginingIndex, int endingIndex){
+	public Axis(int number, Cube cube){
 		
+		this.cube = cube;
+		this.index = number;
+		
+		CubeBasis basis = cube.basis;
 		this.vector = new Vector(1, basis.vector[number]);
-		this.beginingIndex = beginingIndex;
-		this.endingIndex = endingIndex;
+		
+		//this.beginingIndex = beginingIndex;
+		//this.endingIndex = endingIndex;
 		
 		//int size = endingIndex -  beginingIndex + 1;
 		
@@ -42,8 +52,8 @@ public class Axis {
 		Vector vector2 = new Vector(1, basis.vector[number2]);		
 		Vector vector2cw = new Vector(-1, vector2);		
 		
-		this.edge[0] = new Edge(cubeSize, centre, vector0, vector1, vector2);
-		this.edge[1] = new Edge(cubeSize, centre, vector0cw, vector1cw, vector2cw);
+		this.edge[0] = new Edge(cube.size, cube.centre, vector0, vector1, vector2);
+		this.edge[1] = new Edge(cube.size, cube.centre, vector0cw, vector1cw, vector2cw);
 	
 	}
 			
@@ -51,6 +61,18 @@ public class Axis {
 	
 	public void update(){
 				
+	}
+	
+	public void setRotatable(){
+		rotatable = true;
+		cube.rotatableAxisIndex = index;
+		for(int i = 0; i < Cube.SIZE; i++) layer[i] = new Layer(this, i - 1);
+	}
+	
+	public void stabilize(){
+		rotatable = false;
+		// stabilize layers
+		
 	}
 	
 }

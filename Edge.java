@@ -32,7 +32,7 @@ public class Edge {
 	public static boolean left;
 	public static boolean right;
 			
-	public static boolean isFiring;
+	public boolean isEmpty = false;
 	
 	public Block block;
 	int axisIndex;
@@ -66,7 +66,7 @@ public class Edge {
 		left = false;
 		right = false;
 				
-		isFiring = false;
+		//isFiring = false;
 			
 		row1 = new RowOfTiles(x + dx0 - dxC, y + dy0 - dyC, dxA, dyA, dxC, dyC, Color.RED);
 		row2 = new RowOfTiles(x + dx0,       y + dy0,       dxA, dyA, dxC, dyC, Color.CYAN);
@@ -142,8 +142,7 @@ public class Edge {
 			   		|| ( positionAtAxis == 1 && block.endingIndex == block.cube.size - 1 ) 
 			   		|| ( positionAtAxis == 0 && block.beginingIndex == 0 );
 			   		
-//		boolean isEmptyEdge = ( axisIndex == block.rotatableAxisIndex
-//			&& ( ( positionAtAxis == 0 && block.beginingIndex != 0) || ( positionAtAxis == 1 && block.endingIndex != block.cube.size ) ) );
+		isEmpty = !isNotEmptyEdge;
 			    
 		for (int j = 0; j < block.cube.size; j++)
 		    for (int k = 0; k < block.cube.size; k++){
@@ -164,7 +163,7 @@ public class Edge {
 	}
 	
 	
-	public void update(double dxA, double dyA, double dxC, double dyC, double dx0, double dy0){
+	public void update(double dxA, double dyA, double dxC, double dyC, double dx0, double dy0, int y){
 				
 		x = GamePanel.WIDTH / 2;		
 		y = GamePanel.HEIGHT / 2;
@@ -186,7 +185,7 @@ public class Edge {
 		left = false;
 		right = false;
 				
-		isFiring = false;
+		//isFiring = false;
 			
 		row1.update(x + dx0 - dxC, y + dy0 - dyC, dxA, dyA, dxC, dyC);
 		row2.update(x + dx0,       y + dy0,       dxA, dyA, dxC, dyC);
@@ -196,9 +195,7 @@ public class Edge {
 	
 	public void draw(Graphics2D g){
 		
-//		row1.draw(g);
-//		row2.draw(g);
-//		row3.draw(g);
+		if(isEmpty && block.cube.stabilizeMode) return;
 		
 		Point angle00 = block.angleAtAddress(anglesAddresses[0][0]);
 		Point angle01 = block.angleAtAddress(anglesAddresses[0][1]);
@@ -223,12 +220,12 @@ public class Edge {
 	   	Point point201 = new Point(angle00, vA);
 	   	Point point211 = new Point(angle01, vA);
 	   		
-	   	GamePanel.drawLine(g, point201, point211, new Point(0,0,0), Color.RED);
+	   	//GamePanel.drawLine(g, point201, point211, new Point(0,0,0), Color.RED);
 	   		
 	   	Point point202 = new Point(point201, vA);
 	   	Point point212 = new Point(point211, vA);
 	   		
-	   	GamePanel.drawLine(g, point202, point212, new Point(0,0,0), Color.RED);
+	   	//GamePanel.drawLine(g, point202, point212, new Point(0,0,0), Color.RED);
 	   	
 	   	int beginingIndexB = 0;
 	   	int endingIndexB = block.cube.size - 1;
@@ -236,8 +233,8 @@ public class Edge {
    		boolean isSquare = (axisIndex == Cube.DIMENSION - 1);
 	   	
 	   	if(!isSquare){
-	   		beginingIndexB = block.beginingIndex;
-	   		endingIndexB = block.endingIndex;
+	   		beginingIndexB = block.layerIndex; //.beginingIndex;
+	   		endingIndexB = block.layerIndex; //.endingIndex;
 	   	}
 	   	
 	   	int tileQuantityB = endingIndexB - beginingIndexB + 1;
@@ -253,7 +250,7 @@ public class Edge {
 				point0 = new Point(point0, vB);
 				point1 = new Point(point1, vB);
 			   		
-				GamePanel.drawLine(g, point0, point1, new Point(0,0,0), Color.RED);
+				//GamePanel.drawLine(g, point0, point1, new Point(0,0,0), Color.RED);
 	   			
 		   	}
 	   	}
@@ -294,11 +291,10 @@ public class Edge {
 //		   		g.setColor(tile[i][j]);
 //		   		g.setColor(Color.GREEN);
 		   		
-			   	if(!isSquare
-			   		|| ( positionAtAxis == 1 && block.endingIndex == block.cube.size - 1 ) 
-			   		|| ( positionAtAxis == 0 && block.beginingIndex == 0 ) ) {
-		    	
-			   	}
+//			   	if(!isSquare
+//			   		|| ( positionAtAxis == 1 && block.endingIndex == block.cube.size - 1 ) 
+//			   		|| ( positionAtAxis == 0 && block.beginingIndex == 0 ) ) {
+//			   	}
 				//tile[i][n][j][k] = color;
 				//tile[i][n][j][k] = Color.getHSBColor(Float.intBitsToFloat(i), Float.intBitsToFloat(n + k), Float.intBitsToFloat(j));  					
 
