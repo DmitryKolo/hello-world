@@ -43,19 +43,39 @@ public class Address3D {
 	
 		case 0: 
 			this.i = coordinateValue; 
+			break;
 		case 1: 
-			this.j = coordinateValue; 
+			this.j = coordinateValue;
+			break;
 		case 2: 
 			this.k = coordinateValue;
+			break;
 		default:
 			throw new RuntimeException("Illegal coordinate index.");
 	}	
 }
 
+	
 	public void print(){
 		
 		System.out.println("i = " + i + ", j = " + j + ", k = " + k);
 			
+	}
+	
+	
+	public Point calculatedPoint(Matrix transitionMatrix){
+		
+		Matrix columnX = new Matrix(Cube.DIMENSION + 1, 1);
+	
+		for(int i = 0; i < Cube.DIMENSION; i++)
+			columnX.data[i][0] = this.getCoordinate(i);
+		
+		columnX.data[Cube.DIMENSION][0] = 1;
+
+		Matrix columnYabs = transitionMatrix.times(columnX);
+		
+		return new Point(columnYabs.data[0][0], columnYabs.data[1][0], columnYabs.data[2][0]);
+
 	}
 	
 }

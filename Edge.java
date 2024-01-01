@@ -316,6 +316,7 @@ public class Edge {
 	   	
    	}
 	
+	
 	public void drawAngles(Graphics2D g, Color color){
 		
 		for(int i = 0; i < Axis.ENDS_QUANTITY; i++){

@@ -1,3 +1,6 @@
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 
 public class Layer {
 	
@@ -9,8 +12,13 @@ public class Layer {
 	public Matrix relativeTransitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
 	public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
 	
-	public Address3D addressNearestCorner;
-	public double nearestCornerDeltaZ;
+	public Address3D addressNearestCorner = Address3D.NULL;
+	public double nearestCornerDeltaZ; // not use?
+	
+	public Point nearestCorner;
+	public Point[] nearestRibsEnd = new Point[Cube.DIMENSION];
+	public Vector[] ribVector = new Vector[Cube.DIMENSION];
+
 	
 	// Constructor
 	
@@ -20,10 +28,17 @@ public class Layer {
 		this.coordinate = coordinate;
 		this.rotationAngle = 0;
 		
-		relativeTransitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
+		//relativeTransitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
 	}
 	
 	// Function
+	
+	public void update(){
+		
+		caltulateTransitionMatrix();
+		
+	}
+	
 	
 	public void caltulateRelativeTransitionMatrix(){
 		
@@ -72,9 +87,37 @@ public class Layer {
 		for(int i = 0; i < Cube.DIMENSION; i++){
 			double dZ = transitionMatrix.data[i][Cube.DIMENSION - 1];
 			addressNearestCorner.setCoordinate(i, (dZ >= 0) ? 1 : 0);
-			nearestCornerDeltaZ += Math.abs(dZ);
+			nearestCornerDeltaZ += Math.abs(dZ) * (Cube.SIZE / 2.0);
 		}
 		
+		nearestCorner = addressNearestCorner.calculatedPoint(transitionMatrix);
+		
+		Address3D[] addressNearestRibsEnd = new Address3D[Cube.DIMENSION];
+		//Point[] nearestRibsEnd = new Point[Cube.DIMENSION];
+		//Vector[] ribVector = new Vector[Cube.DIMENSION];
+		
+		for(int v = 0; v < Cube.DIMENSION; v++){
+			
+			for(int w = 0; w < Cube.DIMENSION; w++){
+				addressNearestRibsEnd[v] = Address3D.NULL;
+				if(v == w) 
+					addressNearestRibsEnd[v].setCoordinate(w, - addressNearestCorner.getCoordinate(w));
+				else 
+					addressNearestRibsEnd[v].setCoordinate(w, addressNearestCorner.getCoordinate(w));
+			}
+		
+			nearestRibsEnd[v] = addressNearestRibsEnd[v].calculatedPoint(transitionMatrix); 
+			ribVector[v] = new Vector(nearestCorner, nearestRibsEnd[v]);
+		}
 	}
+	
+	
+	public void draw(Graphics2D g){
+		
+		for(int i = 0; i < Cube.DIMENSION; i++)
+			ribVector[i].draw(g, Color.BLACK);
+				
+	}
+
 		
 }

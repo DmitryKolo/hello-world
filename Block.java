@@ -97,21 +97,6 @@ public class Block {
 		
 	// Functions
 
-//	public int axisIndexAfterRotation(int i){
-//		
-//		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i == rotatableAxisIndex) return i;
-//		else return Cube.DIMENSION - rotatableAxisIndex - i;
-//		
-//	}
-//    
-//
-//	public int positionAtAxisAfterRotation(int i, int n){
-//		
-//		if (rotatableAxisIndex == Cube.DIMENSION - 1 || i != 1 - rotatableAxisIndex) return n;
-//		else return 1 - n;
-//		
-//	}
-
 	public void tilesCubeToLayer(){
 
 		for(int i = 0; i < Cube.DIMENSION; i++){

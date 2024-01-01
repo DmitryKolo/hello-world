@@ -8,7 +8,7 @@ public class Cube {
 	
 	public final static int DIMENSION = 3;
 	public final static int SIZE = 3;
-	public final static Color[] COLOR = new Color[Cube.DIMENSION * Axis.ENDS_QUANTITY + 1]; 
+	public final Color[] COLOR = new Color[Cube.DIMENSION * Axis.ENDS_QUANTITY + 1]; 
 	
 	public Vector[] vector = new Vector[Cube.DIMENSION];
 	public Matrix transitionMatrix = new Matrix(DIMENSION, DIMENSION + 1);
@@ -55,22 +55,15 @@ public class Cube {
 	
 	public Cube(int size, Point centre, Vector vectorA, Vector vectorB, Vector vectorC){
 		
-		Cube.COLOR[0] = Color.BLUE;
-		Cube.COLOR[1] = Color.CYAN;
-		Cube.COLOR[2] = Color.GRAY;
-		Cube.COLOR[3] = Color.GREEN;
-		Cube.COLOR[4] = Color.MAGENTA;
-		Cube.COLOR[5] = Color.ORANGE;
-		Cube.COLOR[6] = Color.WHITE;
-			
 		this.size = size;
 		this.centre = centre;
 		
 		this.basis = new CubeBasis(vectorA, vectorB, vectorC);
-		
 		this.vectorA = vectorA; // head on over to Axis, basis
 		this.vectorB = vectorB;
 		this.vectorC = vectorC;
+
+		initialCubeColorsAndBricks();
 		
 		for (int i = 0; i < DIMENSION; i++)
 			this.axis[i] = new Axis(i, this);
@@ -107,14 +100,6 @@ public class Cube {
 				    for (int k = 0; k < size; k++) 
     					tile[i][n][j][k] = colorINJK(i, n, j, k);
 		
-		for (int i = 0; i < Cube.SIZE; i++)
-		    for (int j = 0; j < Cube.SIZE; j++)
-			    for (int k = 0; k < Cube.SIZE; k++)
-					brick[i][j][k] = new Brick(this, i, j, k);
-			    
-		
-		initialCubeBricksColor();
-		
 		stabilizeMode = false;
 		
 		blockCollection.add(new Block(this, 2, 0, 0.00270)); 
@@ -129,6 +114,88 @@ public class Cube {
 		
 		for(int i = 0; i < Cube.DIMENSION; i++) axis[i].stabilize();
 		axis[indexRotatableAxis].setRotatable(); // for layers creation
+	}
+	
+
+	public void calculateTransitionMatrix(){
+		
+		for(int i = 0; i < Cube.DIMENSION; i++)
+			for(int j = 0; j < Cube.DIMENSION; j++)
+				transitionMatrix.data[i][j] = axis[i].vector.getCoordinate(j);
+		
+		transitionMatrix.data[0][3] = GamePanel.HEIGHT / 2;
+		transitionMatrix.data[1][3] = GamePanel.WIDTH / 2;
+			
+		calculateTransitionMatrixC();
+			
+//		transitionMatrix.data[0][0] = vectorA.dx;
+//		transitionMatrix.data[0][1] = vectorA.dy;
+//		transitionMatrix.data[0][2] = vectorA.dz;
+//		transitionMatrix.data[1][0] = vectorB.dx;
+//		transitionMatrix.data[1][1] = vectorB.dy;
+//		transitionMatrix.data[1][2] = vectorB.dz;
+//		transitionMatrix.data[2][0] = vectorC.dx;
+//		transitionMatrix.data[2][1] = vectorC.dy;
+//		transitionMatrix.data[2][2] = vectorC.dz;
+	}
+
+		
+	public void calculateTransitionMatrixC(){
+		
+		for(int i = 0; i < Cube.DIMENSION; i++){
+			for(int j = 0; j < Cube.DIMENSION; j++)
+				transitionMatrixC.data[i][j] = axis[j].vector.getCoordinate(i);
+			transitionMatrixC.data[i][Cube.DIMENSION] = centre.getCoordinate(i);
+		}
+	}
+
+	
+	public void initialCubeColorsAndBricks(){
+		
+		COLOR[0] = Color.BLUE;
+		COLOR[1] = Color.CYAN;
+		COLOR[2] = Color.GRAY;
+		COLOR[3] = Color.GREEN;
+		COLOR[4] = Color.MAGENTA;
+		COLOR[5] = Color.ORANGE;
+		COLOR[6] = Color.WHITE;
+				
+		for (int i = 0; i < Cube.SIZE; i++)
+			    for (int j = 0; j < Cube.SIZE; j++)
+				    for (int k = 0; k < Cube.SIZE; k++)
+						brick[i][j][k] = new Brick(this, i - 1, j - 1, k - 1);
+				    
+		initialCubeBricksColor();
+	}
+
+	
+	public void initialCubeBricksColor(){
+
+		for(int v = 0; v < Cube.SIZE; v++)
+			for(int w = 0; w < Cube.SIZE; w++){
+
+				brick[0][v][w].color[0][0] = COLOR[0];
+				brick[0][v][w].color[0][1] = COLOR[6];
+				brick[1][v][w].color[0][0] = COLOR[6];
+				brick[1][v][w].color[0][1] = COLOR[6];
+				brick[2][v][w].color[0][0] = COLOR[6];
+				brick[2][v][w].color[0][1] = COLOR[3];
+						
+				brick[v][0][w].color[1][0] = COLOR[1];
+				brick[v][0][w].color[1][1] = COLOR[6];
+				brick[v][1][w].color[1][0] = COLOR[6];
+				brick[v][1][w].color[1][1] = COLOR[6];
+				brick[v][2][w].color[1][0] = COLOR[6];
+				brick[v][2][w].color[1][1] = COLOR[4];
+						
+				brick[v][w][0].color[2][0] = COLOR[2];
+				brick[v][w][0].color[2][1] = COLOR[6];
+				brick[v][w][1].color[2][0] = COLOR[6];
+				brick[v][w][1].color[2][1] = COLOR[6];
+				brick[v][w][2].color[2][0] = COLOR[6];
+				brick[v][w][2].color[2][1] = COLOR[5];
+						
+			}
 	}
 	
 	
@@ -182,37 +249,7 @@ public class Cube {
 	   	}
 	}
 
-	
-	public void calculateTransitionMatrix(){
-		
-		transitionMatrix.data[0][0] = vectorA.dx;
-		transitionMatrix.data[0][1] = vectorA.dy;
-		transitionMatrix.data[0][2] = vectorA.dz;
-		transitionMatrix.data[0][3] = GamePanel.WIDTH / 2;
-		
-		transitionMatrix.data[1][0] = vectorB.dx;
-		transitionMatrix.data[1][1] = vectorB.dy;
-		transitionMatrix.data[1][2] = vectorB.dz;
-		transitionMatrix.data[1][3] = GamePanel.WIDTH / 2;
-		
-		transitionMatrix.data[2][0] = vectorC.dx;
-		transitionMatrix.data[2][1] = vectorC.dy;
-		transitionMatrix.data[2][2] = vectorC.dz;
-		
-		calculateTransitionMatrixC();
-	}
-
-		
-	public void calculateTransitionMatrixC(){
-		
-		for(int i = 0; i < Cube.DIMENSION; i++){
-			for(int j = 0; j < Cube.DIMENSION; j++)
-				transitionMatrixC.data[i][j] = axis[i].vector.getCoordinate(j);
-			transitionMatrixC.data[i][Cube.DIMENSION] = centre.getCoordinate(i);
-		}
-	}
-
-		
+			
 	public void rotateV(Vector rotateAxis, double rotateAngle){
 		
 		Vector normalAxis = new Vector(rotateAxis);
@@ -253,15 +290,7 @@ public class Cube {
 	}
 	
 	
-	public void updateBricks(){
-		
-			//updateBricks();
-			
-	}
-	
-
-	
-	public void update(){
+	public void update(ArrayList<Brick> brickCollection){
 		
 		double rotateAngle = speed/20;
 
@@ -323,52 +352,60 @@ public class Cube {
 			
 			Block.updateCollection(blockCollection);
 			
-			updateBricks();
+			//axis[rotatableAxisIndex].update();
 			
-			
+			Brick.arrangeCollection(brickCollection, this);
 		}
+		
+		axis[rotatableAxisIndex].update();
 	}
 	
 
 	public void draw(Graphics2D g){
 		
-		for (int i = 0; i < angle.length; i++){
-		    for (int j = 0; j < angle[i].length; j++){
-		    	
-		    	Point angle0;
-		    	Point angle1;
-		    	
-		    	if (i == upperAngle.i || j == upperAngle.j) {
-		    		angle0 = angle[i][j][0];
-		    		angle1 = angle[i][j][1];
-		    		GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
-		    	}
-				
-		    	if (i == upperAngle.i || j == upperAngle.k) {
-			    	angle0 = angle[i][0][j];
-			    	angle1 = angle[i][1][j];
-			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
-		    	}
-				
-		    	if (i == upperAngle.j || j == upperAngle.k) {
-			    	angle0 = angle[0][i][j];
-			    	angle1 = angle[1][i][j];
-			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
-		    	}
-		    }
-	    }
+		for(int i = 0; i < Cube.DIMENSION; i++){
+			axis[i].vector.draw(g, Color.RED);
+		}
+//		
+//		for (int i = 0; i < angle.length; i++){
+//		    for (int j = 0; j < angle[i].length; j++){
+//		    	
+//		    	Point angle0;
+//		    	Point angle1;
+//		    	
+//		    	if (i == upperAngle.i || j == upperAngle.j) {
+//		    		angle0 = angle[i][j][0];
+//		    		angle1 = angle[i][j][1];
+//		    		GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
+//		    	}
+//				
+//		    	if (i == upperAngle.i || j == upperAngle.k) {
+//			    	angle0 = angle[i][0][j];
+//			    	angle1 = angle[i][1][j];
+//			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
+//		    	}
+//				
+//		    	if (i == upperAngle.j || j == upperAngle.k) {
+//			    	angle0 = angle[0][i][j];
+//			    	angle1 = angle[1][i][j];
+//			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
+//		    	}
+//		    }
+//	    }
+//		
+//		g.setColor(Color.RED);
+//		
+//		Point currentUpperAngle = angle[upperAngle.i][upperAngle.j][upperAngle.k];
+//		
+//		double r = 5;
+//		double x0 = centre.x + currentUpperAngle.x - r/2;
+//		double y0 = centre.y + currentUpperAngle.y - r/2;
+//		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
 		
-		g.setColor(Color.RED);
-		
-		Point currentUpperAngle = angle[upperAngle.i][upperAngle.j][upperAngle.k];
-		
-		double r = 5;
-		double x0 = centre.x + currentUpperAngle.x - r/2;
-		double y0 = centre.y + currentUpperAngle.y - r/2;
-		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
+		axis[rotatableAxisIndex].draw(g);
 			
 	}
-	
+
 	
 	public Point angleAtAddress(Address3D address){
 		
@@ -377,33 +414,9 @@ public class Cube {
 	}
 		
 	
-	public void initialCubeBricksColor(){
-
-		for(int v = 0; v < Cube.SIZE; v++)
-			for(int w = 0; w < Cube.SIZE; w++){
-
-				brick[0][v][w].color[0][0] = Cube.COLOR[0];
-				brick[0][v][w].color[0][1] = Cube.COLOR[6];
-				brick[1][v][w].color[0][0] = Cube.COLOR[6];
-				brick[1][v][w].color[0][1] = Cube.COLOR[6];
-				brick[2][v][w].color[0][0] = Cube.COLOR[6];
-				brick[2][v][w].color[0][1] = Cube.COLOR[3];
-						
-				brick[v][0][w].color[1][0] = Cube.COLOR[1];
-				brick[v][0][w].color[1][1] = Cube.COLOR[6];
-				brick[v][1][w].color[1][0] = Cube.COLOR[6];
-				brick[v][1][w].color[1][1] = Cube.COLOR[6];
-				brick[v][2][w].color[1][0] = Cube.COLOR[6];
-				brick[v][2][w].color[1][1] = Cube.COLOR[4];
-						
-				brick[v][w][0].color[2][0] = Cube.COLOR[2];
-				brick[v][w][0].color[2][1] = Cube.COLOR[6];
-				brick[v][w][1].color[2][0] = Cube.COLOR[6];
-				brick[v][w][1].color[2][1] = Cube.COLOR[6];
-				brick[v][w][2].color[2][0] = Cube.COLOR[6];
-				brick[v][w][2].color[2][1] = Cube.COLOR[5];
-						
-			}
+	public Brick getBrickAtAddress(Address3D address){
+		
+		return brick[address.i][address.j][address.k];	
 	}
-	
+
 }
