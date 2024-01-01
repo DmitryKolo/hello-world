@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import java.util.*;
 
 
 public class GamePanel extends JPanel implements Runnable{
@@ -22,9 +23,9 @@ public class GamePanel extends JPanel implements Runnable{
 	public static Player player;
 
 	public Cube cube;
-	//public Block block, block0, block1;
 	
-	//ArrayList<Block> block_Collection = new ArrayList<Block>();
+	//public Block block, block0, block1;
+	ArrayList<Brick> brickCollection = new ArrayList<Brick>();
 	//ArrayList<Edge> edgeCollection = new ArrayList<Edge>();
 	
 	// Constructor
@@ -136,7 +137,7 @@ public class GamePanel extends JPanel implements Runnable{
 			
 			gameUpdate();
 			gameRender();
-			gameDraw();
+//			gameDraw();
 			
 			try {
 				thread.sleep(90);
@@ -152,10 +153,9 @@ public class GamePanel extends JPanel implements Runnable{
 	public void gameUpdate(){
 		
 		player.update();
-		
-		cube.update();
-		
 		background.update(cube.tile[0][1][2][1]);
+		
+		cube.update(brickCollection);
 		
 		Block.updateCollection(cube.blockCollection); ///, edgeCollection);
 	}
@@ -164,17 +164,22 @@ public class GamePanel extends JPanel implements Runnable{
 	public void gameRender(){
 		
 		background.draw(g);
-		
 		player.draw(g);
 		
 		Block.drawCollection(g, cube.blockCollection);
-	}
-	
-	private void gameDraw(){
+		
+		Brick.drawCollection(g, brickCollection);
+		//cube.drawLayersVectors(g);
+		//axis[rotatableAxisIndex].draw();
+		cube.draw(g);
+		
+//	}
+//	private void gameDraw(){
 		Graphics g2 = this.getGraphics();
 		g2.drawImage(image, 0, 0, null);
 		g2.dispose();
 	}
+	
 	
 	public static void drawLine(Graphics2D g, Point beginingPoint, Point endingPoint, Point originPoint, Color color){
 		

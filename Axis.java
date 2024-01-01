@@ -1,3 +1,6 @@
+import java.awt.Graphics2D;
+import java.util.ArrayList;
+
 
 public class Axis {
 
@@ -5,9 +8,9 @@ public class Axis {
 	
 	public Vector vector; // ? or in Cube
 	
-	public int index;
-	
 	public Cube cube;
+	public int index;
+
 	public boolean rotatable;
 	//public int axisIndex;
 	public Layer[] layer = new Layer[Cube.DIMENSION];
@@ -16,15 +19,8 @@ public class Axis {
 
 	public Edge[] edge = new Edge[Axis.ENDS_QUANTITY]; // endingIndex - beginingIndex + 1]; 
 			
+	
 	// Constructor
-	
-	public Axis(Vector vector, Edge edge0, Edge edge1){
-			
-		this.vector = vector;
-		this.edge[0] = edge0;
-		this.edge[1] = edge1;
-	
-	}
 	
 	public Axis(int number, Cube cube){
 		
@@ -56,12 +52,17 @@ public class Axis {
 		this.edge[1] = new Edge(cube.size, cube.centre, vector0cw, vector1cw, vector2cw);
 	
 	}
-			
+		
+	
 	// Functions
 	
 	public void update(){
-				
+		
+		for(Layer currentLayer : layer){
+			currentLayer.update();
+		}
 	}
+	
 	
 	public void setRotatable(){
 		rotatable = true;
@@ -74,5 +75,14 @@ public class Axis {
 		// stabilize layers
 		
 	}
+	
+	
+	public void draw(Graphics2D g){
+		
+		for(Layer currentLayer : layer){
+			currentLayer.draw(g);
+		}
+	}
+
 	
 }

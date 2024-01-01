@@ -1,3 +1,6 @@
+import java.awt.Color;
+import java.awt.Graphics2D;
+
 
 public class Vector {
 
@@ -94,6 +97,7 @@ public class Vector {
 	
 	}	
 	
+	
 	public double cos(Vector vector){
 		
 		double r0 = Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
@@ -102,4 +106,20 @@ public class Vector {
 		return multi / r0 / r1;
 		
 	}
+
+
+	public void draw(Graphics2D g, Color color){
+		
+//		Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+//	   	g.setStroke(dashed); //2d
+		
+    	double xB = GamePanel.WIDTH / 2.0;
+    	double yB = GamePanel.HEIGHT / 2.0;
+    	double xE = xB + this.dx;
+    	double yE = yB + this.dy;
+    	
+    	g.setColor(color);
+    	g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
+	}	
+
 }
