@@ -200,8 +200,18 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		g.setColor(color);
 		
-		double x0 = point.x + origin.x - radius / 2;
-    	double y0 = point.y + origin.y - radius / 2;
+		double x0 = point.x + origin.x - radius / 2.0;
+    	double y0 = point.y + origin.y - radius / 2.0;
+     	
+		g.fillOval((int)x0, (int)y0, (int)radius, radius);
+	}
+
+	public static void drawPointInPanel(Graphics2D g, Point point, Color color, int radius){
+		
+		g.setColor(color);
+		
+		double x0 = GamePanel.WIDTH / 2.0 + point.x - radius / 2.0;
+    	double y0 = GamePanel.HEIGHT / 2.0 + point.y - radius / 2.0;
      	
 		g.fillOval((int)x0, (int)y0, (int)radius, radius);
 	}

@@ -32,6 +32,16 @@ final public class Matrix {
     
     // Functions
     
+    public int getM() {
+        return this.M;
+    }
+
+    
+    public int getN() {
+        return this.N;
+    }
+
+    
     // create and return a random M-by-N matrix with values between 0 and 1
     public static Matrix random(int M, int N) {
         Matrix A = new Matrix(M, N);
@@ -151,22 +161,22 @@ final public class Matrix {
         return C;
     }
    
-    // return square C = A * B (KDV)
-    public Matrix squareTimes(Matrix B) {
-        Matrix A = this;
-        int M = Math.min(A.N, B.M);
-        int N = Math.min(A.N, B.M);
-        int K = Math.min(A.N, B.M);
-        Matrix C = new Matrix(M, A.N);
-        for (int i = 0; i < C.M; i++){
-            for (int j = 0; j < C.M; j++)
-                for (int k = 0; k < K; k++)
-                    C.data[i][j] += (A.data[i][k] * B.data[k][j]);
-            for (int j = C.M; j < C.N; j++)
-                    C.data[i][j] = A.data[i][j];
-        }
-        return C;
-    }
+//    // return square C = A * B (KDV)
+//    public Matrix squareTimes(Matrix B) {
+//        Matrix A = this;
+//        int M = Math.min(A.N, B.M);
+//        int N = Math.min(A.N, B.M);
+//        int K = Math.min(A.N, B.M);
+//        Matrix C = new Matrix(M, A.N);
+//        for (int i = 0; i < C.M; i++){
+//            for (int j = 0; j < C.M; j++)
+//                for (int k = 0; k < K; k++)
+//                    C.data[i][j] += (A.data[i][k] * B.data[k][j]);
+//            for (int j = C.M; j < C.N; j++)
+//                    C.data[i][j] = A.data[i][j];
+//        }
+//        return C;
+//    }
     
     
     // return Y = A * X (KDV)
