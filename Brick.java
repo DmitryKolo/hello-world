@@ -79,12 +79,12 @@ public class Brick {
 		Color color = Color.MAGENTA;
 				
 		for(Brick brick : brickCollection){
-			brick.draw(g, color);
+			//brick.draw(g, color);
 		}
 	}
 	
 
-	public void draw(Graphics2D g, Color color){
+	public void draw(Graphics2D g, Color color, Layer layer, int v, int w){
 		
 //		for(Edge edge : edgeCollection){
 //			
@@ -93,6 +93,7 @@ public class Brick {
 //		}
 //	
 //		nearestAngle.draw(g, cube.centre, Color.RED, 5);
+		
 
 	}
 	

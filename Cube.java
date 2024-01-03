@@ -254,10 +254,6 @@ public class Cube {
 		
 		Vector normalAxis = new Vector(rotateAxis);
 		
-//		vectorA.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-//		vectorB.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-//		vectorC.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-		
 		for(int i = 0; i < Cube.DIMENSION; i++)			
 			basis.vector[i].rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
 		
@@ -364,7 +360,7 @@ public class Cube {
 	public void draw(Graphics2D g){
 		
 		for(int i = 0; i < Cube.DIMENSION; i++){
-			axis[i].vector.draw(g, Color.RED);
+			//axis[i].vector.draw(g, Color.RED);
 		}
 //		
 //		for (int i = 0; i < angle.length; i++){

@@ -64,6 +64,13 @@ public class Point {
 	}
 
 	
+	public void draw(Graphics2D g){
+		
+		GamePanel.drawPointInPanel(g, this, Color.BLACK, 6);
+		
+	}
+
+	
 	public void rotateXYZ(double rotateAngleX, double rotateAngleY, double rotateAngleZ){
 		
 		if(rotateAngleX != 0){

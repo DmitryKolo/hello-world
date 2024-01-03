@@ -7,9 +7,15 @@ public class Address3D {
 	public int j;
 	public int k;
 	
-	public final static Address3D NULL = new Address3D(0, 0, 0);
-
 	// Constructor
+	
+	public Address3D(){
+		
+		this.i = 0; 
+		this.j = 0; 
+		this.k = 0;
+		
+	}	
 	
 	public Address3D(int i, int j, int k){
 		
@@ -65,16 +71,20 @@ public class Address3D {
 	
 	public Point calculatedPoint(Matrix transitionMatrix){
 		
-		Matrix columnX = new Matrix(Cube.DIMENSION + 1, 1);
+		int M = transitionMatrix.getM(); 
+		
+		Matrix columnX = new Matrix(M,
+				//Cube.DIMENSION + 1, 
+				1);
 	
 		for(int i = 0; i < Cube.DIMENSION; i++)
 			columnX.data[i][0] = this.getCoordinate(i);
 		
-		columnX.data[Cube.DIMENSION][0] = 1;
+		if(M > Cube.DIMENSION) columnX.data[M - 1][0] = 1;
 
-		Matrix columnYabs = transitionMatrix.times(columnX);
+		Matrix columnY = transitionMatrix.times(columnX);
 		
-		return new Point(columnYabs.data[0][0], columnYabs.data[1][0], columnYabs.data[2][0]);
+		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
 
 	}
 	

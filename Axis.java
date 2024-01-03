@@ -12,8 +12,9 @@ public class Axis {
 	public int index;
 
 	public boolean rotatable;
-	//public int axisIndex;
-	public Layer[] layer = new Layer[Cube.DIMENSION];
+	public Layer[] layer = new Layer[Cube.SIZE];
+	public int indexV;
+	public int indexW;
 	
 	public final static int ENDS_QUANTITY = 2;
 
@@ -50,10 +51,27 @@ public class Axis {
 		
 		this.edge[0] = new Edge(cube.size, cube.centre, vector0, vector1, vector2);
 		this.edge[1] = new Edge(cube.size, cube.centre, vector0cw, vector1cw, vector2cw);
-	
+		
+		switch(index){
+		case 0:
+			indexV = 1;
+			indexW = 2;
+			break;
+		case 1:
+			indexV = 2;
+			indexW = 0;
+			break;
+		case 2:
+			indexV = 0;
+			indexW = 1;
+			break;
+		default:
+			indexV = 0;
+			indexW = 0;
+			break;
+		}
 	}
 		
-	
 	// Functions
 	
 	public void update(){
@@ -67,7 +85,23 @@ public class Axis {
 	public void setRotatable(){
 		rotatable = true;
 		cube.rotatableAxisIndex = index;
-		for(int i = 0; i < Cube.SIZE; i++) layer[i] = new Layer(this, i - 1);
+		for(int i = 0; i < Cube.SIZE; i++) {
+			double speed = 0;
+			switch(i){
+			case 0:
+				speed = 0.00270;
+				break;
+			case 1:
+				speed = 0.01000; 
+				break;
+			case 2:
+				speed = 0.03080; 
+				break;
+			default:
+				speed = 0.0;
+			}
+			layer[i] = new Layer(this, i - 1, speed);
+		}
 	}
 	
 	public void stabilize(){
