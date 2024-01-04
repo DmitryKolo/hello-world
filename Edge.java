@@ -302,7 +302,7 @@ public class Edge {
 		    	//g.setColor(color);
 			   	g.setColor(color);
 			   	g.fillPolygon(argX0, argY0, 4);
-		   		
+			   			   		
 		   		point0A = point0B;
 		   		point1A = point1B;
 		   		point0B = new Point(point0B, vB);
