@@ -76,9 +76,13 @@ public class Axis {
 	
 	public void update(){
 		
+		cube.tileCollection.clear();
+		
 		for(Layer currentLayer : layer){
 			currentLayer.update();
 		}
+		
+		Tile.arrangeCollection(cube.tileCollection);
 	}
 	
 	
@@ -100,6 +104,7 @@ public class Axis {
 			default:
 				speed = 0.0;
 			}
+			//layer[Cube.SIZE - 1 - i] = new Layer(this, i - 1, speed);
 			layer[i] = new Layer(this, i - 1, speed);
 		}
 	}

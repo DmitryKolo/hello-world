@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 
 public class Layer {
@@ -30,7 +31,10 @@ public class Layer {
 	
 	public double speed;
 	
-	public BrickInLayer[][] brickInLayer = new BrickInLayer[Cube.SIZE][Cube.SIZE];
+	public BrickInLayer[][] brickInLayer = new BrickInLayer[Cube.SIZE][Cube.SIZE]; // turn to brickCollection
+	
+	public ArrayList<BrickInLayer> brickCollection = new ArrayList<BrickInLayer>();
+	public ArrayList<Tile> tileCollection = new ArrayList<Tile>();
 	
 	// Constructor
 	
@@ -43,7 +47,7 @@ public class Layer {
 		this.speed = speed;
 		
 		for(int v = 0; v < Cube.SIZE; v++)
-			for(int w = 0; w < Cube.SIZE; w++)
+			for(int w = 0; w < Cube.SIZE; w++){
 				switch(axis.index){
 				case 0:
 					brickInLayer[v][w] = new BrickInLayer(axis.cube.brick[coordinate + 1][v][w], this, v - 1, w - 1);
@@ -57,6 +61,8 @@ public class Layer {
 				default:
 					break;
 				}
+				brickCollection.add(brickInLayer[v][w]);
+			}
 	}
 	
 	// Function
@@ -69,7 +75,7 @@ public class Layer {
 		
 		centre = new Point(axis.cube.centre, new Vector(coordinate, ribVector[axis.index]));
 		
-		updateBricks();
+		updateBricksAndTiles();
 		
 //		if(coordinate == 1){
 //			System.out.println("rotationAngle[1] = " + this.rotationAngle);
@@ -182,7 +188,7 @@ public class Layer {
 
 		for(int v = 0; v < Cube.DIMENSION; v++){
 			
-			nearestRibVector[v] = new Vector(nearestCornerSignes.getCoordinate(v), ribVector[v]);
+			nearestRibVector[v] = new Vector(- nearestCornerSignes.getCoordinate(v), ribVector[v]);
 			if(nearestCornerSignes.getCoordinate(v) == 1){
 				toNearestCornerVector = toNearestCornerVector.Plus(ribVector[v]);
 				//nearestRibVector[v] = new Vector(1.0, ribVector[v]);
@@ -195,46 +201,56 @@ public class Layer {
 	}
 	
 	
-	public void updateBricks(){
+	public void updateBricksAndTiles(){
 		
-		for(int v = 0; v < Cube.SIZE; v++)
-			for(int w = 0; w < Cube.SIZE; w++){
-				brickInLayer[v][w].update();
+		tileCollection.clear();
+
+		for(BrickInLayer currentBrick : brickCollection){
+			
+			currentBrick.update();
+			
+			tileCollection.add(new Tile(currentBrick, 0));
+			tileCollection.add(new Tile(currentBrick, 1));
+			tileCollection.add(new Tile(currentBrick, 2));
+			
+			for(int i = 0; i < Cube.DIMENSION; i++)
+				axis.cube.tileCollection.add(new Tile(currentBrick, i));
 		}
+		
+//		for(int v = 0; v < Cube.DIMENSION * Cube.DIMENSION - 1; v++){
+//			for(int w = v + 1; w < Cube.DIMENSION * Cube.DIMENSION; w++){
+//				BrickInLayer brickInLayerV = brickCollection.get(v);
+//				BrickInLayer brickInLayerW = brickCollection.get(w);
+//				if(brickInLayerV.nearestCorner.z < brickInLayerW.nearestCorner.z){
+//					brickCollection.set(v, brickInLayerW);
+//					brickCollection.set(w, brickInLayerV);
+//				}
+//			}
+//		}
+		
 	}
 	
 	
 	public void draw(Graphics2D g){
 		
-		if(coordinate == 0){
+		if(coordinate != 7){
 		
-//			for(int v = 0; v < Cube.DIMENSION; v++)
+			for(BrickInLayer currentBrick : brickCollection)
 //				ribVector[v].draw(g, Color.BLUE);
 			
 			//System.out.println("              brickInLayer[1][0][0].centre.x = " + this.brickInLayer[0][0].centre.x + " y = " + this.brickInLayer[0][0].centre.y);
+
+//				if((brickInLayer.v == -1 && brickInLayer.w == -1) || (brickInLayer.v == 1 && brickInLayer.w == 0))
+				currentBrick.draw(g, Color.BLACK);
 			
-			brickInLayer[0][0].draw(g, Color.BLACK);
-//			brickInLayer[0][1].draw(g, Color.BLACK);
-//			brickInLayer[0][2].draw(g, Color.BLACK);
-//			brickInLayer[1][0].draw(g, Color.BLACK);
-//			brickInLayer[1][1].draw(g, Color.GRAY);
-//			brickInLayer[1][2].draw(g, Color.BLACK);
-//			brickInLayer[2][0].draw(g, Color.BLACK);
-			brickInLayer[2][1].draw(g, Color.BLACK);
-//			brickInLayer[2][2].draw(g, Color.BLACK);
+			for(Tile currentTile : tileCollection)
+				currentTile.drawInPanel(g);
 			
-//			GamePanel.drawLineInPanel(g, this.nearestCorner, this.nearestRibEnd[0], Color.BLACK);
-//			GamePanel.drawLineInPanel(g, this.nearestRibEnd[0], this.nearestTileDiagonalEnd[0], Color.BLACK);
-//			
-//			GamePanel.drawLineInPanel(g, this.nearestCorner, this.nearestRibEnd[1], Color.BLACK);
-//			GamePanel.drawLineInPanel(g, this.nearestRibEnd[1], this.nearestTileDiagonalEnd[1], Color.BLACK);
-//			
-//			GamePanel.drawLineInPanel(g, this.nearestCorner, this.nearestRibEnd[1], Color.BLACK);
-//			GamePanel.drawLineInPanel(g, this.nearestRibEnd[2], this.nearestTileDiagonalEnd[2], Color.BLACK);
-			
-			//toNearestCornerVector.draw(g, Color.BLACK);
 		}
+		
+			
 	}
+	
 
 		
 }

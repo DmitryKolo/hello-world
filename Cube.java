@@ -29,6 +29,7 @@ public class Cube {
 	public int rotatableAxisIndex;
 	
 	public ArrayList<Block> blockCollection = new ArrayList<Block>();
+	public ArrayList<Tile> tileCollection = new ArrayList<Tile>();
 	
 	private Address3D upperAngle; 
 	
@@ -113,7 +114,9 @@ public class Cube {
 	public void setRotatableAxis(int indexRotatableAxis){
 		
 		for(int i = 0; i < Cube.DIMENSION; i++) axis[i].stabilize();
-		axis[indexRotatableAxis].setRotatable(); // for layers creation
+		// for layers creation:
+		axis[indexRotatableAxis].setRotatable();
+		tileCollection.clear();
 	}
 	
 
@@ -152,8 +155,8 @@ public class Cube {
 	
 	public void initialCubeColorsAndBricks(){
 		
-		COLOR[0] = Color.BLUE;
-		COLOR[1] = Color.CYAN;
+		COLOR[0] = Color.RED;
+		COLOR[1] = Color.CYAN; // YELLOW // LIGHT_GRAY
 		COLOR[2] = Color.GRAY;
 		COLOR[3] = Color.GREEN;
 		COLOR[4] = Color.MAGENTA;

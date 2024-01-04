@@ -166,7 +166,7 @@ public class GamePanel extends JPanel implements Runnable{
 		background.draw(g);
 		player.draw(g);
 		
-		Block.drawCollection(g, cube.blockCollection);
+		//Block.drawCollection(g, cube.blockCollection);
 		
 		Brick.drawCollection(g, brickCollection);
 		//cube.drawLayersVectors(g);
@@ -227,6 +227,6 @@ public class GamePanel extends JPanel implements Runnable{
     	
     	g.setColor(color);
     	g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
-	}	
-
+	}		
+	
 }
