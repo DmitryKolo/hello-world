@@ -44,7 +44,7 @@ public class Brick {
 	}
 	
 	
-	public void calculateCentreAndNearestCornerZ(){
+	public void calculateCentreAndNearestCorner_Z(){
 
 		int rotatableAxisIndex = cube.rotatableAxisIndex;
 		Axis rotatableAxis = cube.axis[rotatableAxisIndex];
@@ -97,6 +97,51 @@ public class Brick {
 
 	}
 	
+	
+	public FractionalAddress nearestCornerAddress(Address3D cornerSignes){
+		
+		FractionalAddress address = new FractionalAddress(this.i, this.j, this.k);
+		for(int w = 0; w < Cube.DIMENSION; w++){
+			double sign = 0.5;
+			address.setCoordinate(w, address.getCoordinate(w) + sign * cornerSignes.getCoordinate(w));
+		}
+		
+		return address;
+	}
+	
+	
+	public FractionalAddress[] nearestRibEndAddresses(Address3D cornerSignes){
+		
+		FractionalAddress[] address = new FractionalAddress[Cube.DIMENSION]; 
+		
+		for(int v = 0; v < Cube.DIMENSION; v++){
+			address[v] =  new FractionalAddress(this.i, this.j, this.k);
+			for(int w = 0; w < Cube.DIMENSION; w++){
+				double sign = (v == w) ? -0.5 : 0.5;
+				address[v].setCoordinate(w, address[v].getCoordinate(w) + sign * cornerSignes.getCoordinate(w));
+			}
+		}
+		
+		return address;
+	}
+	
+	
+	public FractionalAddress[] nearestTileDiagonalEndAddresses(Address3D cornerSignes){
+	
+		FractionalAddress[] address = new FractionalAddress[Cube.DIMENSION]; 
+		
+		for(int v = 0; v < Cube.DIMENSION; v++){
+			address[v] =  new FractionalAddress(this.i, this.j, this.k);
+			for(int w = 0; w < Cube.DIMENSION; w++){
+				double sign = (v == w) ? 0.5 : -0.5;
+				address[v].setCoordinate(w, address[v].getCoordinate(w) + sign * cornerSignes.getCoordinate(w));
+			}
+		}
+		
+		return address;
+	}
+
+
 	public static void arrangeCollection(ArrayList<Brick> brickCollection, Cube cube){
 		
 		brickCollection.clear();
