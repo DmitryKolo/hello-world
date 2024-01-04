@@ -64,9 +64,9 @@ public class Point {
 	}
 
 	
-	public void draw(Graphics2D g){
+	public void draw(Graphics2D g, Color color){
 		
-		GamePanel.drawPointInPanel(g, this, Color.BLACK, 6);
+		GamePanel.drawPointInPanel(g, this, color, 6);
 		
 	}
 

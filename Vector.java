@@ -64,6 +64,13 @@ public class Vector {
 				throw new RuntimeException("Illegal coordinate index.");
 		}	
 	}
+	
+	
+	public Vector Plus(Vector vector){
+		
+		return new Vector(this.dx + vector.dx, this.dy + vector.dy, this.dz + vector.dz);
+		
+	}	
 
 	
 	public void rotateXYZ(double rotateAngleX, double rotateAngleY, double rotateAngleZ){

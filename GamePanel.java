@@ -206,6 +206,7 @@ public class GamePanel extends JPanel implements Runnable{
 		g.fillOval((int)x0, (int)y0, (int)radius, radius);
 	}
 
+	
 	public static void drawPointInPanel(Graphics2D g, Point point, Color color, int radius){
 		
 		g.setColor(color);
@@ -215,5 +216,17 @@ public class GamePanel extends JPanel implements Runnable{
      	
 		g.fillOval((int)x0, (int)y0, (int)radius, radius);
 	}
+	
+	
+	public static void drawLineInPanel(Graphics2D g, Point beginingPoint, Point endingPoint, Color color){
+		
+		double xB = beginingPoint.x + GamePanel.WIDTH / 2.0;
+    	double yB = beginingPoint.y + GamePanel.HEIGHT / 2.0;
+    	double xE = endingPoint.x + GamePanel.WIDTH / 2.0;
+    	double yE = endingPoint.y + GamePanel.HEIGHT / 2.0;
+    	
+    	g.setColor(color);
+    	g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
+	}	
 
 }
