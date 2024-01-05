@@ -138,12 +138,105 @@ public class Point {
 		Point proectionPoint = new Point(pointI, vectorJ);
 		
 		return new Proection(
-			yI >= 0 && yI <= 1 && yJ >= 0 && yJ <= 1, 
 			proectionPoint, 
+			yI > 0.0001 && yI < 0.9999 && yJ > 0.0001 && yJ < 0.9999 && Math.abs(proectionPoint.z - this.z) > 0.0001, 
+			proectionPoint.z - this.z < -0.0001,
+			proectionPoint.z - this.z > 0.0001,
 			yI, yJ,
 			pointI, pointJ,
 			vector1, vector2);
 
 	}
 	
+	
+	public Proection proectionOnTile(Tile tile){
+		
+		Point point0 = tile.point;
+		
+		Vector vector = new Vector(point0, this);
+		Vector vectorA = tile.vector[0];
+		Vector vectorB = tile.vector[1];
+		
+		Point angle00 = point0;
+		
+		Vector vector1 = vectorA;
+		Vector vector2 = vectorB;
+		
+		Matrix A = new Matrix(2, 2);
+		A.data[0][0] = vector1.dx;
+		A.data[1][0] = vector1.dy;
+		A.data[0][1] = vector2.dx;
+		A.data[1][1] = vector2.dy;
+		
+		Vector V = new Vector(angle00, this);
+		
+		Matrix X0 = new Matrix(2, 1);
+		X0.data[0][0] = V.dx;
+		X0.data[1][0] = V.dy;
+		
+		Matrix Y0 = A.solve(X0);
+		
+		double yI = Y0.data[0][0]; 
+		double yJ = Y0.data[1][0];
+		
+		Vector vectorI = new Vector(yI, vector1);
+		Vector vectorJ = new Vector(yJ, vector2); 
+		
+		Point pointI = new Point(angle00, vectorI);
+		Point pointJ = new Point(angle00, vectorJ);
+		
+		Point proectionPoint = new Point(pointI, vectorJ);
+		
+		return new Proection(
+				proectionPoint, 
+				yI > 0.0001 && yI < 0.9999 && yJ > 0.0001 && yJ < 0.9999 && Math.abs(proectionPoint.z - this.z) > 0.0001, 
+				proectionPoint.z - this.z < -0.0001,
+				proectionPoint.z - this.z > 0.0001,
+				yI, yJ,
+				pointI, pointJ,
+				vector1, vector2);
+	}
+	
+
+	public Point projectionOnTile(Tile tile){
+		
+		Point point0 = tile.point;
+		
+		Vector vector = new Vector(point0, this);
+		Vector vectorA = tile.vector[0];
+		Vector vectorB = tile.vector[1];
+		
+		Point angle00 = point0;
+		
+		Vector vector1 = vectorA;
+		Vector vector2 = vectorB;
+		
+		Matrix A = new Matrix(2, 2);
+		A.data[0][0] = vector1.dx;
+		A.data[1][0] = vector1.dy;
+		A.data[0][1] = vector2.dx;
+		A.data[1][1] = vector2.dy;
+		
+		Vector V = new Vector(angle00, this);
+		
+		Matrix X0 = new Matrix(2, 1);
+		X0.data[0][0] = V.dx;
+		X0.data[1][0] = V.dy;
+		
+		Matrix Y0 = A.solve(X0);
+		
+		double yI = Y0.data[0][0]; 
+		double yJ = Y0.data[1][0];
+		
+		Vector vectorI = new Vector(yI, vector1);
+		Vector vectorJ = new Vector(yJ, vector2); 
+		
+		Point pointI = new Point(angle00, vectorI);
+		//Point pointJ = new Point(angle00, vectorJ);
+		
+		return new Point(pointI, vectorJ);
+		
+	}
+	
+
 }	
