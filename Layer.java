@@ -136,31 +136,6 @@ public class Layer {
 			nearestCornerDeltaZ += Math.abs(dZ) * (Cube.SIZE / 2.0);
 		}
 		
-//		nearestCorner = addressNearestCorner.calculatedPoint(transitionMatrix);
-		
-//		Address3D[] addressNearestRibsEnd = new Address3D[Cube.DIMENSION];
-//		
-//		for(int v = 0; v < Cube.DIMENSION; v++){
-//			
-//			addressNearestRibsEnd[v] = new Address3D();
-//			
-//			for(int w = 0; w < Cube.DIMENSION; w++)
-//				if(v == w) 
-//					//addressNearestRibsEnd[v].setCoordinate(w, 1 - addressNearestCorner.getCoordinate(w));
-//					addressNearestRibsEnd[v].setCoordinate(w, - addressNearestCorner.getCoordinate(w));
-//				else 
-//					addressNearestRibsEnd[v].setCoordinate(w, addressNearestCorner.getCoordinate(w));
-//			
-////			nearestRibEnd[v] = addressNearestRibsEnd[v].calculatedPoint(transitionMatrix); 
-////			nearestRibVector[v] = new Vector(nearestCorner, nearestRibEnd[v]);
-//		}
-//		
-////		for(int v = 0; v < Cube.DIMENSION; v++){
-////			
-////			int w = (v == Cube.DIMENSION - 1) ? 0 : v + 1;
-////			
-////			nearestTileDiagonalEnd[v] = new Point(nearestRibEnd[v], nearestRibVector[w]);
-////		}
 		
 		Address3D nullCornerAddress = new Address3D(0, 0, 0);
 		
@@ -173,13 +148,7 @@ public class Layer {
 			
 			ribEndAddress[v] = new Address3D();
 			ribEndAddress[v].setCoordinate(v, 1);
-//			for(int w = 0; w < Cube.DIMENSION; w++)
-//				if(v == w) 
-//					ribEndAddress[v].setCoordinate(w, 1);
-////					ribEndAddress[v].setCoordinate(w, 1 - ribEndAddress[v].getCoordinate(w));
-////				else 
-////					ribEndAddress[v].setCoordinate(w, ribEndAddress[v].getCoordinate(w));
-			
+
 			ribEnd[v] = ribEndAddress[v].calculatedPoint(transitionMatrix); 
 			ribVector[v] = new Vector(nullCornerCentre, ribEnd[v]);
 		}
@@ -190,7 +159,7 @@ public class Layer {
 			
 			nearestRibVector[v] = new Vector(- nearestCornerSignes.getCoordinate(v), ribVector[v]);
 			if(nearestCornerSignes.getCoordinate(v) == 1){
-				toNearestCornerVector = toNearestCornerVector.Plus(ribVector[v]);
+				toNearestCornerVector = toNearestCornerVector.plus(ribVector[v]);
 				//nearestRibVector[v] = new Vector(1.0, ribVector[v]);
 			}
 			//else nearestRibVector[v] = new Vector(-1.0, ribVector[v]);
@@ -203,17 +172,20 @@ public class Layer {
 	
 	public void updateBricksAndTiles(){
 		
-		tileCollection.clear();
+//		tileCollection.clear();
 
 		for(BrickInLayer currentBrick : brickCollection){
 			
 			currentBrick.update();
 			
-			tileCollection.add(new Tile(currentBrick, 0));
-			tileCollection.add(new Tile(currentBrick, 1));
-			tileCollection.add(new Tile(currentBrick, 2));
+//			tileCollection.add(new Tile(currentBrick, 0));
+//			tileCollection.add(new Tile(currentBrick, 1));
+//			tileCollection.add(new Tile(currentBrick, 2));
 			
 			for(int i = 0; i < Cube.DIMENSION; i++)
+				//if(currentBrick.v==1 && currentBrick.w==1) //  && ( i==1 && currentBrick.layer.coordinate == -1 || i ==0)) // && currentBrick.layer.coordinate == 0))
+//				if ( (currentBrick.w == 1 && currentBrick.v == -1) && (currentBrick.layer.coordinate == 1) && i == 1
+//					|| (currentBrick.w == 0 && currentBrick.v == -1) && (currentBrick.layer.coordinate == 1) && i == 2 )
 				axis.cube.tileCollection.add(new Tile(currentBrick, i));
 		}
 		
@@ -243,8 +215,6 @@ public class Layer {
 //				if((brickInLayer.v == -1 && brickInLayer.w == -1) || (brickInLayer.v == 1 && brickInLayer.w == 0))
 				currentBrick.draw(g, Color.BLACK);
 			
-			for(Tile currentTile : tileCollection)
-				currentTile.drawInPanel(g);
 			
 		}
 		

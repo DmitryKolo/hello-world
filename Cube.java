@@ -103,9 +103,9 @@ public class Cube {
 		
 		stabilizeMode = false;
 		
-		blockCollection.add(new Block(this, 2, 0, 0.00270)); 
-		blockCollection.add(new Block(this, 2, 1, 0.0100)); 
-		blockCollection.add(new Block(this, 2, 2, 0.0308)); 
+//		blockCollection.add(new Block(this, 2, 0, 0.00270)); 
+//		blockCollection.add(new Block(this, 2, 1, 0.0100)); 
+//		blockCollection.add(new Block(this, 2, 2, 0.0308)); 
 
 	}
 			
@@ -289,7 +289,7 @@ public class Cube {
 	}
 	
 	
-	public void update(ArrayList<Brick> brickCollection){
+	public void update(Graphics2D g, ArrayList<Brick> brickCollection){
 		
 		double rotateAngle = speed/20;
 
@@ -356,50 +356,11 @@ public class Cube {
 			Brick.arrangeCollection(brickCollection, this);
 		}
 		
-		axis[rotatableAxisIndex].update();
+		axis[rotatableAxisIndex].update(g);
 	}
 	
 
 	public void draw(Graphics2D g){
-		
-		for(int i = 0; i < Cube.DIMENSION; i++){
-			//axis[i].vector.draw(g, Color.RED);
-		}
-//		
-//		for (int i = 0; i < angle.length; i++){
-//		    for (int j = 0; j < angle[i].length; j++){
-//		    	
-//		    	Point angle0;
-//		    	Point angle1;
-//		    	
-//		    	if (i == upperAngle.i || j == upperAngle.j) {
-//		    		angle0 = angle[i][j][0];
-//		    		angle1 = angle[i][j][1];
-//		    		GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
-//		    	}
-//				
-//		    	if (i == upperAngle.i || j == upperAngle.k) {
-//			    	angle0 = angle[i][0][j];
-//			    	angle1 = angle[i][1][j];
-//			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
-//		    	}
-//				
-//		    	if (i == upperAngle.j || j == upperAngle.k) {
-//			    	angle0 = angle[0][i][j];
-//			    	angle1 = angle[1][i][j];
-//			    	GamePanel.drawLine(g, angle0, angle1, centre, Color.GREEN);
-//		    	}
-//		    }
-//	    }
-//		
-//		g.setColor(Color.RED);
-//		
-//		Point currentUpperAngle = angle[upperAngle.i][upperAngle.j][upperAngle.k];
-//		
-//		double r = 5;
-//		double x0 = centre.x + currentUpperAngle.x - r/2;
-//		double y0 = centre.y + currentUpperAngle.y - r/2;
-//		g.fillOval((int)x0, (int)y0, (int)r, (int)r);
 		
 		axis[rotatableAxisIndex].draw(g);
 			

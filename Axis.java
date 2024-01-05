@@ -74,7 +74,7 @@ public class Axis {
 		
 	// Functions
 	
-	public void update(){
+	public void update(Graphics2D g){
 		
 		cube.tileCollection.clear();
 		
@@ -82,7 +82,7 @@ public class Axis {
 			currentLayer.update();
 		}
 		
-		Tile.arrangeCollection(cube.tileCollection);
+		Tile.arrangeCollection(g, cube.tileCollection);
 	}
 	
 	
@@ -93,21 +93,21 @@ public class Axis {
 			double speed = 0;
 			switch(i){
 			case 0:
-				speed = 0.00270;
+				speed = 0.03270;
 				break;
 			case 1:
-				speed = 0.01000; 
+				speed = 0.002000; 
 				break;
 			case 2:
-				speed = 0.03080; 
+				speed = 0.001080; 
 				break;
 			default:
 				speed = 0.0;
 			}
-			//layer[Cube.SIZE - 1 - i] = new Layer(this, i - 1, speed);
 			layer[i] = new Layer(this, i - 1, speed);
 		}
 	}
+	
 	
 	public void stabilize(){
 		rotatable = false;
@@ -121,6 +121,8 @@ public class Axis {
 		for(Layer currentLayer : layer){
 			currentLayer.draw(g);
 		}
+		
+		Tile.drawCollection(g, cube.tileCollection);
 	}
 
 	

@@ -66,9 +66,16 @@ public class Vector {
 	}
 	
 	
-	public Vector Plus(Vector vector){
+	public Vector plus(Vector vector){
 		
 		return new Vector(this.dx + vector.dx, this.dy + vector.dy, this.dz + vector.dz);
+		
+	}	
+
+	
+	public Vector minus(Vector vector){
+		
+		return new Vector(this.dx - vector.dx, this.dy - vector.dy, this.dz - vector.dz);
 		
 	}	
 
@@ -107,11 +114,40 @@ public class Vector {
 	
 	public double cos(Vector vector){
 		
-		double r0 = Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
-		double r1 = Math.sqrt(vector.dx * vector.dx + vector.dy * vector.dy + vector.dz * vector.dz);
-		double multi = this.dx * vector.dx + this.dy * vector.dy + this.dz * vector.dz;
-		return multi / r0 / r1;
+		double r0 = this.length();
+		double r1 = vector.length();
+		double scalarProduct = scalarProductBy(vector);
+		return scalarProduct / r0 / r1;
 		
+	}
+
+
+	public double length(){
+		
+		return Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+		
+	}
+
+
+	public double scalarProductBy(Vector vector){
+		
+		return this.dx * vector.dx + this.dy * vector.dy + this.dz * vector.dz;
+		
+	}
+
+	
+	public Vector projectionOnto(Vector vector){
+		
+		double cos = cos(vector);
+		return new Vector(cos, vector);
+	
+	}
+
+	
+	public Vector projectionOntoXY(){
+		
+		return new Vector(this.dx, this.dy, 0);
+	
 	}
 
 
