@@ -28,7 +28,7 @@ public class Cube {
 	Axis[] axis = new Axis[Cube.DIMENSION];  
 	public int rotatableAxisIndex;
 	
-	public ArrayList<Block> blockCollection = new ArrayList<Block>();
+	//public ArrayList<Block> blockCollection = new ArrayList<Block>();
 	public ArrayList<Tile> tileCollection = new ArrayList<Tile>();
 	
 	private Address3D upperAngle; 
@@ -278,11 +278,11 @@ public class Cube {
 	
 	public void restart(int stratifiedAxis){
 		
-		blockCollection.clear();
-		
-		blockCollection.add(new Block(this, stratifiedAxis, 0, -0.017)); 
-		blockCollection.add(new Block(this, stratifiedAxis, 1, -0.032)); 
-		blockCollection.add(new Block(this, stratifiedAxis, 2,  0.018)); 
+//		blockCollection.clear();
+//		
+//		blockCollection.add(new Block(this, stratifiedAxis, 0, -0.017)); 
+//		blockCollection.add(new Block(this, stratifiedAxis, 1, -0.032)); 
+//		blockCollection.add(new Block(this, stratifiedAxis, 2,  0.018)); 
 		
 		stabilizeMode = false;
 		
@@ -349,7 +349,7 @@ public class Cube {
 //				}
 //			}
 			
-			Block.updateCollection(blockCollection);
+//			Block.updateCollection(blockCollection);
 			
 			//axis[rotatableAxisIndex].update();
 			

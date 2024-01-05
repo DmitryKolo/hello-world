@@ -8,39 +8,39 @@ public class Listeners implements KeyListener{
 		if(key == KeyEvent.VK_SHIFT){
 			//VolumetricAngle.shift = true;
 			Cube.shift = true;
-			Block.shift = true;
+			//Block.shift = true;
 		}
 		if(key == KeyEvent.VK_RIGHT){
 			//VolumetricAngle.right = true;
 			Cube.right = true;
-			Block.right = true;
+			//Block.right = true;
 		}
 		if(key == KeyEvent.VK_LEFT){
 			//VolumetricAngle.left = true;
 			Cube.left = true;
-			Block.left = true;
+			//Block.left = true;
 		}
 		if(key == KeyEvent.VK_DOWN){
 			//VolumetricAngle.down = true;
 			Cube.down = true;
-			Block.down = true;
+			//Block.down = true;
 		}
 		if(key == KeyEvent.VK_UP){
 			//VolumetricAngle.up = true;
 			Cube.up = true;
-			Block.up = true;
+			//Block.up = true;
 		}
 		if(key == KeyEvent.VK_I){
 			Cube.rotateI = true;
-			Block.rotateI = true;
+			//Block.rotateI = true;
 		}
 		if(key == KeyEvent.VK_J){
 			Cube.rotateJ = true;
-			Block.rotateJ = true;
+			//Block.rotateJ = true;
 		}
 		if(key == KeyEvent.VK_K){
 			Cube.rotateK = true;
-			Block.rotateK = true;
+			//Block.rotateK = true;
 		}
 		if(key == KeyEvent.VK_Q){
 			Cube.rotateTop = true;
@@ -49,7 +49,7 @@ public class Listeners implements KeyListener{
 			Cube.rotateBackCounterWise = true;
 		}
 		if(key == KeyEvent.VK_E){
-			Block.rotateFrontClockWise = true;
+			//Block.rotateFrontClockWise = true;
 		}
 //		if(key == KeyEvent.VK_A){
 //			Player.left = true;
@@ -68,39 +68,39 @@ public class Listeners implements KeyListener{
 		if(key == KeyEvent.VK_SHIFT){
 			//VolumetricAngle.shift = false;
 			Cube.shift = false;
-			Block.shift = false;
+			//Block.shift = false;
 		}
 		if(key == KeyEvent.VK_RIGHT){
 			//VolumetricAngle.right = false;
 			Cube.right = false;
-			Block.right = false;
+			//Block.right = false;
 		}
 		if(key == KeyEvent.VK_LEFT){
 			//VolumetricAngle.down = false;
 			Cube.left = false;
-			Block.left = false;
+			//Block.left = false;
 		}
 		if(key == KeyEvent.VK_DOWN){
 			//VolumetricAngle.down = false;
 			Cube.down = false;
-			Block.down = false;
+			//Block.down = false;
 		}
 		if(key == KeyEvent.VK_UP){
 			//VolumetricAngle.up = false;
 			Cube.up = false;
-			Block.up = false;
+			//Block.up = false;
 		}
 		if(key == KeyEvent.VK_I){
 			Cube.rotateI = false;
-			Block.rotateI = false;
+			//Block.rotateI = false;
 		}
 		if(key == KeyEvent.VK_J){
 			Cube.rotateJ = false;
-			Block.rotateJ = false;
+			//Block.rotateJ = false;
 		}
 		if(key == KeyEvent.VK_K){
 			Cube.rotateK = false;
-			Block.rotateK = false;
+			//Block.rotateK = false;
 		}
 		if(key == KeyEvent.VK_Q){
 			Cube.rotateTop = false;
@@ -109,7 +109,7 @@ public class Listeners implements KeyListener{
 			Cube.rotateBackCounterWise = false;
 		}
 		if(key == KeyEvent.VK_E){
-			Block.rotateFrontClockWise = false;
+			//Block.rotateFrontClockWise = false;
 		}
 //		if(key == KeyEvent.VK_X){
 //			Player.down = false;

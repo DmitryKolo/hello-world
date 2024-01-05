@@ -8,7 +8,7 @@ public class PairOfEdges {
 	
 	public Vector vector0, vector1, vector2;
 	public Vector vector0cw, vector1cw, vector2cw;
-	public Edge edge0, edge1;
+	//public Edge edge0, edge1;
 	
 	// Constructor
 	
@@ -25,8 +25,8 @@ public class PairOfEdges {
 		Vector vector1cw = new Vector(-vector1.dx, -vector1.dy, -vector1.dz);
 		Vector vector2cw = new Vector(-vector2.dx, -vector2.dy, -vector2.dz);
 		
-		edge0 = new Edge(size, centre, vector0, vector1, vector2);
-		edge1 = new Edge(size, centre, vector0cw, vector1cw, vector2cw);
+//		edge0 = new Edge(size, centre, vector0, vector1, vector2);
+//		edge1 = new Edge(size, centre, vector0cw, vector1cw, vector2cw);
 	
 	}
 			
