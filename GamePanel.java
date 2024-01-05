@@ -164,7 +164,7 @@ public class GamePanel extends JPanel implements Runnable{
 		background.draw(g);
 		cube.update(g, brickCollection);
 		
-		Block.updateCollection(cube.blockCollection); ///, edgeCollection);
+		//Block.updateCollection(cube.blockCollection); ///, edgeCollection);
 	}
 	
 	

@@ -18,7 +18,7 @@ public class Axis {
 	
 	public final static int ENDS_QUANTITY = 2;
 
-	public Edge[] edge = new Edge[Axis.ENDS_QUANTITY]; // endingIndex - beginingIndex + 1]; 
+	//public Edge[] edge = new Edge[Axis.ENDS_QUANTITY]; // endingIndex - beginingIndex + 1]; 
 			
 	
 	// Constructor
@@ -49,8 +49,8 @@ public class Axis {
 		Vector vector2 = new Vector(1, basis.vector[number2]);		
 		Vector vector2cw = new Vector(-1, vector2);		
 		
-		this.edge[0] = new Edge(cube.size, cube.centre, vector0, vector1, vector2);
-		this.edge[1] = new Edge(cube.size, cube.centre, vector0cw, vector1cw, vector2cw);
+//		this.edge[0] = new Edge(cube.size, cube.centre, vector0, vector1, vector2);
+//		this.edge[1] = new Edge(cube.size, cube.centre, vector0cw, vector1cw, vector2cw);
 		
 		switch(index){
 		case 0:

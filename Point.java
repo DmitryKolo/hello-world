@@ -103,50 +103,50 @@ public class Point {
 	}	
 	
 	
-	public Proection ProectionOnEdge(Edge edge){
-		
-		Block block = edge.block;
-
-		Point angle00 = block.angleAtAddress(edge.anglesAddresses[0][0]);
-		
-		Vector vector1 = edge.vector1;
-		Vector vector2 = edge.vector2;
-		
-		Matrix A = new Matrix(2, 2);
-		A.data[0][0] = vector1.dx;
-		A.data[1][0] = vector1.dy;
-		A.data[0][1] = vector2.dx;
-		A.data[1][1] = vector2.dy;
-		
-		Vector V = new Vector(angle00, this);
-		
-		Matrix X0 = new Matrix(2, 1);
-		X0.data[0][0] = V.dx;
-		X0.data[1][0] = V.dy;
-		
-		Matrix Y0 = A.solve(X0);
-		
-		double yI = Y0.data[0][0]; 
-		double yJ = Y0.data[1][0];
-		
-		Vector vectorI = new Vector(yI, vector1);
-		Vector vectorJ = new Vector(yJ, vector2);
-		
-		Point pointI = new Point(angle00, vectorI);
-		Point pointJ = new Point(angle00, vectorJ);
-		
-		Point proectionPoint = new Point(pointI, vectorJ);
-		
-		return new Proection(
-			proectionPoint, 
-			yI > 0.0001 && yI < 0.9999 && yJ > 0.0001 && yJ < 0.9999 && Math.abs(proectionPoint.z - this.z) > 0.0001, 
-			proectionPoint.z - this.z < -0.0001,
-			proectionPoint.z - this.z > 0.0001,
-			yI, yJ,
-			pointI, pointJ,
-			vector1, vector2);
-
-	}
+//	public Proection ProectionOnEdge(Edge edge){
+//		
+//		Block block = edge.block;
+//
+//		Point angle00 = block.angleAtAddress(edge.anglesAddresses[0][0]);
+//		
+//		Vector vector1 = edge.vector1;
+//		Vector vector2 = edge.vector2;
+//		
+//		Matrix A = new Matrix(2, 2);
+//		A.data[0][0] = vector1.dx;
+//		A.data[1][0] = vector1.dy;
+//		A.data[0][1] = vector2.dx;
+//		A.data[1][1] = vector2.dy;
+//		
+//		Vector V = new Vector(angle00, this);
+//		
+//		Matrix X0 = new Matrix(2, 1);
+//		X0.data[0][0] = V.dx;
+//		X0.data[1][0] = V.dy;
+//		
+//		Matrix Y0 = A.solve(X0);
+//		
+//		double yI = Y0.data[0][0]; 
+//		double yJ = Y0.data[1][0];
+//		
+//		Vector vectorI = new Vector(yI, vector1);
+//		Vector vectorJ = new Vector(yJ, vector2);
+//		
+//		Point pointI = new Point(angle00, vectorI);
+//		Point pointJ = new Point(angle00, vectorJ);
+//		
+//		Point proectionPoint = new Point(pointI, vectorJ);
+//		
+//		return new Proection(
+//			proectionPoint, 
+//			yI > 0.0001 && yI < 0.9999 && yJ > 0.0001 && yJ < 0.9999 && Math.abs(proectionPoint.z - this.z) > 0.0001, 
+//			proectionPoint.z - this.z < -0.0001,
+//			proectionPoint.z - this.z > 0.0001,
+//			yI, yJ,
+//			pointI, pointJ,
+//			vector1, vector2);
+//
+//	}
 	
 	
 	public Proection proectionOnTile(Tile tile){
