@@ -69,24 +69,17 @@ public class BrickInLayer {
 		nearestRibEndAddresses = brick.nearestRibEndAddresses(layer.nearestCornerSignes);
 		nearestTileDiagonalEndAddresses = brick.nearestTileDiagonalEndAddresses(layer.nearestCornerSignes);
 		
-		//nearestCorner = new Point(brick.absoluteCentre, layer.toNearestCornerVector);
-		nearestCorner = nearestCornerAddress.calculatedPoint(layer.transitionMatrix);
+		nearestCorner = nearestCornerAddress.calculatedPoint(layer.fullTransitionMatrix);// ? outdated matrix - new matrix
 		
 		for(int v = 0; v < Cube.DIMENSION; v++){	
 			
-			//nearestRibEnd[v] = new Point(nearestCorner, layer.nearestRibVector[v]); 
-			nearestRibEnd[v] = nearestRibEndAddresses[v].calculatedPoint(layer.transitionMatrix);
+			nearestRibEnd[v] = nearestRibEndAddresses[v].calculatedPoint(layer.fullTransitionMatrix); // ? outdated matrix - new matrix
 		
-			//int w = (v == Cube.DIMENSION - 1) ? 0 : v + 1;
-			//nearestTileDiagonalEnd[v] = new Point(nearestRibEnd[v], layer.nearestRibVector[w]);
-			nearestTileDiagonalEnd[v] = nearestTileDiagonalEndAddresses[v].calculatedPoint(layer.transitionMatrix);
+			nearestTileDiagonalEnd[v] = nearestTileDiagonalEndAddresses[v].calculatedPoint(layer.fullTransitionMatrix); // ? outdated matrix - new matrix
 		}
 		
-		for(int v = 0; v < Cube.DIMENSION; v++){	
-			
-			Tile tile = new Tile(this, v);
-		}
-		
+//		for(int v = 0; v < Cube.DIMENSION; v++)
+		//Tile tile = new Tile(this, v);
 	}
 	
 	
@@ -98,11 +91,11 @@ public class BrickInLayer {
 		Color color1 = Color.ORANGE;
 		Color color2 = Color.PINK;
 		
-	//	if(this.v == -1 && this.w == -1){
+		if ( !( this.v == -1 && this.w == -1 ) ) return;
 			
-			nearestCorner.draw(g, Color.BLACK);
+		nearestCorner.draw(g, Color.BLACK);
 			
-			nearestRibEnd[0].draw(g, color1); 
+		nearestRibEnd[0].draw(g, color1); 
 			nearestTileDiagonalEnd[0].draw(g, color1);
 			nearestRibEnd[1].draw(g, color1); 
 			nearestTileDiagonalEnd[1].draw(g, color1);
@@ -123,38 +116,13 @@ public class BrickInLayer {
 			int firstAxisIndex = (axisIndex < Cube.DIMENSION - 1) ? axisIndex + 1 : axisIndex + 1 - Cube.DIMENSION;
 			int secondAxisIndex = (axisIndex < Cube.DIMENSION - 2) ? axisIndex + 2 : axisIndex + 2 - Cube.DIMENSION;
 			
-			Point point1 = nearestTileDiagonalEnd[axisIndex];
-			Point point0 = nearestRibEnd[firstAxisIndex];
-			Point point2 = nearestRibEnd[secondAxisIndex];
-			Point point3 = nearestCorner;
+		Point point1 = nearestTileDiagonalEnd[axisIndex];
+		Point point0 = nearestRibEnd[firstAxisIndex];
+		Point point2 = nearestRibEnd[secondAxisIndex];
+		Point point3 = nearestCorner;
 			
-		   	Color tileColor = brick.color[axisIndex][(layer.nearestCornerSignes.getCoordinate(axisIndex) + 1) / 2];
-	    	
-//		   	drawTileInPanel(g, 0);
-//		   	drawTileInPanel(g, 1);
-//		   	drawTileInPanel(g, 2);
-
+		Color tileColor = brick.color[axisIndex][(layer.nearestCornerSignes.getCoordinate(axisIndex) + 1) / 2];
 	}
-	
-	
-//	public void drawTileInPanel(Graphics2D g, int axisIndex){
-//		
-//		int firstAxisIndex = (axisIndex < Cube.DIMENSION - 1) ? axisIndex + 1 : axisIndex + 1 - Cube.DIMENSION;
-//		int secondAxisIndex = (axisIndex < Cube.DIMENSION - 2) ? axisIndex + 2 : axisIndex + 2 - Cube.DIMENSION;
-//		
-//		Point point1 = nearestTileDiagonalEnd[axisIndex];
-//		Point point0 = nearestRibEnd[firstAxisIndex];
-//		Point point2 = nearestRibEnd[secondAxisIndex];
-//		Point point3 = nearestCorner;
-//		
-//	   	Color tileColor = brick.color[axisIndex][(layer.nearestCornerSignes.getCoordinate(axisIndex) + 1) / 2];
-//		int argX0[] = {(int)point0.x + GamePanel.WIDTH / 2, (int)point1.x + GamePanel.WIDTH / 2, (int)point2.x + GamePanel.WIDTH / 2, (int)point3.x + GamePanel.WIDTH / 2};
-//  		int argY0[] = {(int)point0.y + GamePanel.HEIGHT/ 2, (int)point1.y + GamePanel.HEIGHT/ 2, (int)point2.y + GamePanel.HEIGHT/ 2, (int)point3.y + GamePanel.HEIGHT/ 2};
-//  		
-//	   	g.setColor(tileColor);
-//	   	g.fillPolygon(argX0, argY0, 4);
-//	}	
 
-	
 }
 	

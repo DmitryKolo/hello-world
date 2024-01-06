@@ -71,21 +71,11 @@ public class FractionalAddress {
 	
 	public Point calculatedPoint(Matrix transitionMatrix){
 		
-		int M = transitionMatrix.getM(); 
-		
-		Matrix columnX = new Matrix(M,
-				//Cube.DIMENSION + 1, 
-				1);
-	
-		for(int i = 0; i < Cube.DIMENSION; i++)
-			columnX.data[i][0] = this.getCoordinate(i);
-		
-		if(M > Cube.DIMENSION) columnX.data[M - 1][0] = 1;
+		Matrix rowX = new Matrix(this);
 
-		Matrix columnY = transitionMatrix.times(columnX);
-		
-		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-
+		Matrix rowX1 = rowX.transitionRow(transitionMatrix);
+				
+		return rowX1.createPoint();
 	}
 	
 }

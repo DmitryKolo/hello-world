@@ -6,8 +6,6 @@ public class Tile{
 	
 	// Fields
 	
-	//public Point centre;
-	
 	private double x;
 	private double y;
 	private double dxA;
@@ -19,7 +17,7 @@ public class Tile{
 	
 	public Vector[] vector = new Vector[2];
 	public Point point;
-	public Point diagonalPoint;
+	public BrickInLayer brickInLayer;
 	
 	private Color color;	
 	
@@ -32,34 +30,12 @@ public class Tile{
 	
 	// Constructor
 	
-	public Tile(double x, double y, double dxA, double dyA, double dxC, double dyC, Color color){
-		
-		this.x = x; // GamePanel.WIDTH / 2;
-		this.y = y; // GamePanel.HEIGHT / 2;
-		
-		this.dxA = dxA;
-		this.dyA = dyA;
-		dzA = 0;
-		this.dxC = dxC;
-		this.dyC = dyC;
-		dzC = 0;
-		
-		this.color = color;
-		
-		up = false;
-		down = false;
-		left = false;
-		right = false;
-		
-		isFiring = false;
-	}
-	
 	public Tile(BrickInLayer brickInLayer, int axisIndex){
 		
 		int firstAxisIndex = (axisIndex < Cube.DIMENSION - 1) ? axisIndex + 1 : axisIndex + 1 - Cube.DIMENSION;
 		int secondAxisIndex = (axisIndex < Cube.DIMENSION - 2) ? axisIndex + 2 : axisIndex + 2 - Cube.DIMENSION;
 		
-		//Point point1 = brickInLayer.nearestTileDiagonalEnd[axisIndex];
+		this.brickInLayer = brickInLayer;
 		this.point = brickInLayer.nearestCorner;
 	
 		int v, w;
@@ -92,7 +68,7 @@ public class Tile{
 
 		Point point0 = new Point(point, vector[0]);
 		Point point1 = new Point(point, vector[1]);
-		this.diagonalPoint = new Point(point0, vector[1]);
+		//this.diagonalPoint = new Point(point0, vector[1]);
 		
 		this.dxA = point0.x - point.x;
 		this.dyA = point0.y - point.y;
@@ -151,18 +127,35 @@ public class Tile{
 	public static void arrangeCollection(Graphics2D g, 
 			ArrayList<Tile> tileCollection){
 		
+//		for(int v = 0; v < tileCollection.size() - 1; v++)
+//			for(int w = v + 1; w < tileCollection.size(); w++){
+//				Tile tileV = tileCollection.get(v);
+//				Tile tileW = tileCollection.get(w);
+//				if(toSwap(g, 
+//						tileV, tileW)){
+//					tileCollection.set(v, tileW);
+//					tileCollection.set(w, tileV);
+//				}
+//			}
+		
 		for(int v = 0; v < tileCollection.size() - 1; v++){
 			for(int w = v + 1; w < tileCollection.size(); w++){
+			
 				Tile tileV = tileCollection.get(v);
 				Tile tileW = tileCollection.get(w);
-				if(toSwap(g, 
-						tileV, tileW)){
-//					Tile tileZ = tileCollection.get(v+1);
+			
+				System.out.println("[" + v + "." + w + "] ? " + tileV + "(" + tileV.point.z + ") and " + tileW + "(" + tileW.point.z + ")" );
+			
+				if(toSwap(g, tileV, tileW)){
+					System.out.println(" ---   Swap: " + v + " - " + w + ": "+GamePanel.pause);
+//					for(int i = w; w >= v; w--)
+//						tileCollection.set(i, tileCollection.get(i - 1));
 					tileCollection.set(v, tileW);
-//					tileCollection.set(v+1, tileV);
-//					tileCollection.set(w, tileZ);
 					tileCollection.set(w, tileV);
 				}
+				
+				if(GamePanel.pause>500)
+					GamePanel.pause += 0.0001;
 			}
 		}
 	}
@@ -189,45 +182,15 @@ public class Tile{
 		
 		for(int i = 0; i < 4; i++)
 			for(int j = 0; j < 4; j++){
+				
+				if(GamePanel.pause > 59)
+					GamePanel.pause -= 0.0011;
+				
 				int posV = positionOfSegmentRelativeToTileSegment(g, pointsV[i], vectorsV[i], tileW, pointsW[j], vectorsW[j]);
-				if(posV == -1) return true; 
-				if(posV == 1) return false; 
+				if(posV == 1) return true; 
+				if(posV == -1) return false; 
 			}
 		
-		//System.out.println("pointV = " + pointV.x + ", "+ pointV.y + ", "+ pointV.z + ";  proection = "+ proectionVonW.point.x + ", "+ proectionVonW.point.y+ ", "+ proectionVonW.point.z);
-//		System.out.println("point = " + point0.x + ", "+ point0.y + ", "+ point0.z + ";  proection = "+ proectionV0onW.point.x + ", "+ proectionV0onW.point.y+ ", "+ proectionV0onW.point.z);
-//		System.out.println("point = " + point1.x + ", "+ point1.y + ", "+ point1.z + ";  proection = "+ proectionV1onW.point.x + ", "+ proectionV1onW.point.y+ ", "+ proectionV1onW.point.z);
-//		System.out.println("point = " + point01.x + ", "+ point01.y + ", "+ point01.z + ";  proection = "+ proectionV01onW.point.x + ", "+ proectionV01onW.point.y+ ", "+ proectionV01onW.point.z);
-
-
-//		Proection proectionV0onW = pointV0.proectionOnTile(tileW);
-//		System.out.println("pointV0 = " + pointV0.x + ", "+ pointV0.y + ", "+ pointV0.z + ";  proection = "+ proectionV0onW.point.x + ", "+ proectionV0onW.point.y+ ", "+ proectionV0onW.point.z);
-//		if(proectionV0onW.inside) return proectionV0onW.below;
-//
-//		Proection proectionV1onW = pointV1.proectionOnTile(tileW);
-//		System.out.println("pointV1 = " + pointV1.x + ", "+ pointV1.y + ", "+ pointV1.z + ";  proection = "+ proectionV1onW.point.x + ", "+ proectionV1onW.point.y+ ", "+ proectionV1onW.point.z);
-//		if(proectionV1onW.inside) return proectionV1onW.below; 
-//		
-//		Proection proectionV01onW = pointV01.proectionOnTile(tileW);
-//		System.out.println("pointV01 = " + pointV01.x + ", "+ pointV01.y + ", "+ pointV01.z + ";  proection = "+ proectionV01onW.point.x + ", "+ proectionV01onW.point.y+ ", "+ proectionV01onW.point.z);
-//		if(proectionV01onW.inside) return proectionV01onW.below;
-//				
-//		Proection proectionWonV = pointW.proectionOnTile(tileV);
-//		System.out.println("pointW = " + pointW.x + ", "+ pointW.y + ", "+ pointW.z + ";  proection = "+ proectionWonV.point.x + ", "+ proectionWonV.point.y+ ", "+ proectionWonV.point.z);
-//		if(proectionWonV.inside) return proectionWonV.above; 
-//
-//		Proection proectionW0onV = pointW0.proectionOnTile(tileV);
-//		System.out.println("pointW0 = " + pointW0.x + ", "+ pointW0.y + ", "+ pointW0.z + ";  proection = "+ proectionW0onV.point.x + ", "+ proectionW0onV.point.y+ ", "+ proectionW0onV.point.z);
-//		if(proectionW0onV.inside) return proectionW0onV.above;
-//
-//		Proection proectionW1onV = pointW1.proectionOnTile(tileV);
-//		System.out.println("pointW1 = " + pointW1.x + ", "+ pointW1.y + ", "+ pointW1.z + ";  proection = "+ proectionW1onV.point.x + ", "+ proectionW1onV.point.y+ ", "+ proectionW1onV.point.z);
-//		if(proectionW1onV.inside) return proectionW1onV.above; 
-//		
-//		Proection proectionW01onV = pointW01.proectionOnTile(tileV);
-//		System.out.println("pointW01 = " + pointW01.x + ", "+ pointW01.y + ", "+ pointW01.z + ";  proection = "+ proectionW01onV.point.x + ", "+ proectionW01onV.point.y+ ", "+ proectionW01onV.point.z);
-//		if(proectionW01onV.inside) return proectionW01onV.above; 
-			
 		return false;
 
 	}
@@ -235,110 +198,17 @@ public class Tile{
 	
 	public static int positionOfSegmentRelativeToTileSegment(Graphics2D g, Point pointV, Vector vectorV, Tile tile, Point pointW, Vector vectorW){
 		
-		double absCos = Math.abs(vectorV.cos(vectorW));
-		if(absCos > 0.99999) return 0;
-
 		Point pointV0 = new Point(pointV, vectorV);
 		Point pointW0 = new Point(pointW, vectorW);
 		
-		Vector vectorVW = new Vector(pointV, pointW);
-		Vector vectorVW0 = new Vector(pointV, pointW0);
+		int pos = Point.zCompareInTwoSegments(pointV, pointV0, pointW, pointW0);
 		
-		Vector vectorVonXY = vectorV.projectionOntoXY();
-		Vector vectorVWonXY = vectorVW.projectionOntoXY();
-		Vector vectorVW0onXY = vectorVW0.projectionOntoXY();
-		
-		Vector projectionVectorVW = vectorVW.projectionOnto(vectorV);
-		Vector projectionVectorVW0 = vectorVW0.projectionOnto(vectorV);
-		
-		Vector projectionVectorVWonXY = vectorVWonXY.projectionOnto(vectorVonXY);
-		Vector projectionVectorVW0onXY = vectorVW0onXY.projectionOnto(vectorVonXY);
-	
-//		Vector projectionVectorVWonXY = projectionVectorVW.projectionOntoXY();
-//		Vector projectionVectorVW0onXY = projectionVectorVW0.projectionOntoXY();
+		//	GamePanel.pause += 0.1;
+		//	if(GamePanel.pause>60) GamePanel.pause = 600;
 
-		Vector perpendicularVectorVWonXY = vectorVWonXY.minus(projectionVectorVWonXY);
-		Vector perpendicularVectorVW0onXY = vectorVW0onXY.minus(projectionVectorVW0onXY);
-		
-		double scalarProduct = perpendicularVectorVWonXY.scalarProductBy(perpendicularVectorVW0onXY);
-		
-		if(scalarProduct < 0){
-			Vector projectionVectorWW0 = projectionVectorVW0.minus(projectionVectorVW);
-			//Vector projectionVectorWW0onXY = projectionVectorWW0.projectionOntoXY();
-			double lengthWonXY = perpendicularVectorVWonXY.length();
-			double lengthW0onXY = perpendicularVectorVW0onXY.length();
-			double coef = lengthWonXY / (lengthWonXY + lengthW0onXY);
-			Vector projectionVectorWX = new Vector(coef, projectionVectorWW0);
-			Vector vectorVX = projectionVectorVW.plus(projectionVectorWX);
-			Point pointXonV = new Point(pointV, vectorVX);
-			Point pointXonW = pointXonV.projectionOnTile(tile);
-			if ( (pointXonW.z - pointXonV.z > 0.0001) || (pointXonW.z - pointXonV.z < -0.0001) ){
-				GamePanel.drawPointInPanel(g, pointV, Color.GREEN, 10);
-				GamePanel.drawPointInPanel(g, pointV0, Color.GREEN, 10);
-				GamePanel.drawPointInPanel(g, pointW, Color.YELLOW, 10);
-				GamePanel.drawPointInPanel(g, pointW0, Color.YELLOW, 10);
-				GamePanel.drawPointInPanel(g, pointXonW, Color.RED, 10);
-			}
-			if(pointXonW.z - pointXonV.z > 0.0001) return 1;
-			if(pointXonW.z - pointXonV.z < -0.0001) return -1;
-		}
-
-		return 0;
-	
+		return pos;
 	}
 	
-	
-	public static boolean toSwap_false(Graphics2D g, 
-			Tile tileV, Tile tileW){
-		
-		Point[] pointNearCornerV = tileV.pointNearCorner_false();
-		
-		Point pointV = pointNearCornerV[0];
-		Proection proectionVonW = pointV.proectionOnTile(tileW);
-		System.out.println("pointV = " + pointV.x + ", "+ pointV.y + ", "+ pointV.z + ";  proection = "+ proectionVonW.point.x + ", "+ proectionVonW.point.y+ ", "+ proectionVonW.point.z);
-		if(proectionVonW.inside) return proectionVonW.below; 
-
-		Point pointV0 = pointNearCornerV[1];
-		Proection proectionV0onW = pointV0.proectionOnTile(tileW);
-		System.out.println("pointV0 = " + pointV0.x + ", "+ pointV0.y + ", "+ pointV0.z + ";  proection = "+ proectionV0onW.point.x + ", "+ proectionV0onW.point.y+ ", "+ proectionV0onW.point.z);
-		if(proectionV0onW.inside) return proectionV0onW.below;
-
-		Point pointV1 = pointNearCornerV[2];
-		Proection proectionV1onW = pointV1.proectionOnTile(tileW);
-		System.out.println("pointV1 = " + pointV1.x + ", "+ pointV1.y + ", "+ pointV1.z + ";  proection = "+ proectionV1onW.point.x + ", "+ proectionV1onW.point.y+ ", "+ proectionV1onW.point.z);
-		if(proectionV1onW.inside) return proectionV1onW.below; 
-		
-		Point pointV01 = pointNearCornerV[3];
-		Proection proectionV01onW = pointV01.proectionOnTile(tileW);
-		System.out.println("pointV01 = " + pointV01.x + ", "+ pointV01.y + ", "+ pointV01.z + ";  proection = "+ proectionV01onW.point.x + ", "+ proectionV01onW.point.y+ ", "+ proectionV01onW.point.z);
-		if(proectionV01onW.inside) return proectionV01onW.below;
-				
-		Point[] pointNearCornerW = tileW.pointNearCorner_false();
-		
-		Point pointW = pointNearCornerW[0];
-		Proection proectionWonV = pointW.proectionOnTile(tileV);
-		System.out.println("pointW = " + pointW.x + ", "+ pointW.y + ", "+ pointW.z + ";  proection = "+ proectionWonV.point.x + ", "+ proectionWonV.point.y+ ", "+ proectionWonV.point.z);
-		if(proectionWonV.inside) return proectionWonV.above; 
-
-		Point pointW0 = pointNearCornerW[1];
-		Proection proectionW0onV = pointW0.proectionOnTile(tileV);
-		System.out.println("pointW0 = " + pointW0.x + ", "+ pointW0.y + ", "+ pointW0.z + ";  proection = "+ proectionW0onV.point.x + ", "+ proectionW0onV.point.y+ ", "+ proectionW0onV.point.z);
-		if(proectionW0onV.inside) return proectionW0onV.above;
-
-		Point pointW1 = pointNearCornerW[2];
-		Proection proectionW1onV = pointW1.proectionOnTile(tileV);
-		System.out.println("pointW1 = " + pointW1.x + ", "+ pointW1.y + ", "+ pointW1.z + ";  proection = "+ proectionW1onV.point.x + ", "+ proectionW1onV.point.y+ ", "+ proectionW1onV.point.z);
-		if(proectionW1onV.inside) return proectionW1onV.above; 
-		
-		Point pointW01 = pointNearCornerW[3];
-		Proection proectionW01onV = pointW01.proectionOnTile(tileV);
-		System.out.println("pointW01 = " + pointW01.x + ", "+ pointW01.y + ", "+ pointW01.z + ";  proection = "+ proectionW01onV.point.x + ", "+ proectionW01onV.point.y+ ", "+ proectionW01onV.point.z);
-		if(proectionW01onV.inside) return proectionW01onV.above; 
-			
-		return false;
-
-	}
-
 	
 	public Point[] pointNearCorner_false(){
 		
@@ -384,7 +254,6 @@ public class Tile{
 //		g.drawLine((int)xB, (int)yB, (int)xA, (int)yA);
 //		g.drawLine((int)x0, (int)y0, (int)xC, (int)yC);
 //		g.drawLine((int)xB, (int)yB, (int)xC, (int)yC);
-		
 	}
 	
 	
@@ -440,28 +309,8 @@ public class Tile{
 	
 	public static void drawCollection(Graphics2D g,	ArrayList<Tile> tileCollection){
 		
-		int i = 0;
-		for(Tile currentTile : tileCollection){
-			i++;
+		for(Tile currentTile : tileCollection)
 			currentTile.drawInPanel(g);
-	//		if(i>1) break;
-		}
-		
-//		for(int v = 0; v < tileCollection.size() - 1; v++){
-//			
-//			for(int w = v + 1; w < tileCollection.size(); w++){
-//				Tile tileV = tileCollection.get(v);
-//				Tile tileW = tileCollection.get(w);
-//				if(toSwap(g, tileV, tileW)){
-//					tileCollection.get(w).drawInPanel(g, Color.WHITE);
-////					Tile tileZ = tileCollection.get(v+1);
-//					tileCollection.get(v).drawInPanel(g, Color.RED);
-////					tileCollection.set(v+1, tileV);
-////					tileCollection.set(w, tileZ);
-//					//return;
-//				}
-//			}
-//		}
 	}
 
 }
