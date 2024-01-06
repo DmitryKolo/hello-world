@@ -16,6 +16,24 @@ final public class Matrix {
         data = new double[M][N];
     }
 
+    // create matrix based on another one, padded with zeros & identifying value (KDV)
+    public Matrix(int M, int N, Matrix A, int identifyingValue) {
+        
+    	this.M = M;
+        this.N = N;
+        this.data = new double[M][N];
+        
+        int MN = Math.min(M, N);
+        for (int i = 0; i < MN; i++)
+        	this.data[i][i] = identifyingValue;
+      
+        int M0 = Math.min(M, A.M);
+        int N0 = Math.min(N, A.N);
+        for (int i = 0; i < M0; i++)
+            for (int j = 0; j < N0; j++)
+                    this.data[i][j] = A.data[i][j];
+    }
+
     // create matrix based on 2d array
     public Matrix(double[][] data) {
         M = data.length;
@@ -23,8 +41,28 @@ final public class Matrix {
         this.data = new double[M][N];
         for (int i = 0; i < M; i++)
             for (int j = 0; j < N; j++)
-                    this.data[i][j] = data[i][j];
+            	this.data[i][j] = data[i][j];
     }
+    
+    // create coordinate matrix (row) from FractionalAddress (KDV)
+ 	public Matrix(FractionalAddress address){
+ 		this.M = 1;
+ 		this.N = Cube.DIMENSION + 1;
+ 		this.data = new double[M][N];
+ 		for(int i = 0; i < Cube.DIMENSION; i++)
+ 			this.data[0][i] = address.getCoordinate(i);
+ 		this.data[0][Cube.DIMENSION] = 1;
+ 	}
+
+    // create coordinate matrix (row) from Address3D (KDV)
+ 	public Matrix(Address3D address){
+ 		this.M = 1;
+ 		this.N = Cube.DIMENSION + 1;
+ 		this.data = new double[M][N];
+ 		for(int i = 0; i < Cube.DIMENSION; i++)
+ 			this.data[0][i] = address.getCoordinate(i);
+ 		this.data[0][Cube.DIMENSION] = 1;
+ 	}
 
     // copy constructor
     private Matrix(Matrix A) { this(A.data); }
@@ -62,26 +100,25 @@ final public class Matrix {
     
     
     // create and return matrix with attached array (KDV)
-    public Matrix attachArray(double[] array) {
-        if (array.length < M) throw new RuntimeException("Illegal array dimension.");
-        Matrix A = new Matrix(M, N + 1);
-        for (int i = 0; i < M; i++){
-            for (int j = 0; j < N; j++)
-                A.data[i][j] = this.data[i][j];
-            A.data[i][N] = array[i];
-        }
-        return A;
-    }
+//    public Matrix attachArray(double[] array) {
+//        if (array.length < M) throw new RuntimeException("Illegal array dimension.");
+//        Matrix A = new Matrix(M, N + 1);
+//        for (int i = 0; i < M; i++){
+//            for (int j = 0; j < N; j++)
+//                A.data[i][j] = this.data[i][j];
+//            A.data[i][N] = array[i];
+//        }
+//        return A;
+//    }
 
-    
-    // create and return matrix 1-by-(M+1) from matrix (KDV)
-    public Matrix nPlus1Column(int i) {
-        Matrix C = new Matrix(N + 1, 1);
-        for (int j = 0; j < N; j++) 
-        	C.data[j][0] = data[i][j];
-        C.data[N][0] = 1;
-        return C;
-    }
+//    // create and return matrix 1-by-(M+1) from matrix (KDV)
+//    public Matrix nPlus1Column(int i) {
+//        Matrix C = new Matrix(N + 1, 1);
+//        for (int j = 0; j < N; j++) 
+//        	C.data[j][0] = data[i][j];
+//        C.data[N][0] = 1;
+//        return C;
+//    }
 
     
     // swap rows i and j
@@ -89,6 +126,21 @@ final public class Matrix {
         double[] temp = data[i];
         data[i] = data[j];
         data[j] = temp;
+    }
+
+    
+    // transition row (KDV)
+    public Matrix transitionRow(Matrix transitionMatrix) {
+		return this.times(transitionMatrix);
+    }
+
+    
+    // create point from row matrix (KDV)
+    public Point createPoint() {
+    	Point point = new Point(0, 0, 0);
+    	for(int i = 0; i < Cube.DIMENSION; i++)
+    		point.setCoordinate(i, this.data[0][i]);
+    	return point;
     }
 
     
@@ -161,33 +213,16 @@ final public class Matrix {
         return C;
     }
    
-//    // return square C = A * B (KDV)
-//    public Matrix squareTimes(Matrix B) {
-//        Matrix A = this;
-//        int M = Math.min(A.N, B.M);
-//        int N = Math.min(A.N, B.M);
-//        int K = Math.min(A.N, B.M);
-//        Matrix C = new Matrix(M, A.N);
-//        for (int i = 0; i < C.M; i++){
-//            for (int j = 0; j < C.M; j++)
-//                for (int k = 0; k < K; k++)
-//                    C.data[i][j] += (A.data[i][k] * B.data[k][j]);
-//            for (int j = C.M; j < C.N; j++)
-//                    C.data[i][j] = A.data[i][j];
-//        }
-//        return C;
-//    }
-    
-    
-    // return Y = A * X (KDV)
-    public Point timesVector(Vector vectorÕ) {
-    	Matrix columnX = new Matrix(Cube.DIMENSION, 1);
-		columnX.data[0][0] = vectorÕ.dx;
-		columnX.data[1][0] = vectorÕ.dy;
-		columnX.data[2][0] = vectorÕ.dz;
-		Matrix columnY = this.times(columnX);
-		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-	}
+
+//    // return Y = A * X (KDV)
+//    public Point times_Vector(Vector vectorÕ) {
+//    	Matrix columnX = new Matrix(Cube.DIMENSION, 1);
+//		columnX.data[0][0] = vectorÕ.dx;
+//		columnX.data[1][0] = vectorÕ.dy;
+//		columnX.data[2][0] = vectorÕ.dz;
+//		Matrix columnY = this.times(columnX);
+//		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
+//	}
 
 
     // return x = A^-1 b, assuming A is square and has full rank

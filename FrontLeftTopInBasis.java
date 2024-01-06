@@ -13,12 +13,12 @@ public class FrontLeftTopInBasis {
 		top = t;
 	}
 	
-	public FrontLeftTopInBasis(CubeBasis basis){
+	public FrontLeftTopInBasis(Cube basis){
 		
 		Vector[] vectorZ = new Vector[Cube.DIMENSION];
 		
 		for(int i = 0; i < Cube.DIMENSION; i++){
-			Vector basisVector = basis.vector[i];
+			Vector basisVector = basis.axis[i].vector;
 			if(basisVector.dz >= 0) vectorZ[i] = basisVector;
 			else vectorZ[i] = new Vector (-1.0, basisVector);
 		}

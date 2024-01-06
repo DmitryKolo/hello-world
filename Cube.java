@@ -10,17 +10,17 @@ public class Cube {
 	public final static int SIZE = 3;
 	public final Color[] COLOR = new Color[Cube.DIMENSION * Axis.ENDS_QUANTITY + 1]; 
 	
-	public Vector[] vector = new Vector[Cube.DIMENSION];
-	public Matrix transitionMatrix = new Matrix(DIMENSION, DIMENSION + 1);
-	public Matrix transitionMatrixC = new Matrix(DIMENSION, DIMENSION + 1);
+	//public Vector[] vector = new Vector[Cube.DIMENSION];
+	public Matrix transitionMatrix = new Matrix(DIMENSION + 1, DIMENSION + 1);
+	//public Matrix transitionMatrixC = new Matrix(DIMENSION, DIMENSION + 1);
 	
-	public Vector vectorA, vectorB, vectorC; // head on over to Vector[] vector
-	public CubeBasis basis;
+	//public Vector vectorA, vectorB, vectorC; // head on over to Vector[] vector
+	//public CubeBasis basis;
 	
 	public int size; // not used?
 			
 	public Point centre;
-	Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
+	//Point[][][] angle = new Point[Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY][Axis.ENDS_QUANTITY];
 	
 	public Color[][][][] tile = new Color[Cube.DIMENSION][Axis.ENDS_QUANTITY][3][3];
 	
@@ -28,7 +28,6 @@ public class Cube {
 	Axis[] axis = new Axis[Cube.DIMENSION];  
 	public int rotatableAxisIndex;
 	
-	//public ArrayList<Block> blockCollection = new ArrayList<Block>();
 	public ArrayList<Tile> tileCollection = new ArrayList<Tile>();
 	
 	private Address3D upperAngle; 
@@ -54,46 +53,50 @@ public class Cube {
 
 	// Constructor
 	
-	public Cube(int size, Point centre, Vector vectorA, Vector vectorB, Vector vectorC){
+	public Cube(int size, Point centre, Vector[] vectors){
 		
 		this.size = size;
 		this.centre = centre;
 		
-		this.basis = new CubeBasis(vectorA, vectorB, vectorC);
-		this.vectorA = vectorA; // head on over to Axis, basis
-		this.vectorB = vectorB;
-		this.vectorC = vectorC;
+//		Vector vectorA = vectors[0]; // head on over to Axis, basis
+//		Vector vectorB = vectors[1];
+//		Vector vectorC = vectors[2];
+
+//		this.basis = new CubeBasis(vectorA, vectorB, vectorC);
+//		this.vectorA = vectorA; // head on over to Axis, basis
+//		this.vectorB = vectorB;
+//		this.vectorC = vectorC;
 
 		initialCubeColorsAndBricks();
 		
 		for (int i = 0; i < DIMENSION; i++)
-			this.axis[i] = new Axis(i, this);
+			this.axis[i] = new Axis(i, this, vectors[i]);
 		
 		setRotatableAxis(0);
 		
 		calculateTransitionMatrix();
 	
-		for (int i = 0; i < angle.length; i++){
-			
-			double halfsize = size / 2;
-			
-			double coefI = (i==0 ? -halfsize : halfsize);
-			Point pointI = new Point(Point.NULL, new Vector(coefI, basis.vector[0]));				
-						
-		    for (int j = 0; j < angle[i].length; j++){
-		    	
-				double coefJ = (j==0 ? -halfsize : halfsize);
-				Point pointJ = new Point(pointI, new Vector(coefJ, basis.vector[1]));				
-				
-			    for (int k = 0; k < angle[i][j].length; k++){
-			    	
-					double coefK = (k==0 ? -halfsize : halfsize);
-			    	this.angle[i][j][k] = new Point(pointJ, new Vector(coefK, basis.vector[2]));
-			    	//Point CurrentCorner = this.angle[i][j][k];
-					//System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
-			    }
-		    }
-	    }
+//		for (int i = 0; i < angle.length; i++){
+//			
+//			double halfsize = size / 2;
+//			
+//			double coefI = (i==0 ? -halfsize : halfsize);
+//			Point pointI = new Point(Point.NULL, new Vector(coefI, vectors[0]));				
+//						
+//		    for (int j = 0; j < angle[i].length; j++){
+//		    	
+//				double coefJ = (j==0 ? -halfsize : halfsize);
+//				Point pointJ = new Point(pointI, new Vector(coefJ, vectors[1]));				
+//				
+//			    for (int k = 0; k < angle[i][j].length; k++){
+//			    	
+//					double coefK = (k==0 ? -halfsize : halfsize);
+//			    	this.angle[i][j][k] = new Point(pointJ, new Vector(coefK, vectors[2]));
+//			    	//Point CurrentCorner = this.angle[i][j][k];
+//					//System.out.println("Angle["+i+","+j+","+k+"] = ("+CurrentCorner.x+", "+CurrentCorner.y+", "+CurrentCorner.z+")");
+//			    }
+//		    }
+//	    }
 		
 		for(int i = 0; i < Cube.DIMENSION; i++)
 		    for (int n = 0; n < Axis.ENDS_QUANTITY; n++)
@@ -122,37 +125,26 @@ public class Cube {
 
 	public void calculateTransitionMatrix(){
 		
-		for(int i = 0; i < Cube.DIMENSION; i++)
-			for(int j = 0; j < Cube.DIMENSION; j++)
-				transitionMatrix.data[i][j] = axis[i].vector.getCoordinate(j);
+		// calculate TransitionMatrixC:
 		
-		transitionMatrix.data[0][3] = GamePanel.HEIGHT / 2;
-		transitionMatrix.data[1][3] = GamePanel.WIDTH / 2;
-			
-		calculateTransitionMatrixC();
-			
-//		transitionMatrix.data[0][0] = vectorA.dx;
-//		transitionMatrix.data[0][1] = vectorA.dy;
-//		transitionMatrix.data[0][2] = vectorA.dz;
-//		transitionMatrix.data[1][0] = vectorB.dx;
-//		transitionMatrix.data[1][1] = vectorB.dy;
-//		transitionMatrix.data[1][2] = vectorB.dz;
-//		transitionMatrix.data[2][0] = vectorC.dx;
-//		transitionMatrix.data[2][1] = vectorC.dy;
-//		transitionMatrix.data[2][2] = vectorC.dz;
-	}
-
-		
-	public void calculateTransitionMatrixC(){
-		
-		for(int i = 0; i < Cube.DIMENSION; i++){
-			for(int j = 0; j < Cube.DIMENSION; j++)
-				transitionMatrixC.data[i][j] = axis[j].vector.getCoordinate(i);
-			transitionMatrixC.data[i][Cube.DIMENSION] = centre.getCoordinate(i);
-		}
-	}
-
+//		for(int i = 0; i < Cube.DIMENSION; i++){
+//			for(int j = 0; j < Cube.DIMENSION; j++)
+//				transitionMatrixC.data[i][j] = axis[j].vector.getCoordinate(i);
+//			transitionMatrixC.data[i][Cube.DIMENSION] = centre.getCoordinate(i);
+//		}
 	
+		// calculate TransitionMatrix:
+		
+		for(int j = 0; j < Cube.DIMENSION; j++){
+			for(int i = 0; i < Cube.DIMENSION; i++)
+				transitionMatrix.data[j][i] = axis[j].vector.getCoordinate(i);
+			transitionMatrix.data[Cube.DIMENSION][j] = centre.getCoordinate(j);
+		}
+		
+		transitionMatrix.data[Cube.DIMENSION][Cube.DIMENSION] = 1;
+	}
+
+		
 	public void initialCubeColorsAndBricks(){
 		
 		COLOR[0] = Color.RED;
@@ -258,11 +250,7 @@ public class Cube {
 		Vector normalAxis = new Vector(rotateAxis);
 		
 		for(int i = 0; i < Cube.DIMENSION; i++)			
-			basis.vector[i].rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
-		
-		vectorA = basis.vector[0]; // outdated
-		vectorB = basis.vector[1]; // outdated
-		vectorC = basis.vector[2]; // outdated
+			axis[i].vector.rotateXYZ(rotateAngle * normalAxis.dx, rotateAngle * normalAxis.dy, rotateAngle * normalAxis.dz); 
 		
 		calculateTransitionMatrix();
 		
@@ -315,18 +303,18 @@ public class Cube {
 		
 		if(rotateI){
 			if(!shift) rotateAngle = -rotateAngle;
-			rotateV(basis.vector[0], rotateAngle);
+			rotateV(axis[0].vector, rotateAngle);
 			//rotateV(rotateVector, rotateAngle);
 		}
 
 		if(rotateJ){
 			if(shift) rotateAngle = -rotateAngle;
-			rotateV(basis.vector[1], rotateAngle);
+			rotateV(axis[1].vector, rotateAngle);
 		}
 		
 		if(rotateK){
 			if(!shift) rotateAngle = -rotateAngle;
-			rotateV(basis.vector[2], rotateAngle);
+			rotateV(axis[2].vector, rotateAngle);
 		}
 		
 		if(rotateTop){
@@ -366,14 +354,7 @@ public class Cube {
 			
 	}
 
-	
-	public Point angleAtAddress(Address3D address){
-		
-		return angle[address.i][address.j][address.k];
-		
-	}
-		
-	
+
 	public Brick getBrickAtAddress(Address3D address){
 		
 		return brick[address.i][address.j][address.k];	

@@ -39,34 +39,11 @@ public class Brick {
 				return this.k;
 			default:
 				throw new RuntimeException("Illegal coordinate index.");
-		
 		}	
 	}
 	
 	
-	public static void drawCollection(Graphics2D g, ArrayList<Brick> brickCollection){
-		
-		//arrangeCollection(blockCollection, g);
-		
-		Color color = Color.MAGENTA;
-				
-		for(Brick brick : brickCollection){
-			//brick.draw(g, color);
-		}
-	}
-	
-
 	public void draw(Graphics2D g, Color color, Layer layer, int v, int w){
-		
-//		for(Edge edge : edgeCollection){
-//			
-//      		edge.draw(g);
-//	   		      		
-//		}
-//	
-//		nearestAngle.draw(g, cube.centre, Color.RED, 5);
-		
-
 	}
 	
 	

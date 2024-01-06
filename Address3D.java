@@ -71,21 +71,25 @@ public class Address3D {
 	
 	public Point calculatedPoint(Matrix transitionMatrix){
 		
-		int M = transitionMatrix.getM(); 
-		
-		Matrix columnX = new Matrix(M,
-				//Cube.DIMENSION + 1, 
-				1);
-	
-		for(int i = 0; i < Cube.DIMENSION; i++)
-			columnX.data[i][0] = this.getCoordinate(i);
-		
-		if(M > Cube.DIMENSION) columnX.data[M - 1][0] = 1;
+		Matrix rowX = new Matrix(this);
 
-		Matrix columnY = transitionMatrix.times(columnX);
+//		int M = transitionMatrix.getM(); 
+//		Matrix columnX = new Matrix(M,
+//				//Cube.DIMENSION + 1, 
+//				1);
+//		for(int i = 0; i < Cube.DIMENSION; i++)
+//			columnX.data[i][0] = this.getCoordinate(i);
+//		if(M > Cube.DIMENSION) columnX.data[M - 1][0] = 1;
+//		Matrix columnY = transitionMatrix.times(columnX);
+//		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
 		
-		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-
+//		Matrix columnX = rowX.transpose();
+//		Matrix columnY = transitionMatrix.times(columnX);
+		Matrix rowX1 = rowX.transitionRow(transitionMatrix);
+//		Matrix columnY = rowX1.transpose();
+//		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
+		
+		return rowX1.createPoint();
 	}
 	
 }

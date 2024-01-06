@@ -122,9 +122,16 @@ public class Vector {
 	}
 
 
+	public double square(){
+		
+		return (this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+		
+	}
+
+
 	public double length(){
 		
-		return Math.sqrt(this.dx * this.dx + this.dy * this.dy + this.dz * this.dz);
+		return Math.sqrt(this.square());
 		
 	}
 
@@ -138,8 +145,9 @@ public class Vector {
 	
 	public Vector projectionOnto(Vector vector){
 		
-		double cos = cos(vector);
-		return new Vector(cos, vector);
+		double scalarProduct = scalarProductBy(vector);
+		double r2 = vector.square();
+		return new Vector(scalarProduct / r2, vector);
 	
 	}
 
@@ -163,6 +171,51 @@ public class Vector {
     	
     	g.setColor(color);
     	g.drawLine((int)xB, (int)yB, (int)xE, (int)yE);
+	}	
+
+	
+	public static Vector[] orthogonalVectors(double r0,
+			double xA, double yA, double zA,
+			double xB, double yB,
+			double xC){
+		
+		Vector[] vectors = new Vector[Cube.DIMENSION];
+		
+		double rA2 = xA * xA + yA * yA + zA * zA;
+		double rA = Math.sqrt(rA2);
+		
+		double coefA = r0 / rA;
+		xA = xA * coefA;
+		yA = yA * coefA;
+		zA = zA * coefA;
+		
+		double zB = - (xA * xB + yA * yB) / zA;
+		
+		double rB2 = xB * xB + yB * yB + zB * zB;
+		double rB = Math.sqrt(rB2);
+
+		double coefB = r0 / rB;
+		xB = xB * coefB;
+		yB = yB * coefB;
+		zB = zB * coefB;
+		
+		double yC = xC * (xA*zB - xB*zA) / (zA*yB - yA*zB);
+		double zC = xC * (xA*yB - xB*yA) / (yA*zB - zA*yB);
+		
+		double rC2 = xC * xC + yC * yC + zC * zC;
+		double rC = Math.sqrt(rC2);
+		
+		double coefC = r0 / rC;
+		xC = xC * coefC;
+		yC = yC * coefC;
+		zC = zC * coefC;
+		
+		vectors[0] = new Vector(xA, yA, zA);
+		vectors[1] = new Vector(xB, yB, zB);
+		vectors[2] = new Vector(xC, yC, zC);
+		
+		return vectors;
+		
 	}	
 
 }

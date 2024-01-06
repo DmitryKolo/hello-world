@@ -1,9 +1,7 @@
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
 import javax.swing.JPanel;
-
 import java.util.*;
 
 
@@ -19,14 +17,14 @@ public class GamePanel extends JPanel implements Runnable{
 	private BufferedImage image;
 	private Graphics2D g;
 	
+	public static double pause = 10;
+	
 	public static GameBack background;
 	public static Player player;
 
 	public Cube cube;
 	
-	//public Block block, block0, block1;
 	ArrayList<Brick> brickCollection = new ArrayList<Brick>();
-	//ArrayList<Edge> edgeCollection = new ArrayList<Edge>();
 	
 	// Constructor
 	
@@ -60,100 +58,28 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		player = new Player(0, 50, 17);
 		
-		Vector[] vectors = orthogonalVectors(
-				50,
-				10, 50, 107,
+		Vector[] vectors = Vector.orthogonalVectors(70,
+				10, 50, -19,
 				40, -19,
 				-30);
 		
 		cube = new Cube(Cube.SIZE, 
 				Point.NULL, 
-				vectors[0], vectors[1], vectors[2]);
+				vectors);
 		
 		while(true){
 			
 			gameUpdate();
 			gameRender();
-//			gameDraw();
 			
 			try {
-				thread.sleep(1000);
+				thread.sleep((int)pause);
 			} catch (InterruptedException e){
 				e.printStackTrace();
 			}
 			
 		}
-		
 	}
-	
-	public Vector[] orthogonalVectors(double r0,
-			double xA, double yA, double zA,
-			double xB, double yB,
-			double xC){
-		
-		Vector[] vectors = new Vector[Cube.DIMENSION];
-		
-		double rA2 = xA * xA + yA * yA + zA * zA;
-		double rA = Math.sqrt(rA2);
-		
-		double coefA = r0 / rA;
-		xA = xA * coefA;
-		yA = yA * coefA;
-		zA = zA * coefA;
-		
-//		rA2 = xA * xA + yA * yA + zA * zA;
-//		rA = Math.sqrt(rA2);
-		
-//		double xB = 40;
-//		double yB = -19;
-		
-//		double zB2 = Math.max(0, rA2 - xB * xB - yB * yB);
-//		double zB = Math.sqrt(zB2);
-//		
-//		double scAB = xA * xB + yA * yB + zA * zB;
-//		System.out.println("скалярное произведение AB = " + scAB);
-	
-		double zB = - (xA * xB + yA * yB) / zA;
-////		System.out.println("zB = " + zB);
-//	
-//		double scAB = xA * xB + yA * yB + zA * zB;
-		
-		double rB2 = xB * xB + yB * yB + zB * zB;
-		double rB = Math.sqrt(rB2);
-
-		double coefB = r0 / rB;
-		xB = xB * coefB;
-		yB = yB * coefB;
-		zB = zB * coefB;
-		
-//		rB2 = xB * xB + yB * yB + zB * zB;
-//		
-//		double xC = -30;
-		
-		double yC = xC * (xA*zB - xB*zA) / (zA*yB - yA*zB);
-		
-		double zC = xC * (xA*yB - xB*yA) / (yA*zB - zA*yB);
-		
-		double rC2 = xC * xC + yC * yC + zC * zC;
-		
-		double rC = Math.sqrt(rC2);
-		
-		double coefC = rA / rC;
-		xC = xC * coefC;
-		yC = yC * coefC;
-		zC = zC * coefC;
-		
-		vectors[0] = new Vector(xA, yA, zA);
-		vectors[1] = new Vector(xB, yB, zB);
-		vectors[2] = new Vector(xC, yC, zC);
-		
-//		double cos01 = vectors[0].cos(vectors[1]);
-//		double cos02 = vectors[0].cos(vectors[2]);
-//		double cos12 = vectors[1].cos(vectors[2]);
-		
-		return vectors;
-		
-	}	
 	
 	
 	public void gameUpdate(){
@@ -163,8 +89,6 @@ public class GamePanel extends JPanel implements Runnable{
 		
 		background.draw(g);
 		cube.update(g, brickCollection);
-		
-		//Block.updateCollection(cube.blockCollection); ///, edgeCollection);
 	}
 	
 	
@@ -172,16 +96,9 @@ public class GamePanel extends JPanel implements Runnable{
 		
 //		background.draw(g);
 		player.draw(g);
-		
-		//Block.drawCollection(g, cube.blockCollection);
-		
-		Brick.drawCollection(g, brickCollection);
-		//cube.drawLayersVectors(g);
-		//axis[rotatableAxisIndex].draw();
+
 		cube.draw(g);
-		
-//	}
-//	private void gameDraw(){
+
 		Graphics g2 = this.getGraphics();
 		g2.drawImage(image, 0, 0, null);
 		g2.dispose();

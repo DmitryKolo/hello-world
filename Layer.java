@@ -1,7 +1,7 @@
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-
 
 public class Layer {
 	
@@ -12,11 +12,12 @@ public class Layer {
 	public Point centre;
 	
 	public double rotationAngle;
-	public Matrix relativeTransitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
+	
+	public Matrix fullRelativeTransitionMatrix = new Matrix(Cube.DIMENSION + 1, Cube.DIMENSION + 1);
 	public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
+	public Matrix fullTransitionMatrix = new Matrix(Cube.DIMENSION + 1, Cube.DIMENSION + 1);
 	
 	public Address3D nearestCornerSignes = new Address3D();
-	public double nearestCornerDeltaZ; // not use?
 	
 	public Point nullCornerCentre;
 	//public Point[] ribEnd = new Point[Cube.DIMENSION];
@@ -76,12 +77,6 @@ public class Layer {
 		centre = new Point(axis.cube.centre, new Vector(coordinate, ribVector[axis.index]));
 		
 		updateBricksAndTiles();
-		
-//		if(coordinate == 1){
-//			System.out.println("rotationAngle[1] = " + this.rotationAngle);
-//			System.out.println("              layer[1].centre.x = " + this.centre.x + " y = " + this.centre.y);
-//			System.out.println("              brickInLayer[1][0][0].centre.x = " + this.brickInLayer[0][0].centre.x + " y = " + this.brickInLayer[0][0].centre.y);
-//		}
 	}
 	
 	
@@ -90,56 +85,36 @@ public class Layer {
 		double cosA = Math.cos(rotationAngle);
 		double sinA = Math.sin(rotationAngle);
 		
-		switch(axis.index){
-		case 0:
-			relativeTransitionMatrix.data[0][0] =  1;
-			relativeTransitionMatrix.data[1][1] =  cosA;
-			relativeTransitionMatrix.data[2][1] =  sinA;
-			relativeTransitionMatrix.data[1][2] = -sinA;
-			relativeTransitionMatrix.data[2][2] =  cosA;
-			break;
-		case 1:
-			relativeTransitionMatrix.data[0][0] =  cosA;
-			relativeTransitionMatrix.data[2][0] = -sinA;
-			relativeTransitionMatrix.data[1][1] =  1;
-			relativeTransitionMatrix.data[0][2] =  sinA;
-			relativeTransitionMatrix.data[2][2] =  cosA;
-			break;
-		case 2:
-			relativeTransitionMatrix.data[0][0] =  cosA;
-			relativeTransitionMatrix.data[1][0] =  sinA;
-			relativeTransitionMatrix.data[0][1] = -sinA;
-			relativeTransitionMatrix.data[1][1] =  cosA;
-			relativeTransitionMatrix.data[2][2] =  1;
-			break;
-		default:
-			break;
-		}
+		int axisIndexI = axis.index;
+		int axisIndexJ = (axisIndexI + 1 == Cube.DIMENSION) ? 0 : axisIndexI + 1;
+		int axisIndexK = (axisIndexJ + 1 == Cube.DIMENSION) ? 0 : axisIndexJ + 1;
 		
-		//relativeTransitionMatrix.data[axis.index][Cube.DIMENSION] = coordinate;
-	
+		fullRelativeTransitionMatrix.data[axisIndexI][axisIndexI] =  1;
+		fullRelativeTransitionMatrix.data[axisIndexJ][axisIndexJ] =  cosA;
+		fullRelativeTransitionMatrix.data[axisIndexJ][axisIndexK] =  sinA;
+		fullRelativeTransitionMatrix.data[axisIndexK][axisIndexJ] = -sinA;
+		fullRelativeTransitionMatrix.data[axisIndexK][axisIndexK] =  cosA;
+		fullRelativeTransitionMatrix.data[Cube.DIMENSION][Cube.DIMENSION] = 1;
 	}	
 	
 	
 	public void caltulateTransitionMatrixAndRibVectors(){
 		
 		caltulateRelativeTransitionMatrix();
-		//transitionMatrix = axis.cube.transitionMatrixC.times(relativeTransitionMatrix.transpose());
-		transitionMatrix = axis.cube.transitionMatrixC.transpose().times(relativeTransitionMatrix);
+
+		fullTransitionMatrix = fullRelativeTransitionMatrix.times(axis.cube.transitionMatrix);
 		
-		nearestCornerDeltaZ = 0;
+		//nearestCornerDeltaZ = 0;
 		
 		for(int i = 0; i < Cube.DIMENSION; i++){
-			double dZ = transitionMatrix.data[Cube.DIMENSION - 1][i];
-			//addressNearestCorner.setCoordinate(i, (dZ >= 0) ? 1 : 0);
+			double dZ = fullTransitionMatrix.data[i][Cube.DIMENSION - 1]; // new matrix
 			nearestCornerSignes.setCoordinate(i, (dZ >= 0) ? 1 : -1);
-			nearestCornerDeltaZ += Math.abs(dZ) * (Cube.SIZE / 2.0);
+			//nearestCornerDeltaZ += Math.abs(dZ) * (Cube.SIZE / 2.0);
 		}
-		
 		
 		Address3D nullCornerAddress = new Address3D(0, 0, 0);
 		
-		this.nullCornerCentre = nullCornerAddress.calculatedPoint(transitionMatrix);
+		this.nullCornerCentre = nullCornerAddress.calculatedPoint(fullTransitionMatrix); // ? outdated matrix - new matrix
 		
 		Address3D[] ribEndAddress = new Address3D[Cube.DIMENSION];
 		Point[] ribEnd = new Point[Cube.DIMENSION];
@@ -149,9 +124,21 @@ public class Layer {
 			ribEndAddress[v] = new Address3D();
 			ribEndAddress[v].setCoordinate(v, 1);
 
-			ribEnd[v] = ribEndAddress[v].calculatedPoint(transitionMatrix); 
+			ribEnd[v] = ribEndAddress[v].calculatedPoint(fullTransitionMatrix); 
 			ribVector[v] = new Vector(nullCornerCentre, ribEnd[v]);
 		}
+		
+//		double cos01 = ribVector[0].cos(ribVector[1]);
+//		double cos02 = ribVector[0].cos(ribVector[2]);
+//		double cos12 = ribVector[1].cos(ribVector[2]);
+//		
+//		double cos_01 = axis.cube.axis[0].vector.cos(axis.cube.axis[1].vector);
+//		double cos_02 = axis.cube.axis[0].vector.cos(axis.cube.axis[2].vector);
+//		double cos_12 = axis.cube.axis[1].vector.cos(axis.cube.axis[2].vector);
+//		
+//		double cosF1 = axis.cube.axis[0].vector.cos(ribVector[0]); //axis.cube.axis[2].vector.length()
+//		double cosF2 = axis.cube.axis[1].vector.cos(ribVector[1]);
+//		double cosF3 = axis.cube.axis[2].vector.cos(ribVector[2]);
 		
 		toNearestCornerVector = new Vector(0, 0, 0);
 
@@ -178,49 +165,57 @@ public class Layer {
 			
 			currentBrick.update();
 			
-//			tileCollection.add(new Tile(currentBrick, 0));
-//			tileCollection.add(new Tile(currentBrick, 1));
-//			tileCollection.add(new Tile(currentBrick, 2));
-			
 			for(int i = 0; i < Cube.DIMENSION; i++)
+				
 				//if(currentBrick.v==1 && currentBrick.w==1) //  && ( i==1 && currentBrick.layer.coordinate == -1 || i ==0)) // && currentBrick.layer.coordinate == 0))
 //				if ( (currentBrick.w == 1 && currentBrick.v == -1) && (currentBrick.layer.coordinate == 1) && i == 1
-//					|| (currentBrick.w == 0 && currentBrick.v == -1) && (currentBrick.layer.coordinate == 1) && i == 2 )
-				axis.cube.tileCollection.add(new Tile(currentBrick, i));
+//				|| (currentBrick.w == 0 && currentBrick.v == -1) && (currentBrick.layer.coordinate == 1) && i == 2 )
+				
+//				if ( currentBrick.layer.coordinate == 1 
+//					&& currentBrick.v == -1 
+//					&& ( (i == 2 && currentBrick.w == 0 ) || ( i == 10 && currentBrick.w <= 0) || i == 0 && currentBrick.w == 1)
+//				  )
+				
+//				if ( 
+//						( currentBrick.layer.coordinate == 1 
+//							&& ( (i == 2 && currentBrick.w == 0 ) || ( i == 1 && currentBrick.w == -1) ) )
+//						|| ( currentBrick.layer.coordinate == 0 
+//							&& ( (i == 2 && currentBrick.w == 0 ) || ( i == 1 && currentBrick.w == -1) ) )
+//					)
+				
+//				if ( 
+//						( currentBrick.layer.coordinate == 1 
+//							&& ( ( i == 2 && currentBrick.w == 0 && currentBrick.v == 19 ) || ( i == 1 && currentBrick.w == -1 && currentBrick.v == -1 ) ) )
+//						|| ( currentBrick.layer.coordinate == 0 
+//							&& i == 2 && currentBrick.w == 0 && currentBrick.v >= 0
+//							)
+//					)
+				
+//				if ( 
+//							( currentBrick.layer.coordinate == 0 && i == 1 && currentBrick.w == 0 && currentBrick.v <= 0 )
+//						||  ( currentBrick.layer.coordinate == 0 && i == 0 && currentBrick.w == 0 && currentBrick.v == 0 )
+//					)
+				
+//				if ( 
+//						( currentBrick.layer.coordinate == 0 && i == 1 && currentBrick.w == 0 && currentBrick.v <= 0 )
+//					||  ( currentBrick.layer.coordinate == 0 && i == 0 && currentBrick.w == 0 )
+//				)
+				
+				if ( 
+				( currentBrick.layer.coordinate == 1 )
+		)
+
+					axis.cube.tileCollection.add(new Tile(currentBrick, i));
 		}
-		
-//		for(int v = 0; v < Cube.DIMENSION * Cube.DIMENSION - 1; v++){
-//			for(int w = v + 1; w < Cube.DIMENSION * Cube.DIMENSION; w++){
-//				BrickInLayer brickInLayerV = brickCollection.get(v);
-//				BrickInLayer brickInLayerW = brickCollection.get(w);
-//				if(brickInLayerV.nearestCorner.z < brickInLayerW.nearestCorner.z){
-//					brickCollection.set(v, brickInLayerW);
-//					brickCollection.set(w, brickInLayerV);
-//				}
-//			}
-//		}
 		
 	}
 	
 	
 	public void draw(Graphics2D g){
 		
-		if(coordinate != 7){
-		
-			for(BrickInLayer currentBrick : brickCollection)
-//				ribVector[v].draw(g, Color.BLUE);
-			
-			//System.out.println("              brickInLayer[1][0][0].centre.x = " + this.brickInLayer[0][0].centre.x + " y = " + this.brickInLayer[0][0].centre.y);
-
-//				if((brickInLayer.v == -1 && brickInLayer.w == -1) || (brickInLayer.v == 1 && brickInLayer.w == 0))
-				currentBrick.draw(g, Color.BLACK);
-			
-			
-		}
-		
-			
+		for(BrickInLayer currentBrick : brickCollection){}
+			//currentBrick.draw(g, Color.BLACK);
 	}
-	
 
 		
 }
