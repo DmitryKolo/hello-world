@@ -217,5 +217,12 @@ public class Vector {
 		return vectors;
 		
 	}	
+	
+	
+	public String coords(){
+		
+		return "(" + String.format("%.1f", dx)+ " " + String.format("%.1f", dy) + " " + String.format("%.1f", dz) + ")"; 
+		
+	}
 
 }

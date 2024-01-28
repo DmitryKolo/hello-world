@@ -85,13 +85,16 @@ public class BrickInLayer {
 	
 	public void draw(Graphics2D g, Color color){
 		
+		
+		if(this.v < this.v +1) return; 
+		
 		//centre.draw(g);
 		//brick.absoluteCentre.draw(g, Color.DARK_GRAY);
 		
 		Color color1 = Color.ORANGE;
 		Color color2 = Color.PINK;
 		
-		if ( !( this.v == -1 && this.w == -1 ) ) return;
+		//if ( !( this.v == -1 && this.w == -1 ) ) return;
 			
 		nearestCorner.draw(g, Color.BLACK);
 			

@@ -18,6 +18,8 @@ public class Axis {
 	
 	public final static int ENDS_QUANTITY = 2;
 	
+	public boolean stabilizeMode = false; // outdated?
+	
 	// Constructor
 	
 	public Axis(int number, Cube cube, Vector vector){
@@ -46,22 +48,33 @@ public class Axis {
 		rotatable = true;
 		cube.rotatableAxisIndex = index;
 		for(int i = 0; i < Cube.SIZE; i++) {
-			double speed = 0;
-			switch(i){
-			case 0:
-				speed = 0.06270;
-				break;
-			case 1:
-				speed = 0.03000; 
-				break;
-			case 2:
-				speed = 0.02080; 
-				break;
-			default:
-				speed = 0.0;
-			}
-			layer[i] = new Layer(this, i - 1, speed);
+			double speed = 0.01; 
+			layer[i] = new Layer(this, i - 1, speed, 0);
 		}
+	}
+	
+	
+	public void setRotatable(Address3D quantitiesToRotate){
+		
+		rotatable = true; // outdated?
+		cube.rotatableAxisIndex = index;
+		if(getRotatable())
+			for(int i = 0; i < Cube.SIZE; i++) 
+				layer[i].quantityToTurn += quantitiesToRotate.getCoordinate(i);
+			
+		else
+			for(int i = 0; i < Cube.SIZE; i++) {
+				double speed = 0.01; 
+				layer[i] = new Layer(this, i - 1, speed, quantitiesToRotate.getCoordinate(i));
+			}
+	}
+	
+	
+	public boolean getRotatable(){
+		
+		for(int i = 0; i < Cube.SIZE; i++)
+			if(layer[i] != null && layer[i].quantityToTurn != 0) return true;
+		return false;
 	}
 	
 	
@@ -71,7 +84,12 @@ public class Axis {
 		
 	}
 	
-	
+	public String vectorCoords(){
+
+		return vector.coords();
+		
+	}
+
 	public void draw(Graphics2D g){
 		
 		for(Layer currentLayer : layer){

@@ -66,6 +66,20 @@ public class Point {
 	}
 	
 	
+	public Point plus (double coef, Vector vector){
+		
+		return new Point(this.x + coef * vector.dx, this.y + coef * vector.dy, this.z + coef * vector.dz);
+		
+	}	
+	
+	
+	public Point minus (double coef, Vector vector){
+		
+		return new Point(this.x - coef * vector.dx, this.y - coef * vector.dy, this.z - coef * vector.dz);
+		
+	}	
+	
+	
 	public void draw(Graphics2D g, Point origin, Color color, int radius){
 		
 		GamePanel.drawPoint(g, this, origin, color, radius);
@@ -306,7 +320,10 @@ public class Point {
 		
 		//double ZA0 = pointA0.z;
 		
-		if(XA==0 && YA==0) ZatA = ZA0;
+		if(XA==0 && YA==0) {
+			ZatA = ZA0;
+			//System.out.println(" ZatA null  ");
+		}
 
 		else{
 			
@@ -314,10 +331,13 @@ public class Point {
 			double ZA = ZA1 - ZA0;
 
 			if(XA != 0){
+				
 				double ZXA = ZA0 * XA - XA0 * ZA;
+				//System.out.println(" ZatA calc ZXA = " + ZXA);
 				ZatA = (ZXA + X * ZA) / XA;
 			}
 			else{
+				//System.out.println(" ZatA calc from Y ");
 				double ZYA = ZA0 * YA - YA0 * ZA;
 				ZatA = (ZYA + Y * ZA) / YA;
 			}
@@ -325,7 +345,10 @@ public class Point {
 		
 		//double ZB0 = pointB0.z;
 		
-		if(XB==0 && YB==0) ZatB = ZB0;
+		if(XB==0 && YB==0) {
+			ZatB = ZB0;
+			//System.out.println(" ZatB null  ");
+		}
 
 		else{
 			
@@ -333,10 +356,13 @@ public class Point {
 			double ZB = ZB1 - ZB0;
 
 			if(XB != 0){
+				
 				double ZXB = ZB0 * XB - XB0 * ZB;
+				//System.out.println(" ZatA calc ZXB = " + ZXB);
 				ZatB = (ZXB + X * ZB) / XB;
 			}
 			else{
+				//System.out.println(" ZatB calc from Y ");
 				double ZYB = ZB0 * YB - YB0 * ZB;
 				ZatB = (ZYB + Y * ZB) / YB;
 			}
@@ -348,8 +374,8 @@ public class Point {
 		if(ZatA - ZatB > roundOff) result = 1;
 		if(ZatA - ZatB < -roundOff) result = -1;
 		
-		System.out.println("                : (" + String.format("%.2f", X) + ", " + String.format("%.2f", Y) + ", " + 
-				String.format("%.5f", ZatA) + " / " + String.format("%.5f", ZatB) + "):  " + result);
+//		System.out.println("                : (" + String.format("%.2f", X) + ", " + String.format("%.2f", Y) + ", " + 
+//				String.format("%.10f", ZatA) + " / " + String.format("%.10f", ZatB) + "):  " + result);
 		
 		return result;
 	}

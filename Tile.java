@@ -144,41 +144,68 @@ public class Tile{
 				Tile tileV = tileCollection.get(v);
 				Tile tileW = tileCollection.get(w);
 			
-				System.out.println("[" + v + "." + w + "] ? " + tileV + "(" + tileV.point.z + ") and " + tileW + "(" + tileW.point.z + ")" );
+				//System.out.println("[" + v + "." + w + "] ? " + tileV + "(" + tileV.point.z + ") and " + tileW + "(" + tileW.point.z + ")" );
 			
 				if(toSwap(g, tileV, tileW)){
-					System.out.println(" ---   Swap: " + v + " - " + w + ": "+GamePanel.pause);
+					//System.out.println(" ---   Swap: " + v + " - " + w + ": "+GamePanel.pause);
 //					for(int i = w; w >= v; w--)
 //						tileCollection.set(i, tileCollection.get(i - 1));
 					tileCollection.set(v, tileW);
 					tileCollection.set(w, tileV);
+					if(v>0) { v--; break; }
 				}
 				
-				if(GamePanel.pause>500)
-					GamePanel.pause += 0.0001;
+				
 			}
 		}
+	}
+	
+	public void fillPointAndVectorsCollection(Point[] points, Vector[] vectors){
+		
+		double correctionCoef = 0.99;
+		double gapCoef = (1 - correctionCoef) / 2.0;
+		
+		Point pointV = this.point.plus(gapCoef, this.vector[0]).plus(gapCoef, this.vector[1]);
+		
+		Vector vector0 = new Vector(correctionCoef, this.vector[0]);
+		Vector vector1 = new Vector(correctionCoef, this.vector[1]);
+		
+		Point pointV0 = new Point(pointV, vector0);
+		Point pointV1 = new Point(pointV, vector1);
+		
+		points = new Point[] { pointV, pointV, pointV0, pointV1 };
+		vectors = new Vector[] { vector0, vector1, vector1, vector0 };
+		
 	}
 	
 	
 	public static boolean toSwap(Graphics2D g, 
 			Tile tileV, Tile tileW){
 		
-		Point pointV = tileV.point;
-		Point pointV0 = new Point(pointV, tileV.vector[0]);
-		Point pointV1 = new Point(pointV, tileV.vector[1]);
-		//Point pointV01 = new Point(pointV0, tileV.vector[0]);
+		double correctionCoef = 0.99;
+		double gapCoef = (1 - correctionCoef) / 2.0;
+		
+		Point pointV = tileV.point.plus(gapCoef, tileV.vector[0]).plus(gapCoef, tileV.vector[1]);
+		
+		Vector vectorV0 = new Vector(correctionCoef, tileV.vector[0]);
+		Vector vectorV1 = new Vector(correctionCoef, tileV.vector[1]);
+		
+		Point pointV0 = new Point(pointV, vectorV0);
+		Point pointV1 = new Point(pointV, vectorV1);
 		
 		Point[] pointsV = new Point[] { pointV, pointV, pointV0, pointV1 };
-		Vector[] vectorsV = new Vector[] { tileV.vector[0], tileV.vector[1], tileV.vector[1], tileV.vector[0] };
+		Vector[] vectorsV = new Vector[] { vectorV0, vectorV1, vectorV1, vectorV0 };
 		
-		Point pointW = tileW.point;
-		Point pointW0 = new Point(pointW, tileW.vector[0]);
-		Point pointW1 = new Point(pointW, tileW.vector[1]);
-		//Point pointW01 = new Point(pointW0, tileW.vector[1]);
+		Point pointW = tileW.point.plus(gapCoef, tileW.vector[0]).plus(gapCoef, tileW.vector[1]);
+		
+		Vector vectorW0 = new Vector(correctionCoef, tileW.vector[0]);
+		Vector vectorW1 = new Vector(correctionCoef, tileW.vector[1]);
+		
+		Point pointW0 = new Point(pointW, vectorW0);
+		Point pointW1 = new Point(pointW, vectorW1);
 		
 		Point[] pointsW = new Point[] { pointW, pointW, pointW0, pointW1 };
-		Vector[] vectorsW = new Vector[] { tileW.vector[0], tileW.vector[1], tileW.vector[1], tileW.vector[0] };
+		Vector[] vectorsW = new Vector[] { vectorW0, vectorW1, vectorW1, vectorW0 };
 		
 		for(int i = 0; i < 4; i++)
 			for(int j = 0; j < 4; j++){
@@ -232,44 +259,12 @@ public class Tile{
 	}
 
 	
-	public void draw(Graphics2D g){
-		
-		double x0 = x - dxA/2.5 - dxC/2.5;
-		double y0 = y - dyA/2.5 - dyC/2.5;
-		double xA = x + dxA/2.5 - dxC/2.5;
-		double yA = y + dyA/2.5 - dyC/2.5;
-		double xB = x + dxA/2.5 + dxC/2.5;
-		double yB = y + dyA/2.5 + dyC/2.5;
-		double xC = x - dxA/2.5 + dxC/2.5;
-		double yC = y - dyA/2.5 + dyC/2.5;
-		
-		g.setColor(color);
-
-		int argX[] = {(int)x0, (int)xA, (int)xB, (int)xC};
-		int argY[] = {(int)y0, (int)yA, (int)yB, (int)yC};
-		int num = 4;
-		g.fillPolygon(argX, argY, num);
-		
-//		g.drawLine((int)x0, (int)y0, (int)xA, (int)yA);
-//		g.drawLine((int)xB, (int)yB, (int)xA, (int)yA);
-//		g.drawLine((int)x0, (int)y0, (int)xC, (int)yC);
-//		g.drawLine((int)xB, (int)yB, (int)xC, (int)yC);
-	}
-	
-	
 	public void drawInPanel(Graphics2D g){
 		
-		//drawPolygon(g, 100, Color.WHITE);
-		drawPolygon(g, 99, color);
+		drawPolygon(g, 100, Color.WHITE);
+		drawPolygon(g, 90, color);
 
 	}		
-	
-	
-	public void drawInPanel(Graphics2D g, Color color){
-		
-		drawPolygon(g, 100, color);
-
-	}	
 	
 	
 	public void drawPolygon(Graphics2D g, double percent, Color color){
@@ -294,15 +289,14 @@ public class Tile{
 		int argY[] = {(int)y0, (int)yA, (int)yB, (int)yC};
 		int num = 4;
 		
-		//if(color == Color.RED)
-			g.fillPolygon(argX, argY, num);
+		g.fillPolygon(argX, argY, num);
 			
-		g.setColor(Color.BLACK);
-		
-	   	g.drawLine((int)xB, (int)yB, (int)xC, (int)yC);
-	   	g.drawLine((int)xC, (int)yC, (int)x0, (int)y0);
-	   	g.drawLine((int)x0, (int)y0, (int)xA, (int)yA);
-	   	g.drawLine((int)xA, (int)yA, (int)xB, (int)yB);
+//		g.setColor(Color.BLACK);
+//		
+//	   	g.drawLine((int)xB, (int)yB, (int)xC, (int)yC);
+//	   	g.drawLine((int)xC, (int)yC, (int)x0, (int)y0);
+//	   	g.drawLine((int)x0, (int)y0, (int)xA, (int)yA);
+//	   	g.drawLine((int)xA, (int)yA, (int)xB, (int)yB);
 		
 	}
 	

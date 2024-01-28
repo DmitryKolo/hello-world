@@ -45,7 +45,7 @@ public class Address3D {
 	
 	public void setCoordinate(int coordinateIndex, int coordinateValue){
 	
-	switch(coordinateIndex){
+		switch(coordinateIndex){
 	
 		case 0: 
 			this.i = coordinateValue; 
@@ -58,9 +58,40 @@ public class Address3D {
 			break;
 		default:
 			throw new RuntimeException("Illegal coordinate index.");
-	}	
-}
+		}	
+	}
 
+	public static Address3D addressForAxis(int axisIndex, int layerCoord, int i, int j){
+		
+		switch(axisIndex){
+		case 0:
+			return new Address3D(layerCoord, i, j);
+		case 1:
+			return new Address3D(i, layerCoord, j);
+		case 2:
+			return new Address3D(i, j, layerCoord);
+		default:
+			return new Address3D();
+		}
+	}
+	
+	
+	public Address3D rotatedAddressForAxis(int axisIndex, int signQuantity){
+		
+		switch(axisIndex){
+		case 0:
+			return new Address3D(this.i, this.k, 2 - this.j);
+		case 1:
+			return new Address3D(2 - this.k, this.j, this.i);
+		case 2:
+			return new Address3D(this.j, 2 - this.i, this.k);
+		default:
+			return new Address3D();
+		}
+	}
+	
+	
+	
 	
 	public void print(){
 		
@@ -73,21 +104,7 @@ public class Address3D {
 		
 		Matrix rowX = new Matrix(this);
 
-//		int M = transitionMatrix.getM(); 
-//		Matrix columnX = new Matrix(M,
-//				//Cube.DIMENSION + 1, 
-//				1);
-//		for(int i = 0; i < Cube.DIMENSION; i++)
-//			columnX.data[i][0] = this.getCoordinate(i);
-//		if(M > Cube.DIMENSION) columnX.data[M - 1][0] = 1;
-//		Matrix columnY = transitionMatrix.times(columnX);
-//		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
-		
-//		Matrix columnX = rowX.transpose();
-//		Matrix columnY = transitionMatrix.times(columnX);
 		Matrix rowX1 = rowX.transitionRow(transitionMatrix);
-//		Matrix columnY = rowX1.transpose();
-//		return new Point(columnY.data[0][0], columnY.data[1][0], columnY.data[2][0]);
 		
 		return rowX1.createPoint();
 	}
