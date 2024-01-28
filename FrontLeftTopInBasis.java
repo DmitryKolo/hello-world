@@ -13,57 +13,68 @@ public class FrontLeftTopInBasis {
 		top = t;
 	}
 	
-	public FrontLeftTopInBasis(Cube basis){
+	public FrontLeftTopInBasis(Cube cube){
 		
-		Vector[] vectorZ = new Vector[Cube.DIMENSION];
+		double maxAbsX = 0, maxAbsY = 0;
+		int axisIndexMaxAbsX = 0, axisIndexMaxAbsY = 0;
+		
+		double tentativeMaxAbsX = 0, tentativeMaxAbsY = 0;
+		int tentativeAxisIndexMaxAbsX = 0, tentativeAxisIndexMaxAbsY = 0;
 		
 		for(int i = 0; i < Cube.DIMENSION; i++){
-			Vector basisVector = basis.axis[i].vector;
-			if(basisVector.dz >= 0) vectorZ[i] = basisVector;
-			else vectorZ[i] = new Vector (-1.0, basisVector);
+			
+			Vector vector = cube.axis[i].vector;
+			
+			double absX = Math.abs(vector.dx);
+			double absY = Math.abs(vector.dy);
+			
+			if(absX > maxAbsX){
+				tentativeMaxAbsX = absX;
+				tentativeAxisIndexMaxAbsX = i;
+			}
+			if(absY > maxAbsY){
+				tentativeMaxAbsY = absY;
+				tentativeAxisIndexMaxAbsY = i;
+			}
+			
+			if(i == tentativeAxisIndexMaxAbsX)
+				if(i != tentativeAxisIndexMaxAbsY || tentativeMaxAbsX > tentativeMaxAbsY){
+					maxAbsX = absX;
+					axisIndexMaxAbsX = i;
+				}
+			if(i == tentativeAxisIndexMaxAbsY)
+				if(i != tentativeAxisIndexMaxAbsX || tentativeMaxAbsY> tentativeMaxAbsX){
+					maxAbsY = absY;
+					axisIndexMaxAbsY = i;
+				}
 		}
 		
-		double x01 = vectorZ[0].dx - vectorZ[1].dx;
-		double x12 = vectorZ[1].dx - vectorZ[2].dx;
-		double x20 = vectorZ[2].dx - vectorZ[0].dx;
-		double sqx01 = x01 * x01;
-		double sqx12 = x12 * x12;
-		double sqx20 = x20 * x20;
+//		if(cube.axis[axisIndexMaxAbsY].vector.dy > 0)
+//			top = axisIndexMaxAbsY;
+//		else 
+//			top = Cube.DIMENSION + axisIndexMaxAbsY; 
 		
-		if(sqx01 > sqx12 && sqx01 > sqx20) {
-			if(vectorZ[0].dx > vectorZ[1].dx){
-				front = 0; 
-				left = 1; 
-			}
-			else {
-				front = 1; 
-				left = 0; 
-			}
+		if(cube.axis[axisIndexMaxAbsX].vector.dx > 0){
+			front = axisIndexMaxAbsX;
+			left = Cube.DIMENSION - axisIndexMaxAbsX - axisIndexMaxAbsY;
+			if(cube.axis[left].vector.dx > 0) left = Cube.DIMENSION + left;
 		}
-		else {
-			if(sqx12 > sqx20) {
-				if(vectorZ[1].dx > vectorZ[2].dx){
-					front = 1; 
-					left = 2; 
-				}
-				else {
-					front = 2; 
-					left = 1; 
-				}
-			}
-			else {
-				if(vectorZ[2].dx > vectorZ[0].dx){
-					front = 2; 
-					left = 0; 
-				}
-				else {
-					front = 0; 
-					left = 2; 
-				}
-			}
+		else{
+			left = axisIndexMaxAbsX; 
+			front = Cube.DIMENSION - axisIndexMaxAbsX - axisIndexMaxAbsY;
+			if(cube.axis[front].vector.dx < 0) front = Cube.DIMENSION + front;
 		}
 		
-		top = Cube.DIMENSION - front - left;
+		if(cube.axis[axisIndexMaxAbsY].vector.dy > 0){
+			top = axisIndexMaxAbsY;
+			int tmp = left;
+			left = front;
+			front = tmp;
+		}
+		else{ 
+			top = Cube.DIMENSION + axisIndexMaxAbsY; 
+		}
+		
 		
 	}
 

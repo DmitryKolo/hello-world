@@ -12,6 +12,7 @@ public class Layer {
 	public Point centre;
 	
 	public double rotationAngle;
+	public int quantityToTurn;
 	
 	public Matrix fullRelativeTransitionMatrix = new Matrix(Cube.DIMENSION + 1, Cube.DIMENSION + 1);
 	public Matrix transitionMatrix = new Matrix(Cube.DIMENSION, Cube.DIMENSION + 1);
@@ -39,11 +40,12 @@ public class Layer {
 	
 	// Constructor
 	
-	public Layer(Axis axis, int coordinate, double speed){
+	public Layer(Axis axis, int coordinate, double speed, int quantityToTurn){
 		
 		this.axis = axis;
 		this.coordinate = coordinate;
 		this.rotationAngle = 0;
+		this.quantityToTurn = quantityToTurn;
 		
 		this.speed = speed;
 		
@@ -70,8 +72,51 @@ public class Layer {
 	
 	public void update(){
 		
-		rotationAngle += speed;
+		if(Math.abs(speed) > Math.PI / 4)
+			speed = Math.signum(speed) * Math.PI / 4;
 		
+		if(quantityToTurn != 0 || rotationAngle != 0){
+			
+			int rotationSignum = (quantityToTurn != 0) ? (int) Math.signum(quantityToTurn) : - (int) Math.signum(rotationAngle);
+			double newRotationAngle = rotationAngle + rotationSignum * speed;
+		
+//			if(axis.stabilizeMode){
+//				double absRotation = Math.abs(2 * rotationAngle / Math.PI);
+//				double aimRotation = Math.ceil(absRotation);
+//				if(Math.abs(2 * newRotationAngle / Math.PI) > aimRotation)
+//					rotationAngle = Math.signum(newRotationAngle) * aimRotation * Math.PI / 2;
+//					speed = 0;
+//				
+//				axis.stabilizeMode = false; // outdated?
+//				
+//			}
+			
+//			else rotationAngle = newRotationAngle;
+			
+
+			rotationAngle = newRotationAngle;
+			
+		}
+		
+		if(rotationAngle > Math.PI / 2.0){
+			rotationAngle -= Math.PI / 2.0;
+			axis.cube.rotateEdge(axis.index, this.coordinate + 1);
+			//System.out.println("(" + String.format("%.2f", XA0)+ " " + String.form
+			quantityToTurn--;
+		}
+		if(rotationAngle <- Math.PI / 2.0){
+			rotationAngle += Math.PI / 2.0;
+			axis.cube.rotateEdge(axis.index, this.coordinate + 1);
+			axis.cube.rotateEdge(axis.index, this.coordinate + 1);
+			axis.cube.rotateEdge(axis.index, this.coordinate + 1);
+			quantityToTurn++;
+		}
+		
+		if(quantityToTurn == 0 && Math.abs(rotationAngle) <= speed){
+			rotationAngle = 0;
+			//speed = 0;
+		}
+	
 		caltulateTransitionMatrixAndRibVectors();
 		
 		centre = new Point(axis.cube.centre, new Vector(coordinate, ribVector[axis.index]));
@@ -127,18 +172,6 @@ public class Layer {
 			ribEnd[v] = ribEndAddress[v].calculatedPoint(fullTransitionMatrix); 
 			ribVector[v] = new Vector(nullCornerCentre, ribEnd[v]);
 		}
-		
-//		double cos01 = ribVector[0].cos(ribVector[1]);
-//		double cos02 = ribVector[0].cos(ribVector[2]);
-//		double cos12 = ribVector[1].cos(ribVector[2]);
-//		
-//		double cos_01 = axis.cube.axis[0].vector.cos(axis.cube.axis[1].vector);
-//		double cos_02 = axis.cube.axis[0].vector.cos(axis.cube.axis[2].vector);
-//		double cos_12 = axis.cube.axis[1].vector.cos(axis.cube.axis[2].vector);
-//		
-//		double cosF1 = axis.cube.axis[0].vector.cos(ribVector[0]); //axis.cube.axis[2].vector.length()
-//		double cosF2 = axis.cube.axis[1].vector.cos(ribVector[1]);
-//		double cosF3 = axis.cube.axis[2].vector.cos(ribVector[2]);
 		
 		toNearestCornerVector = new Vector(0, 0, 0);
 
@@ -201,9 +234,23 @@ public class Layer {
 //					||  ( currentBrick.layer.coordinate == 0 && i == 0 && currentBrick.w == 0 )
 //				)
 				
-				if ( 
-				( currentBrick.layer.coordinate == 1 )
-		)
+//				if ( 
+//						currentBrick.layer.coordinate == -1 && currentBrick.v == 1 && i == -1
+//						|| currentBrick.layer.coordinate == 0 && currentBrick.v == 0 && currentBrick.w == -1
+//						 || currentBrick.layer.coordinate == 1 && currentBrick.v == 1 && currentBrick.w == 0
+//						 || currentBrick.layer.coordinate == 1 && currentBrick.v == 0 && currentBrick.w == 0 
+//					)
+				
+//				if ( 
+//						currentBrick.layer.coordinate == 0 && currentBrick.v == 0 && currentBrick.w == -1 && i == 2
+//						// || currentBrick.layer.coordinate == 1 && currentBrick.v == 1 && currentBrick.w == 0 && i == 1
+//						 || currentBrick.layer.coordinate == 1 && currentBrick.v == 0 && currentBrick.w == 0 && i == 0
+//					)
+//				if ( 
+//						currentBrick.layer.coordinate == -1 && 
+//						(currentBrick.v == -1 && currentBrick.w == -1 || currentBrick.v == 0 && currentBrick.w == 1) 
+//					)
+			
 
 					axis.cube.tileCollection.add(new Tile(currentBrick, i));
 		}
@@ -213,8 +260,9 @@ public class Layer {
 	
 	public void draw(Graphics2D g){
 		
-		for(BrickInLayer currentBrick : brickCollection){}
-			//currentBrick.draw(g, Color.BLACK);
+		for(BrickInLayer currentBrickInLayer : brickCollection){
+			currentBrickInLayer.draw(g, Color.BLACK);
+		}
 	}
 
 		

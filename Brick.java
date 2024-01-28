@@ -46,6 +46,37 @@ public class Brick {
 	public void draw(Graphics2D g, Color color, Layer layer, int v, int w){
 	}
 	
+	public void rotate(int axisIndex){
+		
+		Color[][] tmpColor = new Color[Cube.SIZE][Axis.ENDS_QUANTITY];
+		
+		for(int v = 0; v < Cube.SIZE; v++)
+			for(int w = 0; w < Axis.ENDS_QUANTITY; w++)
+				tmpColor[v][w] = color[v][w];
+		
+		switch(axisIndex){
+			case 0:
+				color[2][0] = tmpColor[1][0];
+				color[2][1] = tmpColor[1][1];
+				color[1][1] = tmpColor[2][0];
+				color[1][0] = tmpColor[2][1];
+				break;
+			case 1:
+				color[2][1] = tmpColor[0][0];
+				color[2][0] = tmpColor[0][1];
+				color[0][0] = tmpColor[2][0];
+				color[0][1] = tmpColor[2][1];
+				break;
+			case 2:
+				color[1][0] = tmpColor[0][0];
+				color[1][1] = tmpColor[0][1];
+				color[0][1] = tmpColor[1][0];
+				color[0][0] = tmpColor[1][1];
+				break;
+			default:
+		}
+	}
+	
 	
 	public FractionalAddress nearestCornerAddress(Address3D cornerSignes){
 		
@@ -91,41 +122,4 @@ public class Brick {
 	}
 
 
-	public static void arrangeCollection(ArrayList<Brick> brickCollection, Cube cube){
-		
-		brickCollection.clear();
-		
-		// to improve
-		
-		Address3D nearestBrickAddress = new Address3D(0, 0, 0);
-		double nearestBrickNearestCornerZ = cube.getBrickAtAddress(nearestBrickAddress).nearestCornerZ; 
-		
-		for(int i = 0; i < Cube.SIZE; i++)
-			for(int j = 0; j < Cube.SIZE; j++)
-				for(int k = 0; k < Cube.SIZE; k++){
-					Address3D currentBrickAddress = new Address3D(i, j, k);
-					Brick currentBrick = cube.getBrickAtAddress(currentBrickAddress);
-					double currentBrickNearestCornerZ = currentBrick.nearestCornerZ; 
-					if(currentBrickNearestCornerZ > nearestBrickNearestCornerZ){
-						nearestBrickAddress = currentBrickAddress;
-						nearestBrickNearestCornerZ = currentBrickNearestCornerZ; 
-					};
-				}
-		
-		for(int i = 0; i < Cube.SIZE; i++)
-			for(int j = 0; j < Cube.SIZE; j++)
-				for(int k = 0; k < Cube.SIZE; k++){
-					Address3D currentBrickAddress = new Address3D(i, j, k);
-					Brick currentBrick = cube.getBrickAtAddress(currentBrickAddress);
-					double currentBrickNearestCornerZ = currentBrick.nearestCornerZ; 
-					if(currentBrickNearestCornerZ == nearestBrickNearestCornerZ){
-						brickCollection.add(currentBrick); 
-					};
-				}
-		
-			
-		for(Brick brick : brickCollection){
-			//brick.draw(g, color);
-		}
-	}
 }
